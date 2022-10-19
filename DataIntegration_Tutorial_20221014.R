@@ -26,8 +26,6 @@ library(tidyverse) # For data manipulation
 # Find the info you're looking for
 # Isolate that info 
 
-setwd("C:/Users/Kelly Kapsar/OneDrive - Michigan State University/Sync/ATP-MarineMammalSubmodel/Code/")
-
 #############################
 ##### Data set 1: AMBON ##### 
 #############################
