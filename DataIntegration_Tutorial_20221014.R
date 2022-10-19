@@ -1,3 +1,5 @@
+# HELLO ATP TEAM! 
+
 ################################################################################
 # TITLE: Wildlife Occurrence Data Integration Tutorial
 # PURPOSE: The purpose of this script is to give an example of one way to 
