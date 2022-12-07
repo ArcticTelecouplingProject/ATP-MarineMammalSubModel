@@ -1,4 +1,3 @@
-# HELLO ATP TEAM! 
 
 ################################################################################
 # TITLE: Wildlife Occurrence Data Integration Tutorial
