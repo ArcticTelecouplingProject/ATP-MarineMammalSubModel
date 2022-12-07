@@ -145,3 +145,4 @@ View(alldf)
 
 
 alldf %>% group_by(scientificName) %>% summarize(indcount = sum(individualCount), obscount=n())
+
