@@ -1,4 +1,3 @@
-# HELLO ATP TEAM! 
 
 ################################################################################
 # TITLE: Wildlife Occurrence Data Integration Tutorial
@@ -7,7 +6,6 @@
 # AUTHOR: Kelly Kapsar
 # CREATED: 2022-10-14
 # LAST UPDATED ON: 2022-10-14
-#
 ################################################################################
 
 ##### Preliminaries #####
