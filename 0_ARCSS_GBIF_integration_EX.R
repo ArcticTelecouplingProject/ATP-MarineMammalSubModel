@@ -6,6 +6,7 @@
 # This script can be used as a baseline example for tidying subsequent AMM datasets
 # (e.g., bearded seal and spotted seal datasets in the NSF ARCSS drive from GBIF). 
 
+# Testing Github to see if Kelly and I can simultaneously work on scripts at the same time.
 
 # Libraries and Packages --------------------------------------------------
 
