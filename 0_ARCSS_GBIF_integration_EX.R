@@ -1,10 +1,10 @@
-# Merging walrus, spotted seal, and bearded seal datasets from NSF_ARCSS_GBIF data
+# Merging walrus from NSF_ARCSS_GBIF data with TGS seismic survey 2013 data
 # 26Oct2022
-# This script was split on 07Nov2022 for data organization and importing purposes
-# with subsequent AMMs datasets.
 
-# This is the overall code to clean, transform, and edit data for the merging of
-# data sets featured here.
+# This script is the overall code to clean, transform, and edit data for the merging of
+# data sets included here (NSF ARCSS GBIF walrus data and TGS seismic survey 2013 data).
+# This script can be used as a baseline example for tidying subsequent AMM datasets
+# (e.g., bearded seal and spotted seal datasets in the NSF ARCSS drive from GBIF). 
 
 
 # Libraries and Packages --------------------------------------------------
