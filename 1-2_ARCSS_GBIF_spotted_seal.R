@@ -8,9 +8,10 @@
 # These datasets were obtained from the Global Biodiversity Information Facility (GBIF):
 # https://www.gbif.org/
 
-# Only species featured in this script is spotted seal.
+# Only species featured in this script is the spotted seal.
 
 # This dataset was tidied and ready for data integration on 07Nov2022.
+# Last edited: 23Dec2022.
 
 # Libraries and Packages --------------------------------------------------
 
@@ -25,17 +26,12 @@ rm(list=ls())
 
 
 # Import raw spotted seal occurrence data
-spotted_gbif <- st_read("../NSF_ARCSS_GBIF/Data_Raw/phoca_largha")
+spotted_gbif <- st_read("../../ATP-MarineMammal-DataRaw/phoca_largha")
 
 head(spotted_gbif)
 
 # Transform to Alaska Albers projection
 spotted_gbif_3338 <- spotted_gbif %>% st_transform(crs = 3338)
-
-## OR ##
-# Read in Alaska Albers projected full dataset
-# spotted3338 <- st_read("NSF_ARCSS_GBIF/Data_Processed/SpottedData_3338.shp")
-## ## ## 
 
 # Check to see if it's properly projected (NAD83 / Alaska Albers)
 st_crs(spotted_gbif_3338)
@@ -97,13 +93,13 @@ spotted_gbif_clean <- spotted_gbif_clean %>% dplyr::select(scientificName,
 spotted_gbif_clean$commonName <- "Spotted seal"
 
 # Missing a groupSize column in the spotted_gbif_clean df??
-# Add groupSize column to spotted_gbif_clean df based on whether there are no NAs in the year, month, day cols
+# Add groupSize column to spotted_gbif_clean df based on if there are NO NAs in the year, month, day cols
+# If there is a YMD, then this will add a 1 to the groupSize column
 ## Reference for code:
 ## https://www.geeksforgeeks.org/how-to-add-a-column-based-on-other-columns-in-r-dataframe/
 spotted_gbif_merge <- transform(spotted_gbif_clean, groupSize = ifelse
                                (is.na(year) & is.na(month) & is.na(day), 0, 1))
-# Right now this is marking records with no YMD as 0
-# Decide whether to mark records with an NA in any part of the YMD as 0?
+# Right now this is marking records with no YMD as 0 - Decide whether to mark records with an NA in any part of the YMD as 0?
 
 # Rearrange column names to match dfs - or I think this can be solved with whatever merge function ends up used
 spotted_gbif_merge <- spotted_gbif_merge %>% dplyr::select(scientificName,
