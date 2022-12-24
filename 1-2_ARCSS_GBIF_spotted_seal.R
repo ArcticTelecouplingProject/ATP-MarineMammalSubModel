@@ -115,7 +115,16 @@ spotted_gbif_merge <- spotted_gbif_merge %>% dplyr::select(scientificName,
 
 ## Tada now you have a clean and tidy dataset to work with and merge
 
-View(spotted_gbif_merge)
+View(spotted_gbif_merge) # this is an sf dataframe
 
-# Save this df as a csv for importing
-# st_write(spotted_gbif_merge, "../ATP_Data_Integration/Data_Processed/1-2_spotted_arcss_gbif.csv")
+# Save this df as a shp and csv for importing
+# st_write(spotted_gbif_merge, "../Data_Processed/1-2_spotted_arcss_gbif.shp")
+
+# Need to convert to SpatialPointsDataFrame instead of multipoints df first
+
+# Cast geometry to another type with st_cast()
+spotted_gbif_sp <- spotted_gbif_merge %>% st_cast("POINT")
+
+# Save as shp and csv
+# st_write(spotted_gbif_sp, "../Data_Processed/1-2_spotted_gbif_sp.csv")
+
