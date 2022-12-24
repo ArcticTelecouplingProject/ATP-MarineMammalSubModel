@@ -5,6 +5,7 @@
 # Source: https://obis.org/dataset/4b394534-8a6b-4bdb-bf1b-f07f983f9e37
 
 # This dataset was tidied and ready for data integration on 07Nov2022.
+# Last updated: 23Dec2022
 
 # Libraries and Packages --------------------------------------------------
 
@@ -17,8 +18,8 @@ rm(list=ls())
 
 # TGS Seismic Survey Chukchi 2013 data set #2 -----------------------------
 
-# Read in TGS Seismic data from DataIntegration_Tutorial
-seismic_obis <- read.csv("ATP_Data_Integration/Data_Raw/obis_seamap_dataset_1110_csv_71491/obis_seamap_dataset_1110_points.csv")
+# Read in TGS Seismic data
+seismic_obis <- read.csv("../../ATP-MarineMammal-DataRaw/obis_seamap_dataset_1110_csv_71491/obis_seamap_dataset_1110_points.csv")
 
 head(seismic_obis)
 
@@ -72,7 +73,7 @@ lapply(seismic_new2, class)
 # Convert numeric columns to numeric if not already
 # seismic_new2$latitude <- as.numeric(seismic_new2$latitude)
 # seismic_new2$longitude <- as.numeric(seismic_new2$longitude)
-# seismic_new2$group_size <- as.integer(seismic_new2$group_size)
+# seismic_new2$group_size <- as.numeric(seismic_new2$group_size) # was previously as.integer but not sure why this needed to be an integer?
 
 # Convert date to a standard format
 ## Be careful with time zones for sub-monthly data
@@ -108,9 +109,9 @@ seismic_merge <- seismic_new2 %>% rename(scientificName = scientific_name,
                                          decimalLon = longitude)
 
 
-## Woo now you have a tidy data set to work with and merge!
+## Woo now you have a tidy data set of all three species of interest to work with and merge!
 
 View(seismic_merge)
 
-# Save this df to a csv for integration importing
-st_write(seismic_merge, "ATP_Data_Integration/Data_Processed/2_tgs_seismic_2013.csv")
+# Save this df to a shp and csv for integration importing
+# st_write(seismic_merge, "../Data_Processed/2_tgs_seismic_2013.shp")
