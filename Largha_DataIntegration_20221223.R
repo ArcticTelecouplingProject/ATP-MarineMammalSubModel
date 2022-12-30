@@ -22,7 +22,9 @@ rm(list=ls())
 
 # Import data -------------------------------------------------------------
 
-# Import tidied data sets from Data_Processed
+# Import tidied data sets from Data_Processed - you will need to go through and run
+# the 1-2 ARCSS_GBIF_spotted_seal script to save the outputs into your Data Processed
+# folder in order to proceed with this section.
 
 # 1-2_spotted_gbif_sp (SpatialPointsDataFrame of spotted_arcss_gbif)
 spotted_gbif_sp <- st_read("../Data_Processed/1-2_spotted_gbif_sp.shp")
