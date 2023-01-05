@@ -43,7 +43,7 @@ head(bird) # Now we've picked the matching lines from the birdevent and moved th
 # Isolate out species of interest 
 unique(bird$vernacularName)
 
-seals <- bird[bird$vernacularName %in% c("Bearded Seal", "Spotted Seal"),]
+seals <- bird[bird$vernacularName %in% c("Bearded Seal", "Spotted Seal"),] # can also add walrus here if isolating for pacific walrus
 
 # Remove extraneous columns of info 
 colnames(seals)
