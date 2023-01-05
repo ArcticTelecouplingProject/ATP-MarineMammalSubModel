@@ -94,3 +94,6 @@ sealsnew2 <- sealsnew2 %>% rename(scientificName = scientificName,
 ## Tada now you have a clean and tidy dataset to work with and merge
 
 View(sealsnew2) # this is a regular dataframe
+
+# Can save this data as an output
+# write.csv(sealsnew2, "../Data_Processed/3_obis_ambon_norseman_2015.csv")
