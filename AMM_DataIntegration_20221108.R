@@ -27,16 +27,16 @@ rm(list=ls())
 # Import tidied data sets from Data_Processed
 
 # 1-1 walrus arcss gbif
-walrus_arcss_gbif <- read.csv("../ATP_Data_Integration/Data_Processed/1-1_walrus_arcss_gbif.csv")
+walrus_arcss_gbif <- read.csv("../Data_Processed/1-1_walrus_gbif_sp.csv")
 
 # 1-2 spotted arcss gbif
-spotted_arcss_gbif <- read.csv("../ATP_Data_Integration/Data_Processed/1-2_spotted_arcss_gbif.csv")
+spotted_arcss_gbif <- read.csv("../Data_Processed/1-2_spotted_gbif_sp.csv")
 
 # 1-3 bearded arcss gbif
-bearded_arcss_gbif <- read.csv("../ATP_Data_Integration/Data_Processed/1-3_bearded_arcss_gbif.csv")
+bearded_arcss_gbif <- read.csv("../Data_Processed/1-3_bearded_gbif_sp.csv")
 
 # 2 tgs seismic 2013
-tgs_seismic_2013 <- read.csv("../ATP_Data_Integration/Data_Processed/2_tgs_seismic_2013.csv")
+tgs_seismic_2013 <- read.csv("../Data_Processed/2_tgs_seismic_2013.csv")
 
 
 # Concatenate data sets
@@ -66,10 +66,10 @@ st_crs(all_df_sp)
 
 
 # Import base map - this is already projected 
-base_map <- st_read("../NSF_ARCSS_GBIF/Data_Raw/base_map")
+base_map <- st_read("../../ATP-MarineMammal-DataRaw/base_map")
 
 # Import study area
-study_area <- st_read("../NSF_ARCSS_GBIF/Data_Raw/study_area")
+study_area <- st_read("../../ATP-MarineMammal-DataRaw/study_area")
 
 # Project study area to 3338
 study_area <- study_area %>% st_transform(3338)
