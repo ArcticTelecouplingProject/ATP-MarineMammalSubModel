@@ -128,5 +128,5 @@ View(bearded_gbif_sp)
 
 
 # Save this df as a csv for importing
-st_write(bearded_gbif_sp, "../Data_Processed/1-3_bearded_arcss_sp.csv")
+# st_write(bearded_gbif_sp, "../Data_Processed/1-3_bearded_gbif_sp.shp")
 
