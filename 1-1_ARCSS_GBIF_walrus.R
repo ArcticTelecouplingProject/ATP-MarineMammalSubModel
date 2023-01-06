@@ -11,6 +11,7 @@
 # Only species featured in this script is Pacific walrus.
 
 # This dataset was tidied and ready for data integration on 07Nov2022.
+# Last edited: 06Jan2023
 
 # Libraries and Packages --------------------------------------------------
 
@@ -24,7 +25,7 @@ rm(list=ls())
 # Pacific walrus data set #1 ----------------------------------------------
 
 # Import raw walrus occurrence data
-walrus_gbif <- st_read("../NSF_ARCSS_GBIF/Data_Raw/odobenus_rosmarus_divergens")
+walrus_gbif <- st_read("../../ATP-MarineMammal-DataRaw/1_arcss_gbif/odobenus_rosmarus_divergens")
 
 head(walrus_gbif)
 
@@ -118,10 +119,18 @@ walrus_gbif_merge <- walrus_gbif_merge %>% dplyr::select(scientificName,
                                                          source,
                                                          geometry)
 
+# Convert to SpatialPointsDataFrame ---------------------------------------
+
+# Need to convert to SpatialPointsDataFrame instead of multipoints df first
+
+# Cast geometry to another type with st_cast()
+walrus_gbif_sp <- walrus_gbif_merge %>% st_cast("POINT")
+
 
 ## Tada now you have a clean and tidy dataset to work with and merge
 
-View(walrus_gbif_merge)
+View(walrus_gbif_sp)
+
 
 # Save this df as a csv for importing - need to use st_write because of spatial geometry
-# st_write(walrus_gbif_merge, "../ATP_Data_Integration/Data_Processed/1-1_walrus_arcss_gbif.csv")
+# st_write(walrus_gbif_sp, "../Data_Processed/1-1_walrus_gbif_sp.shp")
