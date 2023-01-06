@@ -11,7 +11,7 @@
 # Only species featured in this script is the spotted seal.
 
 # This dataset was tidied and ready for data integration on 07Nov2022.
-# Last edited: 23Dec2022.
+# Last edited: 06Jan2023
 
 # Libraries and Packages --------------------------------------------------
 
@@ -26,7 +26,7 @@ rm(list=ls())
 
 
 # Import raw spotted seal occurrence data
-spotted_gbif <- st_read("../../ATP-MarineMammal-DataRaw/phoca_largha")
+spotted_gbif <- st_read("../../ATP-MarineMammal-DataRaw/1_arcss_gbif/phoca_largha")
 
 head(spotted_gbif)
 
@@ -89,8 +89,8 @@ spotted_gbif_clean <- spotted_gbif_clean %>% dplyr::select(scientificName,
                                                          source,
                                                          geometry)
 
-# Add a common name column to the spotted_gbif_clean df and fill it with 'Walrus'
-spotted_gbif_clean$commonName <- "Spotted seal"
+# Add a common name column to the spotted_gbif_clean df and fill it with 'Spotted Seal'
+spotted_gbif_clean$commonName <- "Spotted Seal"
 
 # Missing a groupSize column in the spotted_gbif_clean df??
 # Add groupSize column to spotted_gbif_clean df based on if there are NO NAs in the year, month, day cols
@@ -113,18 +113,19 @@ spotted_gbif_merge <- spotted_gbif_merge %>% dplyr::select(scientificName,
                                                          source,
                                                          geometry)
 
-## Tada now you have a clean and tidy dataset to work with and merge
-
-View(spotted_gbif_merge) # this is an sf dataframe
-
-# Save this df as a shp and csv for importing
-# st_write(spotted_gbif_merge, "../Data_Processed/1-2_spotted_arcss_gbif.shp")
+# Convert to SpatialPointsDataFrame ---------------------------------------
 
 # Need to convert to SpatialPointsDataFrame instead of multipoints df first
 
 # Cast geometry to another type with st_cast()
 spotted_gbif_sp <- spotted_gbif_merge %>% st_cast("POINT")
 
+
+## Tada now you have a clean and tidy dataset to work with and merge
+
+View(spotted_gbif_merge) # this is an sf dataframe
+
+
 # Save as shp and csv
-# st_write(spotted_gbif_sp, "../Data_Processed/1-2_spotted_gbif_sp.csv")
+# st_write(spotted_gbif_sp, "../Data_Processed/1-2_spotted_gbif_sp.shp")
 
