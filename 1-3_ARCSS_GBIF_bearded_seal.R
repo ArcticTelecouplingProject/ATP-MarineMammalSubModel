@@ -26,17 +26,12 @@ rm(list=ls())
 
 
 # Import raw spotted seal occurrence data
-bearded_gbif <- st_read("../NSF_ARCSS_GBIF/Data_Raw/erignathus_barbatus")
+bearded_gbif <- st_read("../../ATP-MarineMammal-DataRaw/1_arcss_gbif/erignathus_barbatus")
 
 head(bearded_gbif)
 
 # Transform to Alaska Albers projection
 bearded_gbif_3338 <- bearded_gbif %>% st_transform(crs = 3338)
-
-## OR ##
-# Read in Alaska Albers projected full dataset
-# bearded3338 <- st_read("NSF_ARCSS_GBIF/Data_Processed/BeardedData_3338.shp")
-## ## ## 
 
 # Check to see if it's properly projected (NAD83 / Alaska Albers)
 st_crs(bearded_gbif_3338)
@@ -52,7 +47,7 @@ bearded_gbif_new <- bearded_gbif_new[!is.na(bearded_gbif_new$decimalLat), ]
 
 # Remove extraneous columns - use select function to choose which columns to keep in new df
 colnames(bearded_gbif_new)
-beard_gbif_new <- bearded_gbif_new %>% dplyr::select(genericNam,
+beard_gbif <- bearded_gbif_new %>% dplyr::select(genericNam,
                                                     specificEp,
                                                     decimalLat,
                                                     decimalLon,
@@ -63,29 +58,29 @@ beard_gbif_new <- bearded_gbif_new %>% dplyr::select(genericNam,
 ## Can get rid of with st_drop_geometry()
 
 # Add a new column to specify data source to backtrack later
-beard_gbif_new$source <- "ARCSS GBIF Bearded Seal"
+beard_gbif$source <- "ARCSS GBIF Bearded Seal"
 
 # How is R classifying each column of data?
-lapply(beard_gbif_new, class)
+lapply(beard_gbif, class)
 
 # Convert numeric columns to numeric - probably a more succinct way to do this but that's okay
-beard_gbif_new$decimalLat <- as.numeric(beard_gbif_new$decimalLat)
-beard_gbif_new$decimalLon <- as.numeric(beard_gbif_new$decimalLon)
-beard_gbif_new$year <- as.numeric(bearded_gbif_new$year)
-beard_gbif_new$month <- as.numeric(bearded_gbif_new$month)
-beard_gbif_new$day <- as.numeric(beard_gbif_new$day)
+beard_gbif$decimalLat <- as.numeric(beard_gbif$decimalLat)
+beard_gbif$decimalLon <- as.numeric(beard_gbif$decimalLon)
+beard_gbif$year <- as.numeric(beard_gbif$year)
+beard_gbif$month <- as.numeric(beard_gbif$month)
+beard_gbif$day <- as.numeric(beard_gbif$day)
 
 # Combine species and subspecies columns into one col and make one character string
-beard_gbif_new$genericNam <- gsub("\"", "", beard_gbif_new$genericNam)
-beard_gbif_new$specificEp <- gsub("\"", "", beard_gbif_new$specificEp)
+beard_gbif$genericNam <- gsub("\"", "", beard_gbif$genericNam)
+beard_gbif$specificEp <- gsub("\"", "", beard_gbif$specificEp)
 # Add that character string to a new column
-beard_gbif_new$scientificName <- paste(beard_gbif_new$genericNam, beard_gbif_new$specificEp)
+beard_gbif$scientificName <- paste(beard_gbif$genericNam, beard_gbif$specificEp)
 
 # Move scientificName column to first column
-bearded_gbif_clean <- beard_gbif_new %>% select(scientificName, everything())
+beard_gbif_clean <- beard_gbif %>% select(scientificName, everything())
 
 # Remove old columns of genus and species
-bearded_gbif_clean <- bearded_gbif_clean %>% dplyr::select(scientificName,
+beard_gbif_clean <- beard_gbif_clean %>% dplyr::select(scientificName,
                                                            year,
                                                            month,
                                                            day,
@@ -95,19 +90,19 @@ bearded_gbif_clean <- bearded_gbif_clean %>% dplyr::select(scientificName,
                                                            geometry)
 
 # Add a common name column to the walrus_gbif_clean df and fill it with 'Walrus'
-bearded_gbif_clean$commonName <- "Bearded seal"
+beard_gbif_clean$commonName <- "Bearded seal"
 
-# Missing a groupSize column in the bearded_gbif_clean df??
-# Add groupSize column to bearded_gbif_clean df based on whether there are no NAs in the year, month, day cols
+# Missing a groupSize column in the beard_gbif_clean df??
+# Add groupSize column to beard_gbif_clean df based on whether there are no NAs in the year, month, day cols
 ## Reference for code:
 ## https://www.geeksforgeeks.org/how-to-add-a-column-based-on-other-columns-in-r-dataframe/
-bearded_gbif_merge <- transform(bearded_gbif_clean, groupSize = ifelse
+beard_gbif_merge <- transform(beard_gbif_clean, groupSize = ifelse
                                 (is.na(year) & is.na(month) & is.na(day), 0, 1))
 # Right now this is marking records with no YMD as 0
 # Decide whether to mark records with an NA in any part of the YMD as 0?
 
 # Rearrange column names to match dfs - or I think this can be solved with whatever merge function ends up used
-bearded_gbif_merge <- bearded_gbif_merge %>% dplyr::select(scientificName,
+beard_gbif_merge <- beard_gbif_merge %>% dplyr::select(scientificName,
                                                            commonName,
                                                            year,
                                                            month,
@@ -118,10 +113,19 @@ bearded_gbif_merge <- bearded_gbif_merge %>% dplyr::select(scientificName,
                                                            source,
                                                            geometry)
 
+# Convert to SpatialPointsDataFrame ---------------------------------------
+
+# Need to convert to SpatialPointsDataFrame instead of multipoints df first
+
+# Cast geometry to another type with st_cast()
+bearded_gbif_sp <- beard_gbif_merge %>% st_cast("POINT")
+
+
 ## Tada now you have a clean and tidy dataset to work with and merge
 
-View(bearded_gbif_merge)
+View(bearded_gbif_sp)
+
 
 # Save this df as a csv for importing
-# st_write(bearded_gbif_merge, "../ATP_Data_Integration/Data_Processed/1-3_bearded_arcss_gbif.csv")
+st_write(bearded_gbif_sp, "../Data_Processed/1-3_bearded_arcss_sp.shp")
 
