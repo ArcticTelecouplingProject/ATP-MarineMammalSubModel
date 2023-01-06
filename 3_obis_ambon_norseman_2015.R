@@ -6,7 +6,7 @@
 # https://www.sciencebase.gov/catalog/item/5e0e24b3e4b0b207aa13782b
 # Corresponds with Data_Raw folder: obis_ambon_norseman_2015
 
-# Species of interest in this script is the spotted seal.
+# Species isolated in this data set: walrus, bearded seal, spotted seal
 
 # This dataset was tidied and ready for data integration on 05Jan2022
 # Last edited: 05Jan2022
@@ -43,57 +43,93 @@ head(bird) # Now we've picked the matching lines from the birdevent and moved th
 # Isolate out species of interest 
 unique(bird$vernacularName)
 
-seals <- bird[bird$vernacularName %in% c("Bearded Seal", "Spotted Seal"),] # can also add walrus here if isolating for pacific walrus
+ambon_mams <- bird[bird$vernacularName %in% c("Walrus", "Bearded Seal", "Spotted Seal"), ] 
 
 # Remove extraneous columns of info 
-colnames(seals)
-sealsnew <- seals %>% dplyr::select(vernacularName, scientificName, individualCount, decimalLatitude, decimalLongitude, eventDate)
+colnames(ambon_mams)
+mams_new <- ambon_mams %>% dplyr::select(vernacularName,
+                                         scientificName,
+                                         individualCount,
+                                         decimalLatitude,
+                                         decimalLongitude,
+                                         eventDate)
+
+
+# Convert to spatial df ---------------------------------------------------
+
+# Save lat/lon columns info into their own df to add in again later on
+# or else they will disappear when converting to spatial object with st_as_sf
+ambon_latlon <- mams_new %>% dplyr::select(vernacularName,
+                                           decimalLatitude,
+                                           decimalLongitude,
+                                           eventDate)
+
+# Check the CRS
+st_crs(mams_new)
+# This is non-spatial so the CRS is NA
+
+# Convert data to a spatial object with CRS 4326 (since that is regular lat/lon) - this is still unprojected
+mams_new_sp <- st_as_sf(mams_new, coords = c("decimalLongitude", "decimalLatitude"), crs = 4326) 
+
+# Project the data to Alaska Albers 3338
+mams_new_sp <- mams_new_sp %>% st_transform(crs = 3338)
+
+# Add back in lat/lon cols using left join to merge lat/lon data onto spatial data rather than spatial data onto lat/lon data
+mams_sp <- mams_new_sp %>% left_join(ambon_latlon, by = "eventDate")
 
 # Add a new column to specify data source so you can backtrack later if needed
-sealsnew$source <- "AMBON Norseman II Cruise 2015"
+mams_sp$source <- "AMBON Norseman II Cruise 2015"
 # May also want to add other columns that help add information about the data source (e.g., vessel based, plane based, etc.)
 
+# Remove extraneous columns again
+mams_sp <- mams_sp %>% dplyr::select(vernacularName.x,
+                                         scientificName,
+                                         individualCount,
+                                         decimalLatitude,
+                                         decimalLongitude,
+                                         eventDate,
+                                         source)
+
+
 # Figure out how R is classifying each column of data
-lapply(sealsnew, class) # Fancy way
+lapply(mams_sp, class) # Fancy way
 
 # Convert numeric columns to numeric if not already
-sealsnew$decimalLatitude <- as.numeric(sealsnew$decimalLatitude)
-sealsnew$decimalLongitude <- as.numeric(sealsnew$decimalLongitude)
-sealsnew$individualCount <- as.integer(sealsnew$individualCount)
+mams_sp$decimalLatitude <- as.numeric(mams_sp$decimalLatitude)
+mams_sp$decimalLongitude <- as.numeric(mams_sp$decimalLongitude)
+mams_sp$individualCount <- as.integer(mams_sp$individualCount)
 
 # Convert date to a standard format
 # I find this website really helpful when I'm trying to remember codes
 # If you're looking at sub-monthly data, be careful with time zones! In our case it doesn't matter. 
-sealsnew$eventDate <- as.POSIXct(sealsnew$eventDate)
+mams_sp$eventDate <- as.POSIXct(mams_sp$eventDate)
 
 # Separate eventDate into year, month, day cols
 ## substr() takes the column name, starting position, and length of the string as arguments, returning
 ## the substring of the specific column
-sealsnew$year <- substr(sealsnew$eventDate, 1, 4)
-sealsnew$month <- substr(sealsnew$eventDate, 6, 7)
-sealsnew$day <- substr(sealsnew$eventDate, 9, 10)
+mams_sp$year <- substr(mams_sp$eventDate, 1, 4)
+mams_sp$month <- substr(mams_sp$eventDate, 6, 7)
+mams_sp$day <- substr(mams_sp$eventDate, 9, 10)
 
 # Remove eventDate col and rearrange order of cols
-sealsnew2 <- sealsnew %>% dplyr::select(scientificName,
-                                        vernacularName,
+mams_sp2 <- mams_sp %>% dplyr::select(scientificName,
+                                        vernacularName.x,
                                         year,
                                         month,
                                         day,
                                         individualCount,
                                         decimalLatitude,
                                         decimalLongitude,
-                                        source)
+                                        source) %>% 
+rename(scientificName = scientificName,
+           commonName = vernacularName.x,
+           groupSize = individualCount,
+           decimalLat = decimalLatitude,
+           decimalLon = decimalLongitude)
 
-# Rename columns to match for integration
-sealsnew2 <- sealsnew2 %>% rename(scientificName = scientificName,
-                                commonName = vernacularName,
-                                groupSize = individualCount,
-                                decimalLat = decimalLatitude,
-                                decimalLon = decimalLongitude)
-                                
 ## Tada now you have a clean and tidy dataset to work with and merge
 
-View(sealsnew2) # this is a regular dataframe
+View(mams_sp2) # this is a regular dataframe
 
-# Can save this data as an output
-# write.csv(sealsnew2, "../Data_Processed/3_obis_ambon_norseman_2015.csv")
+# Can save this data as an output as both shp and csv
+# st_write(mams_sp2, "../Data_Processed/3_obis_ambon_norseman_2015.csv")
