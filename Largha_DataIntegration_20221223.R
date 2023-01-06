@@ -34,16 +34,18 @@ tgs_seismic_2013 <- st_read("../Data_Processed/2_tgs_seismic_2013.shp")
 ## Isolate out spotted seals from this df
 spot_seismic_2013 <- subset(tgs_seismic_2013, commnNm == "Spotted Seal")
 
-# Concatenate data sets
-# all_marmams <- c(walrus_arcss_gbif, spotted_arcss_gbif, bearded_arcss_gbif, tgs_seismic_2013)
-# this creates a matrix instead of joining the columns appropriately
+# 3 obis ambon norseman 2015
+obis_ambon <- st_read("../Data_Processed/3_obis_ambon_norseman_2015.shp")
+## Isolate spotted seals
+spot_ambon_2015 <- subset(obis_ambon, commnNm == "Spotted Seal")
+
 
 # Merge data sets ---------------------------------------------------------
 # Need to make sure that everything is standardized like the columns, column names, and format
 # of the columns
 
 # Merge to create all_df
-all_spot_df <- rbind(spotted_gbif_sp, spot_seismic_2013)
+all_spot_df <- rbind(spotted_gbif_sp, spot_seismic_2013, spot_ambon_2015)
 
 View(all_spot_df) # check to make sure all cols match
 
