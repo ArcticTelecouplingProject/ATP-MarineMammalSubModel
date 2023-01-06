@@ -11,6 +11,7 @@
 # Only species featured in this script is bearded seal.
 
 # This dataset was tidied and ready for data integration on 07Nov2022.
+# Last edited: 06Jan2022
 
 # Libraries and Packages --------------------------------------------------
 
@@ -89,8 +90,8 @@ beard_gbif_clean <- beard_gbif_clean %>% dplyr::select(scientificName,
                                                            source,
                                                            geometry)
 
-# Add a common name column to the walrus_gbif_clean df and fill it with 'Walrus'
-beard_gbif_clean$commonName <- "Bearded seal"
+# Add a common name column to the walrus_gbif_clean df and fill it with 'Bearded Seal'
+beard_gbif_clean$commonName <- "Bearded Seal"
 
 # Missing a groupSize column in the beard_gbif_clean df??
 # Add groupSize column to beard_gbif_clean df based on whether there are no NAs in the year, month, day cols
@@ -127,5 +128,5 @@ View(bearded_gbif_sp)
 
 
 # Save this df as a csv for importing
-st_write(bearded_gbif_sp, "../Data_Processed/1-3_bearded_arcss_sp.shp")
+st_write(bearded_gbif_sp, "../Data_Processed/1-3_bearded_arcss_sp.csv")
 
