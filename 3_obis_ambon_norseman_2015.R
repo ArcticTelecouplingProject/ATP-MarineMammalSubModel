@@ -129,7 +129,7 @@ rename(scientificName = scientificName,
 
 ## Tada now you have a clean and tidy dataset to work with and merge
 
-View(mams_sp2) # this is a regular dataframe
+View(mams_sp2)
 
 # Can save this data as an output as both shp and csv
 # st_write(mams_sp2, "../Data_Processed/3_obis_ambon_norseman_2015.csv")
