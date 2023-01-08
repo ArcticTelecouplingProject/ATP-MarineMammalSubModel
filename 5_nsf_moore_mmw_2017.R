@@ -99,7 +99,7 @@ mams_new_sp <- mams_new_sp %>% st_transform(crs = 3338)
 mams_sp <- mams_new_sp %>% left_join(mmwatch_latlon, by = "Date")
 
 # Add a new column to specify data source so you can backtrack later if needed
-mams_sp$source <- "Marine Mammal Watch July 2016"
+mams_sp$source <- "Marine Mammal Watch Aug-Sep 2017"
 # May also want to add other columns that help add information about the data source (e.g., vessel based, plane based, etc.)
 
 # Remove extraneous columns again
@@ -147,4 +147,4 @@ mams_sp2 <- mams_sp %>% dplyr::select(scientificName,
 View(mams_sp2)
 
 # Can save this data as an output as both shp and csv
-# st_write(mams_sp2, "../Data_Processed/5_nsf_moore_mmw_2017.csv")
+# st_write(mams_sp2, "../Data_Processed/5_nsf_moore_mmw_2017.shp")
