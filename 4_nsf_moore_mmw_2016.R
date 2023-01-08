@@ -68,6 +68,16 @@ mams_new$decimalLon <- paste(mams_new$deg_lon, mams_new$min_lon)
 mams_new$decimalLat <- gsub("[[:blank:]]", ".", mams_new$decimalLat)
 mams_new$decimalLon <- gsub("[[:blank:]]", ".", mams_new$decimalLon)
 
+# Figure out how R is classifying each column of data
+lapply(mams_new, class)
+
+# Convert numeric columns to numeric if not already
+mams_new$decimalLat <- as.numeric(mams_new$decimalLat)
+mams_new$decimalLon <- as.numeric(mams_new$decimalLon)
+mams_new$No. <- as.integer(mams_new$No.)
+
+# Make longitude column negative to reflect proper hemisphere
+mams_new$decimalLon <- mams_new$decimalLon*(-1)
 
 # Save lat/lon columns info into their own df to add in again later on
 # or else they will disappear when converting to spatial object with st_as_sf
@@ -77,8 +87,7 @@ mmwatch_latlon <- mams_new %>% dplyr::select(SPP,
                                            Date)
 
 # Check the CRS
-st_crs(mams_new)
-# This is non-spatial so the CRS is NA
+st_crs(mams_new) # this is non-spatial so the CRS is NA
 
 # Convert data to a spatial object with CRS 4326 (since that is regular lat/lon) - this is still unprojected
 mams_new_sp <- st_as_sf(mams_new, coords = c("decimalLon", "decimalLat"), crs = 4326) 
@@ -100,15 +109,6 @@ mams_sp <- mams_sp %>% dplyr::select(SPP.x,
                                      decimalLon,
                                      Date,
                                      source)
-
-
-# Figure out how R is classifying each column of data
-lapply(mams_sp, class)
-
-# Convert numeric columns to numeric if not already
-mams_sp$decimalLat <- as.numeric(mams_sp$decimalLat)
-mams_sp$decimalLon <- as.numeric(mams_sp$decimalLon)
-mams_sp$No. <- as.integer(mams_sp$No.)
 
 # Convert date to a standard format
 
@@ -147,4 +147,4 @@ mams_sp2 <- mams_sp %>% dplyr::select(scientificName,
 View(mams_sp2)
 
 # Can save this data as an output as both shp and csv
-# st_write(mams_sp2, "../Data_Processed/4_nsf_moore_mmw_2016.shp")
+# st_write(mams_sp2, "../Data_Processed/4_nsf_moore_mmw_2016.csv")
