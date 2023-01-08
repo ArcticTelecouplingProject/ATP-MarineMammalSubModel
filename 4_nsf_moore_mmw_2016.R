@@ -1,4 +1,4 @@
-# 06Jan2022
+# 06Jan2023
 # Author: Sydney Waloven
 
 # Source: Arctic Data Center
@@ -8,8 +8,8 @@
 
 # Species isolated in this data set: walrus, bearded seal, spotted seal
 
-# This dataset was tidied and ready for data integration on 
-# Last edited: 
+# This dataset was tidied and ready for data integration on 06Jan2023
+# Last edited: 06Jan2023
 
 
 

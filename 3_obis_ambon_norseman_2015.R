@@ -1,4 +1,4 @@
-# 05Jan2022
+# 05Jan2023
 # Author: Sydney Waloven
 
 # Source: OBIS
@@ -8,8 +8,8 @@
 
 # Species isolated in this data set: walrus, bearded seal, spotted seal
 
-# This dataset was tidied and ready for data integration on 05Jan2022
-# Last edited: 05Jan2022
+# This dataset was tidied and ready for data integration on 05Jan2023
+# Last edited: 05Jan2023
 
 
 # Libraries and Packages --------------------------------------------------
