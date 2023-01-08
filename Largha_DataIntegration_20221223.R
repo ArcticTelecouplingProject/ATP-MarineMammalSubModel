@@ -29,26 +29,35 @@ rm(list=ls())
 # the 1-2 ARCSS_GBIF_spotted_seal script to save the outputs into your Data Processed
 # folder in order to proceed with this section.
 
-# 1-2_spotted_gbif_sp (SpatialPointsDataFrame of spotted_arcss_gbif)
+# 1-2_spotted_gbif_sp
 spotted_gbif_sp <- st_read("../Data_Processed/1-2_spotted_gbif_sp.shp")
 
 # 2 tgs seismic 2013 - this contains data for all three species of interest
 tgs_seismic_2013 <- st_read("../Data_Processed/2_tgs_seismic_2013.shp")
-## Isolate out spotted seals from this df
+# Isolate spotted seals from this df
 spot_seismic_2013 <- subset(tgs_seismic_2013, commnNm == "Spotted Seal")
 
 # 3 obis ambon norseman 2015
 obis_ambon <- st_read("../Data_Processed/3_obis_ambon_norseman_2015.shp")
-## Isolate spotted seals
+# Isolate spotted seals
 spot_ambon_2015 <- subset(obis_ambon, commnNm == "Spotted Seal")
 
+# 4 nsf moore mmwatch 2016
+mmwatch2016 <- st_read("../Data_Processed/4_nsf_moore_mmw_2016.shp")
+# Isolate spotted seals
+spot_mmwatch16 <- subset(mmwatch2016, commnNm == "Spotted Seal")
+
+# 5 nsf moore mmwatch 2017
+mmwatch2017 <- st_read("../Data_Processed/5_nsf_moore_mmw_2017.shp")
+# Isolate spotted seals
+spot_mmwatch17 <- subset(mmwatch2017, commnNm == "Spotted Seal")
 
 # Merge data sets ---------------------------------------------------------
 # Need to make sure that everything is standardized like the columns, column names, and format
 # of the columns
 
 # Merge to create all_df
-all_spot_df <- rbind(spotted_gbif_sp, spot_seismic_2013, spot_ambon_2015)
+all_spot_df <- rbind(spotted_gbif_sp, spot_seismic_2013, spot_ambon_2015, spot_mmwatch16, spot_mmwatch17)
 
 View(all_spot_df) # check to make sure all cols match
 
@@ -128,10 +137,10 @@ my.sums <- rep(NA, n.years)
 # time_window = 'year round' ## year round
 
 # month_selected <- seq(6,8);
-# time_window = 'time window 1' ## time window 1 - june through august
+# time_window = 'june-aug' ## time window 1 - june through august
 
 month_selected <- c(9,11);
-time_window = 'time window 2' ## time window 2 - september to november
+time_window = 'sep-nov' ## time window 2 - september to november
 
 sum_since <- data.frame()
 for (i in 1:n.years) {
@@ -150,7 +159,7 @@ for (i in 1:n.years) {
 }
 
 # save summary to a csv
-write.csv(sum_since, "../Output/spotted_int_window2_20221223.csv")
+write.csv(sum_since, "../Output/largha_summary2_20230108.csv")
 
 
 
