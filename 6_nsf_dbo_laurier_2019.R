@@ -24,7 +24,8 @@ library(tidyverse)
 rm(list=ls())
 
 
-# AMBON Norseman 2015 -----------------------------------------------------
+# DBO Laurier 2019 --------------------------------------------------------
+
 
 # Read in the data
 dbo_swl_2019 <- read.csv("../../ATP-MarineMammal-DataRaw/6_nsf_dbo_laurier_2019/data/DBO_SWL_2019.csv")
