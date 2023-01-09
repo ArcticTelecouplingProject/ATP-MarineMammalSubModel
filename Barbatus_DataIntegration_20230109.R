@@ -121,7 +121,7 @@ all_beard_2010 <- all_beard_df[all_beard_df$year > 2009, ]
 ggplot() + geom_sf(data = base_crop) + 
   geom_sf(data = all_beard_2010, mapping = aes(color = year), size = 1.5) +
   labs(
-    title = "Bearded Seal occurrence points from 2010-2019 \n
+    title = "Bearded seal occurrence points from 2010-2019 \n
     in the Bering Strait Region")
 
 
