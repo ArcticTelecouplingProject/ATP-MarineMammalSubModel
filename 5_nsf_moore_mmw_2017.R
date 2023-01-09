@@ -24,7 +24,8 @@ library(tidyverse)
 rm(list=ls())
 
 
-# AMBON Norseman 2015 -----------------------------------------------------
+
+# Marine Mammal Watch 2017 ------------------------------------------------
 
 # Read in the data
 mmwatch2017 <- read.csv("../../ATP-MarineMammal-DataRaw/5_nsf_moore_mmw_2017/data/DBO_MMWatch_HLY1702_August2017_SMoore.csv")
