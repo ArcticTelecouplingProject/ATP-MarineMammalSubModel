@@ -27,7 +27,7 @@ rm(list=ls())
 
 # Import tidied data sets from Data_Processed - you will need to go through and run
 # the 1-2 ARCSS_GBIF_spotted_seal script to save the outputs into your Data Processed
-# folder in order to proceed with this section.
+# folder in order to proceed with this section, etc.
 
 # 1-2_spotted_gbif_sp
 spotted_gbif_sp <- st_read("../Data_Processed/1-2_spotted_gbif_sp.shp")
@@ -52,14 +52,31 @@ mmwatch2017 <- st_read("../Data_Processed/5_nsf_moore_mmw_2017.shp")
 # Isolate spotted seals
 spot_mmwatch17 <- subset(mmwatch2017, commnNm == "Spotted Seal")
 
+# 6 nsf dbo laurier 2019
+dbo_laurier19 <- st_read("../Data_Processed/6_nsf_dbo_laurier_2019.shp")
+# Isolate spotted seals
+spot_laurier19 <- subset(dbo_laurier19, commnNm == "Spotted Seal")
+
+# 7-1 nsf dbo laurier 2018
+dbo_laurier18 <- st_read("../Data_Processed/7-1_nsf_dbo_laurier_2018.shp")
+# Isolate spotted seals
+spot_laurier18 <- subset(dbo_laurier18, commnNm == "Spotted Seal")
+
+# 7-2 nsf dbo healy 2018
+dbo_healy <- st_read("../Data_Processed/7-2_nsf_dbo_healy_2018.shp")
+# Isolate spotted seals
+spot_healy <- subset(dbo_healy, commnNm == "Spotted Seal")
+
 # Merge data sets ---------------------------------------------------------
 # Need to make sure that everything is standardized like the columns, column names, and format
 # of the columns
 
 # Merge to create all_df
-all_spot_df <- rbind(spotted_gbif_sp, spot_seismic_2013, spot_ambon_2015, spot_mmwatch16, spot_mmwatch17)
+all_spot_df <- rbind(spotted_gbif_sp, spot_seismic_2013, spot_ambon_2015, spot_mmwatch16, spot_mmwatch17,
+                     spot_laurier19, spot_laurier18, spot_healy)
 
 View(all_spot_df) # check to make sure all cols match
+
 
 # Plotting ----------------------------------------------------------------
 
@@ -159,7 +176,7 @@ for (i in 1:n.years) {
 }
 
 # save summary to a csv
-write.csv(sum_since, "../Output/largha_summary2_20230108.csv")
+write.csv(sum_since, "../Output/largha_summary2_20230109.csv")
 
 
 
