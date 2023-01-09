@@ -8,6 +8,11 @@
 # 1-2_spotted_gbif_sp
 # 2_tgs_seismic_2013
 # 3_obis_ambon_norseman_2015
+# 4_nsf_moore_mmw_2016
+# 5_nsf_moore_mmw_2017
+# 6_nsf_dbo_laurier_2019
+# 7-1_nsf_dbo_laurier_2018
+# 7-2_nsf_dbo_healy_2018
 
 # Last edited: 06Jan2023
 
