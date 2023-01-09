@@ -6,7 +6,7 @@
 # Northern Bering Sea and Chukchi Sea August 2017
 # https://arcticdata.io/catalog/view/doi%3A10.18739%2FA27P8TD2J
 
-# Species isolated in this data set: walrus, bearded seal, spotted seal
+# Species isolated in this dataset: walrus, bearded seal, spotted seal
 
 # This dataset was tidied and ready for data integration on 08Jan2023
 # Last edited: 08Jan2023

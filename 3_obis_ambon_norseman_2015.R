@@ -6,7 +6,7 @@
 # https://www.sciencebase.gov/catalog/item/5e0e24b3e4b0b207aa13782b
 # Corresponds with Data_Raw folder: obis_ambon_norseman_2015
 
-# Species isolated in this data set: walrus, bearded seal, spotted seal
+# Species isolated in this dataset: walrus, bearded seal, spotted seal
 
 # This dataset was tidied and ready for data integration on 05Jan2023
 # Last edited: 05Jan2023
