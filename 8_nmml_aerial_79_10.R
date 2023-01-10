@@ -31,7 +31,7 @@ rm(list=ls())
 nmml_aerial <- read.csv("../../ATP-MarineMammal-DataRaw/8_nmml_aerial_79_10/8_nmml_aerial_79_10.csv")
 head(nmml_aerial)
 
-# IsodecimalLatitudee out species of interest
+# Isolate out species of interest
 unique(nmml_aerial$verbatimScientificName)
 mmwatch_mams <- nmml_aerial[nmml_aerial$verbatimScientificName %in% c("Odobenus rosmarus", "Phoca largha", "Erignathus barbatus"), ]
 
