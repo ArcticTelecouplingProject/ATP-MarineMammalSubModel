@@ -30,7 +30,7 @@ usgs_walrus_comp <- read.csv("../../ATP-MarineMammal-DataRaw/9_usgs_walrus_sex_a
 head(usgs_walrus_comp)
 
 # Remove extraneous columns of info 
-colnames(usgs_walrus_comp) # left off here
+colnames(usgs_walrus_comp)
 usgs_walrus <- usgs_walrus_comp %>% dplyr::select(Year,
                                            DateTimeStart,
                                            GroupSize,
@@ -72,6 +72,8 @@ walrus_sp$source <- "USGS Sex and Age Comp of Walrus Haulouts 2013-2015"
 # May also want to add other columns that help add information about the data source (e.g., vessel based, plane based, etc.)
 ## This is why I saved the GroupSizingMethod column - does not need to be included in the saved output this time but is there
 ## for easy backtracking through the script to include it if needed. SW10Jan2023
+
+# walrus_sp$methodOfObservation <- "visual observations from boats"
 
 # Separate DateTimeStart into month and day cols by using substr()
 walrus_sp$month <- substr(walrus_sp$DateTimeStart, 6, 7)
