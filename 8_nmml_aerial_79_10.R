@@ -6,7 +6,7 @@
 # and Beaufort Seas 1979-2010.
 # https://www.gbif.org/dataset/e80fa6fc-5468-4ee7-8a74-e6dea5ccfaf9#description
 
-# Species isodecimalLatitudeed in this dataset: walrus, bearded seal, spotted seal
+# Species isolated in this dataset: walrus, bearded seal, spotted seal
 
 # This dataset was tidied and ready for data integration on 09Jan2023
 # Last edited: 09Jan2023
