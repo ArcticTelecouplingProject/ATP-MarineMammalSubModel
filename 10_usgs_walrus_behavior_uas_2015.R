@@ -2,9 +2,9 @@
 # Author: Sydney Waloven
 
 # Source: USGS
-# This dataset was obtained from Sex and Age Composition of Walrus Groups Hauled
-# Out on Ice Floes in the Bering and Chukchi Seas 2013-2015
-# https://alaska.usgs.gov/products/data.php?dataid=354
+# This dataset was obtained from Behavior of Pacific Walruses Hauled Out on Sea Ice
+# During UAS Overflights, Eastern Chukchi Sea 2015
+# https://alaska.usgs.gov/products/data.php?dataid=74
 
 # Species isolated in this dataset: walrus
 
