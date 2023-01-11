@@ -5,7 +5,7 @@
 # There is also a plotting section and summary section.
 
 # List of tidied bearded seal datasets:
-# 1-2_spotted_gbif_sp
+# 1-3_bearded_gbif_sp
 # 2_tgs_seismic_2013
 # 3_obis_ambon_norseman_2015
 # 4_nsf_moore_mmw_2016
@@ -14,7 +14,7 @@
 # 7-1_nsf_dbo_laurier_2018
 # 7-2_nsf_dbo_healy_2018
 
-# Last edited on: 09Jan2023
+# Last edited on: 11Jan2023
 
 
 
@@ -36,7 +36,7 @@ rm(list=ls())
 # the 1-3_arcss_gbif_bearded_seal script to save the outputs into your Data Processed
 # folder in order to proceed with this section, etc.
 
-# 1-2_bearded_gbif_sp
+# 1-3 bearded_gbif_sp
 bearded_gbif_sp <- st_read("../Data_Processed/1-3_bearded_gbif_sp.shp")
 
 # 2 tgs seismic 2013 - this contains data for all three species of interest
@@ -160,11 +160,11 @@ my.sums <- rep(NA, n.years)
 # month_selected <- seq(1,12);
 # time_window = 'year round' ## year round
 
-# month_selected <- seq(6,8);
-# time_window = 'june-aug' ## time window 1 - june through august
+month_selected <- seq(6,8);
+time_window = 'june-aug' ## time window 1 - june through august
 
-month_selected <- c(9,11);
-time_window = 'sep-nov' ## time window 2 - september to november
+# month_selected <- c(9,11);
+# time_window = 'sep-nov' ## time window 2 - september to november
 
 sum_since <- data.frame()
 for (i in 1:n.years) {
