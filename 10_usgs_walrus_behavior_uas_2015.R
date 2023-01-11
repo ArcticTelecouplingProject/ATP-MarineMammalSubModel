@@ -22,7 +22,8 @@ library(tidyverse)
 rm(list=ls())
 
 
-# USGS Walrus Sex and Age 2013-2015 ---------------------------------------
+
+# USGS Walrus UAS Overflights 2015 ----------------------------------------
 
 # Import raw walrus occurrence data
 usgs_walrus_uas <- read.csv("../../ATP-MarineMammal-DataRaw/10_usgs_walrus_behavior_uas_2015/walrus_environConditionsUAS_chukchi_battaile_2015.csv")
