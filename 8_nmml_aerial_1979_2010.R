@@ -25,10 +25,12 @@ rm(list=ls())
 
 
 
-# Marine Mammal Watch Healy 2018 ------------------------------------------
+
+# NMML 1979-2010 ----------------------------------------------------------
+
 
 # Read in the data
-nmml_aerial <- read.csv("../../ATP-MarineMammal-DataRaw/8_nmml_aerial_79_10/8_nmml_aerial_79_10.csv")
+nmml_aerial <- read.csv("../../ATP-MarineMammal-DataRaw/8_nmml_aerial_1979_2010/8_nmml_aerial_1979_2010.csv")
 head(nmml_aerial)
 
 # Isolate out species of interest
