@@ -19,7 +19,9 @@ rm(list=ls())
 # TGS Seismic Survey Chukchi 2013 data set #2 -----------------------------
 
 # Read in TGS Seismic data
-seismic_obis <- read.csv("../../ATP-MarineMammal-DataRaw/2_obis_tgs_seismic_2013/obis_seamap_dataset_1110_csv_71491/obis_seamap_dataset_1110_points.csv")
+datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney - ATP-MarineMammal-DataRaw/"
+
+seismic_obis <- read.csv(paste0(datadir,"2_obis_tgs_seismic_2013/obis_seamap_dataset_1110_csv_71491/obis_seamap_dataset_1110_points.csv"))
 
 head(seismic_obis)
 
