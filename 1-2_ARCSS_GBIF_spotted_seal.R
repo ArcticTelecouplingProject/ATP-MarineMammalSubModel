@@ -26,7 +26,9 @@ rm(list=ls())
 
 
 # Import raw spotted seal occurrence data
-spotted_gbif <- st_read("../../ATP-MarineMammal-DataRaw/1_arcss_gbif/phoca_largha")
+datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney - ATP-MarineMammal-DataRaw/"
+
+spotted_gbif <- st_read(paste0(datadir, "1_arcss_gbif/phoca_largha"))
 
 head(spotted_gbif)
 
@@ -127,5 +129,5 @@ View(spotted_gbif_merge) # this is an sf dataframe
 
 
 # Save as shp and csv
-# st_write(spotted_gbif_sp, "../Data_Processed/1-2_spotted_gbif_sp.shp")
+st_write(spotted_gbif_sp, "../Data_Processed/1-2_spotted_gbif_sp.shp")
 
