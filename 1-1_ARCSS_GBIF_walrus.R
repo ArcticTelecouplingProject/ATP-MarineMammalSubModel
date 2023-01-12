@@ -25,7 +25,9 @@ rm(list=ls())
 # Pacific walrus data set #1 ----------------------------------------------
 
 # Import raw walrus occurrence data
-walrus_gbif <- st_read("../../ATP-MarineMammal-DataRaw/1_arcss_gbif/odobenus_rosmarus_divergens")
+datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney - ATP-MarineMammal-DataRaw/"
+
+walrus_gbif <- st_read(paste0(datadir,"1_arcss_gbif/odobenus_rosmarus_divergens"))
 
 head(walrus_gbif)
 
