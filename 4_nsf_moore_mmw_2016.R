@@ -28,7 +28,9 @@ rm(list=ls())
 # Marine Mammal Watch 2016 ------------------------------------------------
 
 # Read in the data
-mmwatch2016 <- read.csv("../../ATP-MarineMammal-DataRaw/4_nsf_moore_mmw_2016/data/DBO_MMWatch_SWL2016_MooreGrebmeierVagle.csv")
+datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney - ATP-MarineMammal-DataRaw/"
+
+mmwatch2016 <- read.csv(paste0(datadir,"4_nsf_moore_mmw_2016/data/DBO_MMWatch_SWL2016_MooreGrebmeierVagle.csv"))
 head(mmwatch2016)
 
 # Isolate out species of interest (see metadata for more details)
