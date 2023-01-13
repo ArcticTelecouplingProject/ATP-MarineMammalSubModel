@@ -26,7 +26,9 @@ rm(list=ls())
 # USGS Walrus UAS Overflights 2015 ----------------------------------------
 
 # Import raw walrus occurrence data
-usgs_walrus_uas <- read.csv("../../ATP-MarineMammal-DataRaw/10_usgs_walrus_behavior_uas_2015/walrus_environConditionsUAS_chukchi_battaile_2015.csv")
+datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney - ATP-MarineMammal-DataRaw/"
+
+usgs_walrus_uas <- read.csv(paste0(datadir,"10_usgs_walrus_behavior_uas_2015/walrus_environConditionsUAS_chukchi_battaile_2015.csv"))
 
 head(usgs_walrus_uas)
 
