@@ -30,7 +30,9 @@ rm(list=ls())
 
 
 # Read in the data
-nmml_aerial <- read.csv("../../ATP-MarineMammal-DataRaw/8_nmml_aerial_1979_2010/8_nmml_aerial_1979_2010.csv")
+datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney - ATP-MarineMammal-DataRaw/"
+
+nmml_aerial <- read.csv(paste0(datadir,"8_nmml_aerial_1979_2010/8_nmml_aerial_1979_2010.csv"))
 head(nmml_aerial)
 
 # Isolate out species of interest
