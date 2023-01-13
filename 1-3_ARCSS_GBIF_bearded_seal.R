@@ -27,7 +27,9 @@ rm(list=ls())
 
 
 # Import raw spotted seal occurrence data
-bearded_gbif <- st_read("../../ATP-MarineMammal-DataRaw/1_arcss_gbif/erignathus_barbatus")
+datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney - ATP-MarineMammal-DataRaw/"
+
+bearded_gbif <- st_read(paste0(datadir,"1_arcss_gbif/erignathus_barbatus"))
 
 head(bearded_gbif)
 
