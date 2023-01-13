@@ -28,7 +28,9 @@ rm(list=ls())
 
 
 # Read in the data
-dbo_swl_2019 <- read.csv("../../ATP-MarineMammal-DataRaw/6_nsf_dbo_laurier_2019/data/DBO_SWL_2019.csv")
+datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney - ATP-MarineMammal-DataRaw/"
+
+dbo_swl_2019 <- read.csv(paste0(datadir,"6_nsf_dbo_laurier_2019/data/DBO_SWL_2019.csv"))
 head(dbo_swl_2019)
 
 # Isolate out species of interest (see metadata for more details)
