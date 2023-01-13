@@ -28,7 +28,9 @@ rm(list=ls())
 # Marine Mammal Watch Healy 2018 ------------------------------------------
 
 # Read in the data
-dbo_healy_2018 <- read.csv("../../ATP-MarineMammal-DataRaw/7_nsf_stafford_mmw_2018/data/Healy_DBONCIS_Aug2018_byDBOregion.csv")
+datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney - ATP-MarineMammal-DataRaw/"
+
+dbo_healy_2018 <- read.csv(paste0(datadir,"7_nsf_stafford_mmw_2018/data/Healy_DBONCIS_Aug2018_byDBOregion.csv"))
 head(dbo_healy_2018)
 
 # Isolate out species of interest (see metadata for more details)
