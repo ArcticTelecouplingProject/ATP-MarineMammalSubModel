@@ -26,13 +26,15 @@ rm(list=ls())
 
 
 # Read in the data
-birdocc <- read.csv("../../ATP-MarineMammal-DataRaw/3_obis_ambon_norseman_2015/dlog_2015_dwc_occurrence.csv")
+datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney - ATP-MarineMammal-DataRaw/"
+
+birdocc <- read.csv(paste0(datadir,"3_obis_ambon_norseman_2015/dlog_2015_dwc_occurrence.csv"))
 
 head(birdocc)
 colnames(birdocc)
 
 # There aren't any locations in this file so check some of the other files that came with it 
-birdevent <- read.csv("../../ATP-MarineMammal-DataRaw/3_obis_ambon_norseman_2015/dlog_2015_dwc_event.csv")
+birdevent <- read.csv(paste0(datadir,"3_obis_ambon_norseman_2015/dlog_2015_dwc_event.csv"))
 
 head(birdevent) # this one has lat and long - connected to birdocc via eventID column
 
