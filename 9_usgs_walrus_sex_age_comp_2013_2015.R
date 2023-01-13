@@ -25,7 +25,10 @@ rm(list=ls())
 # USGS Walrus Sex and Age 2013-2015 ---------------------------------------
 
 # Import raw walrus occurrence data
-usgs_walrus_comp <- read.csv("../../ATP-MarineMammal-DataRaw/9_usgs_walrus_sex_age_comp_2013_2015/walrus_hauloutGroupComp_battaile_2013_2015.csv")
+
+datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney - ATP-MarineMammal-DataRaw/"
+
+usgs_walrus_comp <- read.csv(paste0(datadir,"9_usgs_walrus_sex_age_comp_2013_2015/walrus_hauloutGroupComp_battaile_2013_2015.csv"))
 
 head(usgs_walrus_comp)
 
