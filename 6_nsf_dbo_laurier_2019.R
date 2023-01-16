@@ -9,7 +9,7 @@
 # Species isolated in this dataset: walrus, bearded seal, spotted seal
 
 # This dataset was tidied and ready for data integration on 08Jan2023
-# Last edited: 08Jan2023
+# Last edited: 16Jan2023
 
 
 
@@ -29,6 +29,7 @@ rm(list=ls())
 
 # Read in the data
 datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney - ATP-MarineMammal-DataRaw/"
+datadir <- "../../ATP-MarineMammal-DataRaw/"
 
 dbo_swl_2019 <- read.csv(paste0(datadir,"6_nsf_dbo_laurier_2019/data/DBO_SWL_2019.csv"))
 head(dbo_swl_2019)
