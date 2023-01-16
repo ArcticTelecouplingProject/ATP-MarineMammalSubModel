@@ -27,6 +27,7 @@ rm(list=ls())
 
 # Import raw spotted seal occurrence data
 datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney - ATP-MarineMammal-DataRaw/"
+datadir <- "../../ATP-MarineMammal-DataRaw/"
 
 spotted_gbif <- st_read(paste0(datadir, "1_arcss_gbif/phoca_largha"))
 
@@ -125,9 +126,9 @@ spotted_gbif_sp <- spotted_gbif_merge %>% st_cast("POINT")
 
 ## Tada now you have a clean and tidy dataset to work with and merge
 
-View(spotted_gbif_merge) # this is an sf dataframe
+View(spotted_gbif_sp) # this is an sf dataframe
 
 
 # Save as shp and csv
-st_write(spotted_gbif_sp, "../Data_Processed/1-2_spotted_gbif_sp.shp")
+# st_write(spotted_gbif_sp, "../Data_Processed/1-2_spotted_gbif_sp.shp")
 

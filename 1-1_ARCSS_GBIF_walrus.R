@@ -11,7 +11,7 @@
 # Only species featured in this script is Pacific walrus.
 
 # This dataset was tidied and ready for data integration on 07Nov2022.
-# Last edited: 06Jan2023
+# Last edited: 16Jan2023
 
 # Libraries and Packages --------------------------------------------------
 
@@ -26,18 +26,15 @@ rm(list=ls())
 
 # Import raw walrus occurrence data
 datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney - ATP-MarineMammal-DataRaw/"
-
-walrus_gbif <- st_read(paste0(datadir,"1_arcss_gbif/odobenus_rosmarus_divergens"))
+datadir <- "../../ATP-MarineMammal-DataRaw/"
+ 
+walrus_gbif <- st_read(paste0(datadir, "1_arcss_gbif/odobenus_rosmarus_divergens"))
 
 head(walrus_gbif)
 
 # Transform to Alaska Albers projection
 walrus_gbif_3338 <- walrus_gbif %>% st_transform(crs = 3338)
 
-## OR ##
-# Read in Alaska Albers projected full dataset
-# walrus3338 <- st_read("Data_Processed/WalrusData_3338.shp")
-## ## ## 
 
 # Check to see if it's properly projected (NAD83 / Alaska Albers)
 st_crs(walrus_gbif_3338)

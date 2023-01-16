@@ -5,7 +5,7 @@
 # Source: https://obis.org/dataset/4b394534-8a6b-4bdb-bf1b-f07f983f9e37
 
 # This dataset was tidied and ready for data integration on 07Nov2022.
-# Last updated: 23Dec2022
+# Last updated: 16Jan2023
 
 # Libraries and Packages --------------------------------------------------
 
@@ -20,8 +20,9 @@ rm(list=ls())
 
 # Read in TGS Seismic data
 datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney - ATP-MarineMammal-DataRaw/"
+datadir <- "../../ATP-MarineMammal-DataRaw/"
 
-seismic_obis <- read.csv(paste0(datadir,"2_obis_tgs_seismic_2013/obis_seamap_dataset_1110_csv_71491/obis_seamap_dataset_1110_points.csv"))
+seismic_obis <- read.csv(paste0(datadir, "2_obis_tgs_seismic_2013/obis_seamap_dataset_1110_csv_71491/obis_seamap_dataset_1110_points.csv"))
 
 head(seismic_obis)
 
