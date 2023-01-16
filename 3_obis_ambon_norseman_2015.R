@@ -27,8 +27,9 @@ rm(list=ls())
 
 # Read in the data
 datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney - ATP-MarineMammal-DataRaw/"
+datadir <- "../../ATP-MarineMammal-DataRaw/"
 
-birdocc <- read.csv(paste0(datadir,"3_obis_ambon_norseman_2015/dlog_2015_dwc_occurrence.csv"))
+birdocc <- read.csv(paste0(datadir, "3_obis_ambon_norseman_2015/dlog_2015_dwc_occurrence.csv"))
 
 head(birdocc)
 colnames(birdocc)
