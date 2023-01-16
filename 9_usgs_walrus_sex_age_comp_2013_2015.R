@@ -9,7 +9,7 @@
 # Species isolated in this dataset: walrus
 
 # This dataset was tidied and ready for data integration on 10Jan2023
-# Last edited: 10Jan2023
+# Last edited: 16Jan2023
 
 
 # Libraries and Packages --------------------------------------------------
@@ -27,6 +27,7 @@ rm(list=ls())
 # Import raw walrus occurrence data
 
 datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney - ATP-MarineMammal-DataRaw/"
+datadir <- "../../ATP-MarineMammal-DataRaw/"
 
 usgs_walrus_comp <- read.csv(paste0(datadir,"9_usgs_walrus_sex_age_comp_2013_2015/walrus_hauloutGroupComp_battaile_2013_2015.csv"))
 
@@ -104,4 +105,4 @@ walrus_sp2 <- walrus_sp %>% dplyr::select(scientificName.x,
 View(walrus_sp2)
 
 # Can save this data as an output as both shp and csv
-st_write(walrus_sp2, "../Data_Processed/9_usgs_walrus_sex_age_comp_2013_2015.csv")
+# st_write(walrus_sp2, "../Data_Processed/9_usgs_walrus_sex_age_comp_2013_2015.csv")

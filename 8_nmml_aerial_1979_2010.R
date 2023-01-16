@@ -9,7 +9,7 @@
 # Species isolated in this dataset: walrus, bearded seal, spotted seal
 
 # This dataset was tidied and ready for data integration on 09Jan2023
-# Last edited: 09Jan2023
+# Last edited: 16Jan2023
 
 
 
@@ -31,6 +31,7 @@ rm(list=ls())
 
 # Read in the data
 datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney - ATP-MarineMammal-DataRaw/"
+datadir <- "../../ATP-MarineMammal-DataRaw/"
 
 nmml_aerial <- read.csv(paste0(datadir,"8_nmml_aerial_1979_2010/8_nmml_aerial_1979_2010.csv"))
 head(nmml_aerial)
@@ -103,4 +104,4 @@ mams_sp2 <- mams_sp %>% dplyr::select(verbatimScientificName.x,
 View(mams_sp2)
 
 # Can save this data as an output as both shp and csv
-st_write(mams_sp2, "../Data_Processed/8_nmml_aerial_79_10.shp")
+# st_write(mams_sp2, "../Data_Processed/8_nmml_aerial_79_10.shp")
