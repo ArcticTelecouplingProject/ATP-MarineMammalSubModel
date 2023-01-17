@@ -160,11 +160,11 @@ my.sums <- rep(NA, n.years)
 # month_selected <- seq(1,12);
 # time_window = 'year round' ## year round
 
-month_selected <- seq(6,8);
-time_window = 'june-aug' ## time window 1 - june through august
+# month_selected <- seq(6,8);
+# time_window = 'june-aug' ## time window 1 - june through august
 
-# month_selected <- c(9,11);
-# time_window = 'sep-nov' ## time window 2 - september to november
+month_selected <- c(9,11);
+time_window = 'sep-nov' ## time window 2 - september to november
 
 sum_since <- data.frame()
 for (i in 1:n.years) {
@@ -183,5 +183,5 @@ for (i in 1:n.years) {
 }
 
 # save summary to a csv
-write.csv(sum_since, "../Output/barbatus_summary2_20230109.csv")
+write.csv(sum_since, "../Output/barbatus_summary2_20230116.csv")
 
