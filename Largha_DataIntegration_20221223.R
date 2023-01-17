@@ -13,8 +13,10 @@
 # 6_nsf_dbo_laurier_2019
 # 7-1_nsf_dbo_laurier_2018
 # 7-2_nsf_dbo_healy_2018
+# 8_nmml_aerial_1979_2010
 
-# Last edited: 06Jan2023
+
+# Last edited: 16Jan2023
 
 # Libraries and Packages --------------------------------------------------
 
@@ -33,6 +35,7 @@ rm(list=ls())
 # Import tidied data sets from Data_Processed - you will need to go through and run
 # the 1-2 ARCSS_GBIF_spotted_seal script to save the outputs into your Data Processed
 # folder in order to proceed with this section, etc.
+# Relative paths should work here since the output should be saved locally.
 
 # 1-2_spotted_gbif_sp
 spotted_gbif_sp <- st_read("../Data_Processed/1-2_spotted_gbif_sp.shp")
@@ -44,33 +47,31 @@ spot_seismic_2013 <- subset(tgs_seismic_2013, commnNm == "Spotted Seal")
 
 # 3 obis ambon norseman 2015
 obis_ambon <- st_read("../Data_Processed/3_obis_ambon_norseman_2015.shp")
-# Isolate spotted seals
 spot_ambon_2015 <- subset(obis_ambon, commnNm == "Spotted Seal")
 
 # 4 nsf moore mmwatch 2016
 mmwatch2016 <- st_read("../Data_Processed/4_nsf_moore_mmw_2016.shp")
-# Isolate spotted seals
 spot_mmwatch16 <- subset(mmwatch2016, commnNm == "Spotted Seal")
 
 # 5 nsf moore mmwatch 2017
 mmwatch2017 <- st_read("../Data_Processed/5_nsf_moore_mmw_2017.shp")
-# Isolate spotted seals
 spot_mmwatch17 <- subset(mmwatch2017, commnNm == "Spotted Seal")
 
 # 6 nsf dbo laurier 2019
 dbo_laurier19 <- st_read("../Data_Processed/6_nsf_dbo_laurier_2019.shp")
-# Isolate spotted seals
 spot_laurier19 <- subset(dbo_laurier19, commnNm == "Spotted Seal")
 
 # 7-1 nsf dbo laurier 2018
 dbo_laurier18 <- st_read("../Data_Processed/7-1_nsf_dbo_laurier_2018.shp")
-# Isolate spotted seals
 spot_laurier18 <- subset(dbo_laurier18, commnNm == "Spotted Seal")
 
 # 7-2 nsf dbo healy 2018
 dbo_healy <- st_read("../Data_Processed/7-2_nsf_dbo_healy_2018.shp")
-# Isolate spotted seals
 spot_healy <- subset(dbo_healy, commnNm == "Spotted Seal")
+
+# 8 nmml aerial surveys 1979-2010
+nmml_aerial <- st_read("../Data_Processed/8_nmml_aerial_1979_2010.shp")
+spot_aerial <- subset(nmml_aerial, commnNm == "Bearded Seal")
 
 # Merge data sets ---------------------------------------------------------
 # Need to make sure that everything is standardized like the columns, column names, and format
@@ -78,19 +79,22 @@ spot_healy <- subset(dbo_healy, commnNm == "Spotted Seal")
 
 # Merge to create all_df
 all_spot_df <- rbind(spotted_gbif_sp, spot_seismic_2013, spot_ambon_2015, spot_mmwatch16, spot_mmwatch17,
-                     spot_laurier19, spot_laurier18, spot_healy)
+                     spot_laurier19, spot_laurier18, spot_healy, spot_aerial)
 
 View(all_spot_df) # check to make sure all cols match
 
 
 # Plotting ----------------------------------------------------------------
 
+# Will need to use datadir for this part since it is using the DataRaw folder
+
+datadir <- "../../ATP-MarineMammal-DataRaw/"
 
 # Import base map - this is already projected 
-base_map <- st_read("../../ATP-MarineMammal-DataRaw/base_map")
+base_map <- st_read(paste0(datadir, "base_map"))
 
 # Import study area
-study_area <- st_read("../../ATP-MarineMammal-DataRaw/study_area")
+study_area <- st_read(paste0(datadir, "study_area"))
 
 # Project study area to 3338
 study_area <- study_area %>% st_transform(3338)
@@ -158,8 +162,8 @@ my.sums <- rep(NA, n.years)
 # month_selected <- seq(1,12);
 # time_window = 'year round' ## year round
 
-# month_selected <- seq(6,8);
-# time_window = 'june-aug' ## time window 1 - june through august
+month_selected <- seq(6,8);
+time_window = 'june-aug' ## time window 1 - june through august
 
 month_selected <- c(9,11);
 time_window = 'sep-nov' ## time window 2 - september to november
@@ -181,7 +185,7 @@ for (i in 1:n.years) {
 }
 
 # save summary to a csv
-write.csv(sum_since, "../Output/largha_summary2_20230109.csv")
+write.csv(sum_since, "../Output/largha_summary2_20230116.csv")
 
 
 
