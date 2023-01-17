@@ -13,8 +13,9 @@
 # 6_nsf_dbo_laurier_2019
 # 7-1_nsf_dbo_laurier_2018
 # 7-2_nsf_dbo_healy_2018
+# 8 nmml aerial 1979-2010
 
-# Last edited on: 11Jan2023
+# Last edited on: 16Jan2023
 
 
 
@@ -46,33 +47,32 @@ beard_seismic <- subset(tgs_seismic_2013, commnNm == "Bearded Seal")
 
 # 3 obis ambon norseman 2015
 obis_ambon <- st_read("../Data_Processed/3_obis_ambon_norseman_2015.shp")
-# Isolate bearded seals
 beard_ambon <- subset(obis_ambon, commnNm == "Bearded Seal")
 
 # 4 nsf moore mmwatch 2016
 mmwatch2016 <- st_read("../Data_Processed/4_nsf_moore_mmw_2016.shp")
-# Isolate bearded seals
 beard_mmwatch16 <- subset(mmwatch2016, commnNm == "Bearded Seal")
 
 # 5 nsf moore mmwatch 2017
 mmwatch2017 <- st_read("../Data_Processed/5_nsf_moore_mmw_2017.shp")
-# Isolate bearded seals
 beard_mmwatch17 <- subset(mmwatch2017, commnNm == "Bearded Seal")
 
 # 6 nsf dbo laurier 2019
 dbo_laurier19 <- st_read("../Data_Processed/6_nsf_dbo_laurier_2019.shp")
-# Isolate bearded seals
 beard_laurier19 <- subset(dbo_laurier19, commnNm == "Bearded Seal")
 
 # 7-1 nsf dbo laurier 2018
 dbo_laurier18 <- st_read("../Data_Processed/7-1_nsf_dbo_laurier_2018.shp")
-# Isolate bearded seals
 beard_laurier18 <- subset(dbo_laurier18, commnNm == "Bearded Seal")
 
 # 7-2 nsf dbo healy 2018
 dbo_healy <- st_read("../Data_Processed/7-2_nsf_dbo_healy_2018.shp")
-# Isolate bearded seals
 beard_healy <- subset(dbo_healy, commnNm == "Bearded Seal")
+
+# 8 nmml aerial survey 1979-2010
+nmml_aerial <- st_read("../Data_Processed/8_nmml_aerial_1979_2010.shp")
+beard_nmml <- subset(nmml_aerial, commnNm == "Bearded Seal")
+
 
 # Merge data sets ---------------------------------------------------------
 # Need to make sure that everything is standardized like the columns, column names, and format
