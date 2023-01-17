@@ -80,19 +80,21 @@ beard_nmml <- subset(nmml_aerial, commnNm == "Bearded Seal")
 
 # Merge to create all_df
 all_beard_df <- rbind(bearded_gbif_sp, beard_seismic, beard_ambon, beard_mmwatch16, beard_mmwatch17,
-                     beard_laurier19, beard_laurier18, beard_healy)
+                     beard_laurier19, beard_laurier18, beard_healy, beard_nmml)
 
 View(all_beard_df) # check to make sure all cols match
 
 
 # Plotting ----------------------------------------------------------------
 
+# Will need to use datadir for this part since it is using the DataRaw folder
+datadir <- "../../ATP-MarineMammal-DataRaw/"
 
 # Import base map - this is already projected 
-base_map <- st_read("../../ATP-MarineMammal-DataRaw/base_map")
+base_map <- st_read(paste0(datadir, "base_map"))
 
 # Import study area
-study_area <- st_read("../../ATP-MarineMammal-DataRaw/study_area")
+study_area <- st_read(paste0(datadir, "study_area"))
 
 # Project study area to 3338
 study_area <- study_area %>% st_transform(3338)
@@ -160,8 +162,8 @@ my.sums <- rep(NA, n.years)
 # month_selected <- seq(1,12);
 # time_window = 'year round' ## year round
 
-# month_selected <- seq(6,8);
-# time_window = 'june-aug' ## time window 1 - june through august
+month_selected <- seq(6,8);
+time_window = 'june-aug' ## time window 1 - june through august
 
 month_selected <- c(9,11);
 time_window = 'sep-nov' ## time window 2 - september to november
@@ -183,5 +185,5 @@ for (i in 1:n.years) {
 }
 
 # save summary to a csv
-write.csv(sum_since, "../Output/barbatus_summary2_20230116.csv")
+write.csv(sum_since, "../Output/barbatus_summary1_20230116.csv")
 
