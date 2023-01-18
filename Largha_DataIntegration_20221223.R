@@ -38,39 +38,39 @@ rm(list=ls())
 # Relative paths should work here since the output should be saved locally.
 
 # 1-2_spotted_gbif_sp
-spotted_gbif_sp <- st_read("../Data_Processed/1-2_spotted_gbif_sp.shp")
+spotted_gbif_sp <- st_read("../Data_Processed/1-2_ARCSS_GBIF_spotted_seal/1-2_spotted_gbif_sp.shp")
 
 # 2 tgs seismic 2013 - this contains data for all three species of interest
-tgs_seismic_2013 <- st_read("../Data_Processed/2_tgs_seismic_2013.shp")
+tgs_seismic_2013 <- st_read("../Data_Processed/2_obis_tgs_seismic_2013/2_tgs_seismic_2013.shp")
 # Isolate spotted seals from this df
 spot_seismic_2013 <- subset(tgs_seismic_2013, commnNm == "Spotted Seal")
 
 # 3 obis ambon norseman 2015
-obis_ambon <- st_read("../Data_Processed/3_obis_ambon_norseman_2015.shp")
+obis_ambon <- st_read("../Data_Processed/3_obis_ambon_norseman_2015/3_obis_ambon_norseman_2015.shp")
 spot_ambon_2015 <- subset(obis_ambon, commnNm == "Spotted Seal")
 
 # 4 nsf moore mmwatch 2016
-mmwatch2016 <- st_read("../Data_Processed/4_nsf_moore_mmw_2016.shp")
+mmwatch2016 <- st_read("../Data_Processed/4_nsf_moore_mmw_2016/4_nsf_moore_mmw_2016.shp")
 spot_mmwatch16 <- subset(mmwatch2016, commnNm == "Spotted Seal")
 
 # 5 nsf moore mmwatch 2017
-mmwatch2017 <- st_read("../Data_Processed/5_nsf_moore_mmw_2017.shp")
+mmwatch2017 <- st_read("../Data_Processed/5_nsf_moore_mmw_2017/5_nsf_moore_mmw_2017.shp")
 spot_mmwatch17 <- subset(mmwatch2017, commnNm == "Spotted Seal")
 
 # 6 nsf dbo laurier 2019
-dbo_laurier19 <- st_read("../Data_Processed/6_nsf_dbo_laurier_2019.shp")
+dbo_laurier19 <- st_read("../Data_Processed/6_nsf_dbo_laurier_2019/6_nsf_dbo_laurier_2019.shp")
 spot_laurier19 <- subset(dbo_laurier19, commnNm == "Spotted Seal")
 
 # 7-1 nsf dbo laurier 2018
-dbo_laurier18 <- st_read("../Data_Processed/7-1_nsf_dbo_laurier_2018.shp")
+dbo_laurier18 <- st_read("../Data_Processed/7-1_nsf_dbo_laurier_2018/7-1_nsf_dbo_laurier_2018.shp")
 spot_laurier18 <- subset(dbo_laurier18, commnNm == "Spotted Seal")
 
 # 7-2 nsf dbo healy 2018
-dbo_healy <- st_read("../Data_Processed/7-2_nsf_dbo_healy_2018.shp")
+dbo_healy <- st_read("../Data_Processed/7-2_nsf_dbo_healy_2018/7-2_nsf_dbo_healy_2018.shp")
 spot_healy <- subset(dbo_healy, commnNm == "Spotted Seal")
 
 # 8 nmml aerial surveys 1979-2010
-nmml_aerial <- st_read("../Data_Processed/8_nmml_aerial_1979_2010.shp")
+nmml_aerial <- st_read("../Data_Processed/8_nmml_aerial_1979_2010/8_nmml_aerial_1979_2010.shp")
 spot_aerial <- subset(nmml_aerial, commnNm == "Bearded Seal")
 
 # Merge data sets ---------------------------------------------------------
