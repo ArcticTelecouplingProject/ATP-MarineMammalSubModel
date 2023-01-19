@@ -40,47 +40,47 @@ rm(list=ls())
 # Relative paths should work here since the output should be saved locally.
 
 # 1-1_walrus_gbif_sp
-walrus_gbif_sp <- st_read("../Data_Processed/1-1_walrus_gbif_sp.shp")
+walrus_gbif_sp <- st_read("../Data_Processed/1-1_ARCSS_GBIF_walrus/1-1_walrus_gbif_sp.shp")
 
 # 2 tgs seismic 2013 - this contains data for all three species of interest
-tgs_seismic_2013 <- st_read("../Data_Processed/2_tgs_seismic_2013.shp")
+tgs_seismic_2013 <- st_read("../Data_Processed/2_obis_tgs_seismic_2013/2_obis_tgs_seismic_2013.shp")
 # Isolate walruses from this df
 wal_seismic_2013 <- subset(tgs_seismic_2013, commnNm == "Walrus")
 
 # 3 obis ambon norseman 2015
-obis_ambon <- st_read("../Data_Processed/3_obis_ambon_norseman_2015.shp")
+obis_ambon <- st_read("../Data_Processed/3_obis_ambon_norseman_2015/3_obis_ambon_norseman_2015.shp")
 wal_ambon_2015 <- subset(obis_ambon, commnNm == "Walrus")
 
 # 4 nsf moore mmwatch 2016
-mmwatch2016 <- st_read("../Data_Processed/4_nsf_moore_mmw_2016.shp")
+mmwatch2016 <- st_read("../Data_Processed/4_nsf_moore_mmw_2016/4_nsf_moore_mmw_2016.shp")
 wal_mmwatch16 <- subset(mmwatch2016, commnNm == "Walrus")
 
 # 5 nsf moore mmwatch 2017
-mmwatch2017 <- st_read("../Data_Processed/5_nsf_moore_mmw_2017.shp")
+mmwatch2017 <- st_read("../Data_Processed/5_nsf_moore_mmw_2017/5_nsf_moore_mmw_2017.shp")
 wal_mmwatch17 <- subset(mmwatch2017, commnNm == "Walrus")
 
 # 6 nsf dbo laurier 2019
-dbo_laurier19 <- st_read("../Data_Processed/6_nsf_dbo_laurier_2019.shp")
+dbo_laurier19 <- st_read("../Data_Processed/6_nsf_dbo_laurier_2019/6_nsf_dbo_laurier_2019.shp")
 wal_laurier19 <- subset(dbo_laurier19, commnNm == "Walrus")
 
 # 7-1 nsf dbo laurier 2018
-dbo_laurier18 <- st_read("../Data_Processed/7-1_nsf_dbo_laurier_2018.shp")
+dbo_laurier18 <- st_read("../Data_Processed/7-1_nsf_dbo_laurier_2018/7-1_nsf_dbo_laurier_2018.shp")
 wal_laurier18 <- subset(dbo_laurier18, commnNm == "Walrus")
 
 # 7-2 nsf dbo healy 2018
-dbo_healy <- st_read("../Data_Processed/7-2_nsf_dbo_healy_2018.shp")
+dbo_healy <- st_read("../Data_Processed/7-2_nsf_dbo_healy_2018/7-2_nsf_dbo_healy_2018.shp")
 wal_healy <- subset(dbo_healy, commnNm == "Walrus")
 
 # 8 nmml aerial 1979-2010
-nmml_aerial <- st_read("../Data_Processed/8_nmml_aerial_1979_2010.shp")
+nmml_aerial <- st_read("../Data_Processed/8_nmml_aerial_1979_2010/8_nmml_aerial_1979_2010.shp")
 wal_nmml <- subset(nmml_aerial, commnNm == "Walrus")
 
 # 9 usgs walrus sex age comp 2013-2015
-usgs_comp <- st_read("../Data_Processed/9_usgs_walrus_sex_age_comp_2013_2015.shp")
+usgs_comp <- st_read("../Data_Processed/9_usgs_walrus_sex_age_comp_2013_2015/9_usgs_walrus_sex_age_comp_2013_2015.shp")
 wal_comp <- subset(usgs_comp, commnNm == "Walrus")
 
 # 10 usgs walrus behavior uas 2015
-usgs_behavior <- st_read("../Data_Processed/10_usgs_walrus_behavior_uas_2015.shp")
+usgs_behavior <- st_read("../Data_Processed/10_usgs_walrus_behavior_uas_2015/10_usgs_walrus_behavior_uas_2015.shp")
 wal_behavior <- subset(usgs_behavior, commnNm == "Walrus")
 
 # Merge data sets ---------------------------------------------------------
