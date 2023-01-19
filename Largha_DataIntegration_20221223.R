@@ -41,7 +41,7 @@ rm(list=ls())
 spotted_gbif_sp <- st_read("../Data_Processed/1-2_ARCSS_GBIF_spotted_seal/1-2_spotted_gbif_sp.shp")
 
 # 2 tgs seismic 2013 - this contains data for all three species of interest
-tgs_seismic_2013 <- st_read("../Data_Processed/2_obis_tgs_seismic_2013/2_tgs_seismic_2013.shp")
+tgs_seismic_2013 <- st_read("../Data_Processed/2_obis_tgs_seismic_2013/2_obis_tgs_seismic_2013.shp")
 # Isolate spotted seals from this df
 spot_seismic_2013 <- subset(tgs_seismic_2013, commnNm == "Spotted Seal")
 

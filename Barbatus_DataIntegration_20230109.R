@@ -41,7 +41,7 @@ rm(list=ls())
 bearded_gbif_sp <- st_read("../Data_Processed/1-3_ARCSS_GBIF_bearded_seal/1-3_bearded_gbif_sp.shp")
 
 # 2 tgs seismic 2013 - this contains data for all three species of interest
-tgs_seismic_2013 <- st_read("../Data_Processed/2_obis_tgs_seismic_2013/2_tgs_seismic_2013.shp")
+tgs_seismic_2013 <- st_read("../Data_Processed/2_obis_tgs_seismic_2013/2_obis_tgs_seismic_2013.shp")
 # Isolate bearded seals from this df
 beard_seismic <- subset(tgs_seismic_2013, commnNm == "Bearded Seal")
 
