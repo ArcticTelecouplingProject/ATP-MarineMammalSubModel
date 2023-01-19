@@ -117,4 +117,4 @@ seismic_merge <- seismic_new2 %>% rename(scientificName = scientific_name,
 View(seismic_merge)
 
 # Save this df to a shp and csv for integration importing
-# st_write(seismic_merge, "../Data_Processed/2_tgs_seismic_2013.shp")
+# st_write(seismic_merge, "../Data_Processed/2_obis_tgs_seismic_2013.shp")
