@@ -82,7 +82,7 @@ wal_gbif_new$infraspeci <- gsub("\"", "", wal_gbif_new$infraspeci)
 wal_gbif_new$scientificName <- paste(wal_gbif_new$genericNam, wal_gbif_new$specificEp, wal_gbif_new$infraspeci)
 
 # Move scientificName column to first column
-walrus_gbif_clean <- wal_gbif_new %>% select(scientificName, everything())
+walrus_gbif_clean <- wal_gbif_new %>% dplyr::select(scientificName, everything())
 
 # Remove old columns of genus, species, and subspecies
 walrus_gbif_clean <- walrus_gbif_clean %>% dplyr::select(scientificName,
