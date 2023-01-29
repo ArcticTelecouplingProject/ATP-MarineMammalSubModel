@@ -40,7 +40,6 @@ mmwatch_mams <- mmwatch2017[mmwatch2017$SPP %in% c(11, 12, 14), ]
 
 # Remove extraneous columns of info 
 colnames(mmwatch_mams)
-colnames(mmwatch_mams)[1] <- "Date"
 mams_new <- mmwatch_mams %>% dplyr::select(SPP,
                                            Date,
                                            LAT..N.,
