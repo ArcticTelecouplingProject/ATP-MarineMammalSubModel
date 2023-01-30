@@ -15,7 +15,7 @@
 # 7-2_nsf_dbo_healy_2018
 # 8 nmml aerial 1979-2010
 
-# Last edited on: 17Jan2023
+# Last edited on: 30Jan2023
 
 
 
@@ -88,6 +88,7 @@ View(all_beard_df) # check to make sure all cols match
 # Plotting ----------------------------------------------------------------
 
 # Will need to use datadir for this part since it is using the DataRaw folder
+datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney - ATP-MarineMammal-DataRaw/"
 datadir <- "../../ATP-MarineMammal-DataRaw/"
 
 # Import base map - this is already projected 
