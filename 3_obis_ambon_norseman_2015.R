@@ -9,7 +9,7 @@
 # Species isolated in this dataset: walrus, bearded seal, spotted seal
 
 # This dataset was tidied and ready for data integration on 05Jan2023
-# Last edited: 16Jan2023
+# Last edited: 30Jan2023
 
 
 # Libraries and Packages --------------------------------------------------
@@ -55,7 +55,8 @@ mams_new <- ambon_mams %>% dplyr::select(vernacularName,
                                          individualCount,
                                          decimalLatitude,
                                          decimalLongitude,
-                                         eventDate)
+                                         eventDate,
+                                         samplingProtocol)
 
 
 # Convert to spatial df ---------------------------------------------------
@@ -91,8 +92,8 @@ mams_sp <- mams_sp %>% dplyr::select(vernacularName.x,
                                          decimalLatitude,
                                          decimalLongitude,
                                          eventDate,
+                                     samplingProtocol,
                                          source)
-
 
 # Figure out how R is classifying each column of data
 lapply(mams_sp, class) # Fancy way
@@ -123,16 +124,18 @@ mams_sp2 <- mams_sp %>% dplyr::select(scientificName,
                                         individualCount,
                                         decimalLatitude,
                                         decimalLongitude,
+                                      samplingProtocol,
                                         source) %>% 
 rename(scientificName = scientificName,
            commonName = vernacularName.x,
            groupSize = individualCount,
            decimalLat = decimalLatitude,
-           decimalLon = decimalLongitude)
+           decimalLon = decimalLongitude,
+       methodObservation = samplingProtocol)
 
 ## Tada now you have a clean and tidy dataset to work with and merge
 
 View(mams_sp2)
 
 # Can save this data as an output as both shp and csv
-# st_write(mams_sp2, "../Data_Processed/3_obis_ambon_norseman_2015.csv")
+# st_write(mams_sp2, "../Data_Processed/3_obis_ambon_norseman_2015/3_obis_ambon_norseman_2015.csv")
