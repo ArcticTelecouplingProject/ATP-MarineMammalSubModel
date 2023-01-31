@@ -17,7 +17,7 @@
 # 9_usgs_walrus_sex_age_comp_2013_2015
 # 10_usgs_walrus_behavior_uas_2015
 
-# Last edited: 16Jan2023
+# Last edited: 30Jan2023
 
 
 # Libraries and Packages --------------------------------------------------
@@ -97,7 +97,7 @@ View(all_wal_df) # check to make sure all cols match
 # Plotting ----------------------------------------------------------------
 
 # Will need to use datadir for this part since it is using the DataRaw folder
-
+datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney - ATP-MarineMammal-DataRaw/"
 datadir <- "../../ATP-MarineMammal-DataRaw/"
 
 # Import base map - this is already projected 
