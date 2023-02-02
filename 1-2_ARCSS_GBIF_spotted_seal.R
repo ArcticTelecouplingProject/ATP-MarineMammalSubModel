@@ -80,7 +80,7 @@ spot_gbif_new$specificEp <- gsub("\"", "", spot_gbif_new$specificEp)
 spot_gbif_new$scientificName <- paste(spot_gbif_new$genericNam, spot_gbif_new$specificEp)
 
 # Move scientificName column to first column
-spotted_gbif_clean <- spot_gbif_new %>% select(scientificName, everything())
+spotted_gbif_clean <- spot_gbif_new %>% dplyr::select(scientificName, everything())
 
 # Remove old columns of genus and species
 spotted_gbif_clean <- spotted_gbif_clean %>% dplyr::select(scientificName,
