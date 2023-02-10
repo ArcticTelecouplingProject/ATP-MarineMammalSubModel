@@ -95,7 +95,7 @@ View(all_wal_df) # check to make sure all cols match
 
 # Eliminate repeat occurrences
 # https://statisticsglobe.com/unique-rows-of-data-frame-based-on-selected-columns-in-r
-unique_wal <- all_wal_df[!duplicated(all_wal_df[ , c("year", "month", "day", "decmlLt", "decmlLn")]), ]
+unique_wal <- distinct(all_wal_df)
 
 # Save this to a csv
 write.csv(st_drop_geometry(unique_wal), "../Data_Processed/odobenus_integrated20230210.csv")
@@ -127,19 +127,22 @@ base_crop <- st_crop(base_map, c(xmin = -2173499, ymin = 159766, xmax = 1661246,
 
 # Plot all Walrus occurrence points against uncropped base map
 ggplot() + geom_sf(data = base_crop) + 
-  geom_sf(data = all_wal_df, mapping = aes(color = year)) +
+  geom_sf(data = unique_wal, mapping = aes(color = year)) +
   labs(
-    title = "Walrus occurrence in the Bering Strait Region")
+    title = "Walrus occurrences in the Bering Strait Region")
 
 
 # Isolate number of rows after 2010
-all_wal_2010 <- all_wal_df[all_wal_df$year > 2009, ]
+unique2010 <- unique_wal[unique_wal$year > 2009, ]
+
+# Save to csv
+write.csv(st_drop_geometry(unique2010), "../Data_Processed/odobenus2010_integrated20230210.csv")
 
 # Plotting points after 2010
 ggplot() + geom_sf(data = base_crop) + 
-  geom_sf(data = all_wal_2010, mapping = aes(color = year), size = 1.5) +
+  geom_sf(data = unique2010, mapping = aes(color = year), size = 1.5) +
   labs(
-    title = "Walrus occurrence points from 2010-2019 \n
+    title = "Walrus occurrences from 2010-2019 \n
     in the Bering Strait Region")
 
 
@@ -147,7 +150,7 @@ ggplot() + geom_sf(data = base_crop) +
 
 
 # create new df with occurrence points and no geometry attached
-all_df_drop <- all_wal_df %>%
+all_df_drop <- unique_wal %>%
   st_drop_geometry() %>%
   group_by(year, month, day) %>%
   summarize(n=n()) %>%
@@ -201,4 +204,4 @@ for (i in 1:n.years) {
 }
 
 # save summary to a csv
-write.csv(sum_since, "../Output/odobenus_summary2_20230116.csv")
+write.csv(sum_since, "../Output/odobenus_summary2_20230210.csv")
