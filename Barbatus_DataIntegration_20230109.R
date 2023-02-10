@@ -15,7 +15,7 @@
 # 7-2_nsf_dbo_healy_2018
 # 8 nmml aerial 1979-2010
 
-# Last edited on: 30Jan2023
+# Last edited on: 10Feb2023
 
 
 
@@ -84,8 +84,12 @@ all_beard_df <- rbind(bearded_gbif_sp, beard_seismic, beard_ambon, beard_mmwatch
 
 View(all_beard_df) # check to make sure all cols match
 
+# Eliminate repeat occurrences
+# https://statisticsglobe.com/unique-rows-of-data-frame-based-on-selected-columns-in-r
+unique_beard <- distinct(all_beard_df)
+
 # Save this to a csv
-# write.csv(st_drop_geometry(all_beard_df), "../Data_Processed/barbatus_integrated20230210.csv")
+write.csv(st_drop_geometry(unique_beard), "../Data_Processed/barbatus_integrated20230210.csv")
 
 
 # Plotting ----------------------------------------------------------------
@@ -115,19 +119,19 @@ base_crop <- st_crop(base_map, c(xmin = -2173499, ymin = 159766, xmax = 1661246,
 
 # Plot all bearded seal occurrence points against uncropped base map
 ggplot() + geom_sf(data = base_crop) + 
-  geom_sf(data = all_beard_df, mapping = aes(color = year)) +
+  geom_sf(data = unique_beard, mapping = aes(color = year)) +
   labs(
-    title = "Bearded seal occurrence in the Bering Strait Region")
+    title = "Bearded seal occurrences in the Bering Strait Region")
 
 
 # Isolate number of rows after 2010
-all_beard_2010 <- all_beard_df[all_beard_df$year > 2009, ]
+all_beard_2010 <- unique_beard[unique_beard$year > 2009, ]
 
 # Plotting points after 2010
 ggplot() + geom_sf(data = base_crop) + 
   geom_sf(data = all_beard_2010, mapping = aes(color = year), size = 1.5) +
   labs(
-    title = "Bearded seal occurrence points from 2010-2019 \n
+    title = "Bearded seal occurrences from 2010-2019 \n
     in the Bering Strait Region")
 
 
@@ -135,7 +139,7 @@ ggplot() + geom_sf(data = base_crop) +
 
 
 # create new df with occurrence points and no geometry attached
-all_df_drop <- all_beard_df %>%
+all_df_drop <- unique_beard %>%
   st_drop_geometry() %>%
   group_by(year, month, day) %>%
   summarize(n=n()) %>%
@@ -189,5 +193,5 @@ for (i in 1:n.years) {
 }
 
 # save summary to a csv
-write.csv(sum_since, "../Output/barbatus_summary1_20230116.csv")
+write.csv(sum_since, "../Output/barbatus_summary2_20230210.csv")
 
