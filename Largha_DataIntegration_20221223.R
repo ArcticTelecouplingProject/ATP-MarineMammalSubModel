@@ -71,7 +71,7 @@ spot_healy <- subset(dbo_healy, commnNm == "Spotted Seal")
 
 # 8 nmml aerial surveys 1979-2010
 nmml_aerial <- st_read("../Data_Processed/8_nmml_aerial_1979_2010/8_nmml_aerial_1979_2010.shp")
-spot_aerial <- subset(nmml_aerial, commnNm == "Bearded Seal")
+spot_aerial <- subset(nmml_aerial, commnNm == "Spotted Seal")
 
 # Merge data sets ---------------------------------------------------------
 # Need to make sure that everything is standardized like the columns, column names, and format
@@ -83,6 +83,8 @@ all_spot_df <- rbind(spotted_gbif_sp, spot_seismic_2013, spot_ambon_2015, spot_m
 
 View(all_spot_df) # check to make sure all cols match
 
+# Save this to a csv
+# write.csv(st_drop_geometry(all_spot_df), "../Data_Processed/largha_integrated20230210.csv")
 
 # Plotting ----------------------------------------------------------------
 
