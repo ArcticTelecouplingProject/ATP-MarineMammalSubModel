@@ -84,6 +84,9 @@ all_beard_df <- rbind(bearded_gbif_sp, beard_seismic, beard_ambon, beard_mmwatch
 
 View(all_beard_df) # check to make sure all cols match
 
+# Save this to a csv
+# write.csv(st_drop_geometry(all_beard_df), "../Data_Processed/barbatus_integrated20230210.csv")
+
 
 # Plotting ----------------------------------------------------------------
 
