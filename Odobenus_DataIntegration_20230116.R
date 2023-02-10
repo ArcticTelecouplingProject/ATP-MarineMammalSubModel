@@ -93,8 +93,12 @@ all_wal_df <- rbind(walrus_gbif_sp, wal_seismic_2013, wal_ambon_2015, wal_mmwatc
 
 View(all_wal_df) # check to make sure all cols match
 
+# Eliminate repeat occurrences
+# https://statisticsglobe.com/unique-rows-of-data-frame-based-on-selected-columns-in-r
+unique_wal <- all_wal_df[!duplicated(all_wal_df[ , c("year", "month", "day", "decmlLt", "decmlLn")]), ]
+
 # Save this to a csv
-write.csv(st_drop_geometry(all_wal_df), "../Data_Processed/odobenus_integrated20230210.csv")
+write.csv(st_drop_geometry(unique_wal), "../Data_Processed/odobenus_integrated20230210.csv")
 
 # Plotting ----------------------------------------------------------------
 
