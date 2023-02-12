@@ -9,7 +9,7 @@
 # Species isolated in this dataset: walrus, bearded seal, spotted seal
 
 # This dataset was tidied and ready for data integration on 06Jan2023
-# Last edited: 16Jan2023
+# Last edited: 12Feb2023
 
 
 
@@ -105,6 +105,8 @@ mams_sp <- mams_new_sp %>% left_join(mmwatch_latlon, by = "Date")
 # Add a new column to specify data source so you can backtrack later if needed
 mams_sp$source <- "Marine Mammal Watch July 2016"
 # May also want to add other columns that help add information about the data source (e.g., vessel based, plane based, etc.)
+# Add a new column to specify the method of data collection used
+mams_sp$methodObservation <- "Research cruise visual observation survey"
 
 # Remove extraneous columns again
 mams_sp <- mams_sp %>% dplyr::select(SPP.x,
@@ -112,6 +114,7 @@ mams_sp <- mams_sp %>% dplyr::select(SPP.x,
                                      decimalLat,
                                      decimalLon,
                                      Date,
+                                     methodObservation,
                                      source)
 
 # Convert date to a standard format
@@ -142,6 +145,7 @@ mams_sp2 <- mams_sp %>% dplyr::select(scientificName,
                                       No.,
                                       decimalLat,
                                       decimalLon,
+                                      methodObservation,
                                       source) %>% 
   rename(commonName = SPP.x,
          groupSize = No.)
@@ -151,4 +155,4 @@ mams_sp2 <- mams_sp %>% dplyr::select(scientificName,
 View(mams_sp2)
 
 # Can save this data as an output as both shp and csv
-# st_write(mams_sp2, "../Data_Processed/4_nsf_moore_mmw_2016.csv")
+# st_write(mams_sp2, "../Data_Processed/4_nsf_moore_mmw_2016/4_nsf_moore_mmw_2016.shp")
