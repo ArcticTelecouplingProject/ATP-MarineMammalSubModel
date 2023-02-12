@@ -76,7 +76,7 @@ mams_sp <- mams_new_sp %>% left_join(mmwatch_latlon, by = "eventDate")
 mams_sp$source <- "NMML Marine Mammal Aerial Surveys 1979-2010"
 # May also want to add other columns that help add information about the data source (e.g., vessel based, plane based, etc.)
 # Add a new column to specify the method of data collection used
-mams_sp$methodObservation <- "Research cruise visual observation survey"
+mams_sp$methodObservation <- "Aerial survey"
 
 # Add a groupSize column for data integration consistency
 mams_sp$groupSize <- 1 # filled with 1 because I believe all observation records are observations of 1 occurrence
@@ -107,4 +107,4 @@ mams_sp2 <- mams_sp %>% dplyr::select(verbatimScientificName.x,
 View(mams_sp2)
 
 # Can save this data as an output as both shp and csv
-# st_write(mams_sp2, "../Data_Processed/8_nmml_aerial_1979_2010/8_nmml_aerial_1979_2010.shp")
+st_write(mams_sp2, "../Data_Processed/8_nmml_aerial_1979_2010/8_nmml_aerial_1979_2010.csv")
