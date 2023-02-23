@@ -89,7 +89,7 @@ View(all_beard_df) # check to make sure all cols match
 unique_beard <- distinct(all_beard_df)
 
 # Save this to a csv
-write.csv(st_drop_geometry(unique_beard), "../Data_Processed/barbatus_integrated20230210.csv")
+# write.csv(st_drop_geometry(unique_beard), "../Data_Processed/barbatus_integrated20230210.csv")
 
 
 # Plotting ----------------------------------------------------------------
