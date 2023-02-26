@@ -11,7 +11,7 @@
 # Only species featured in this script is bearded seal.
 
 # This dataset was tidied and ready for data integration on 07Nov2022.
-# Last edited: 16Jan2023
+# Last edited: 26Feb2023
 
 # Libraries and Packages --------------------------------------------------
 
@@ -44,7 +44,7 @@ st_crs(bearded_gbif_3338)
 # Clean up this dataset further
 
 ## Get rid of unneeded columns 
-bearded_gbif_new <- bearded_gbif_3338[ , 14:50]
+bearded_gbif_new <- bearded_gbif_3338[ , 12:50]
 
 ## Get rid of unnecessary NA values (if any)
 bearded_gbif_new <- bearded_gbif_new[!is.na(bearded_gbif_new$decimalLat), ]
@@ -57,7 +57,8 @@ beard_gbif <- bearded_gbif_new %>% dplyr::select(genericNam,
                                                     decimalLon,
                                                     year,
                                                     month,
-                                                    day)
+                                                    day,
+                                                    basisOfRec)
 ## Geometry column will automatically be included too because of the spatial structure
 ## Can get rid of with st_drop_geometry()
 
@@ -90,11 +91,20 @@ beard_gbif_clean <- beard_gbif_clean %>% dplyr::select(scientificName,
                                                            day,
                                                            decimalLat,
                                                            decimalLon,
+                                                          basisOfRec,
                                                            source,
                                                            geometry)
 
-# Add a common name column to the walrus_gbif_clean df and fill it with 'Bearded Seal'
+# Add a common name column to the beard_gbif_clean df and fill it with 'Bearded Seal'
 beard_gbif_clean$commonName <- "Bearded Seal"
+
+# Rename basisOfRec column to methodObservation column
+beard_gbif_clean <- beard_gbif_clean %>% rename("methodObservation" = "basisOfRec")
+
+# Rename values of method column
+beard_gbif_clean$methodObservation[beard_gbif_clean$methodObservation == '"HUMAN_OBSERVATION"'] <- 'Human observation'
+beard_gbif_clean$methodObservation[beard_gbif_clean$methodObservation == '"PRESERVED_SPECIMEN"'] <- 'Preserved specimen'
+
 
 # Missing a groupSize column in the beard_gbif_clean df??
 # Add groupSize column to beard_gbif_clean df based on whether there are no NAs in the year, month, day cols
@@ -114,6 +124,7 @@ beard_gbif_merge <- beard_gbif_merge %>% dplyr::select(scientificName,
                                                            groupSize,
                                                            decimalLat,
                                                            decimalLon,
+                                                       methodObservation,
                                                            source,
                                                            geometry)
 
@@ -131,5 +142,5 @@ View(bearded_gbif_sp)
 
 
 # Save this df as a csv for importing
-# st_write(bearded_gbif_sp, "../Data_Processed/1-3_bearded_gbif_sp.shp")
+# st_write(bearded_gbif_sp, "../Data_Processed/1-3_ARCSS_GBIF_bearded_seal/1-3_bearded_gbif_sp.shp")
 
