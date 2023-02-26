@@ -31,6 +31,7 @@ datadir <- "../../ATP-MarineMammal-DataRaw/"
 walrus_gbif <- st_read(paste0(datadir, "1_arcss_gbif/odobenus_rosmarus_divergens"))
 
 head(walrus_gbif)
+colnames(walrus_gbif)
 
 # Transform to Alaska Albers projection
 walrus_gbif_3338 <- walrus_gbif %>% st_transform(crs = 3338)
@@ -43,7 +44,7 @@ st_crs(walrus_gbif_3338)
 # Clean up this dataset further
 
 ## Get rid of unneeded columns 
-walrus_gbif_new <- walrus_gbif_3338[ , 14:50]
+walrus_gbif_new <- walrus_gbif_3338[ , 12:50]
 
 ## Get rid of unnecessary NA values (if any)
 walrus_gbif_new <- walrus_gbif_new[!is.na(walrus_gbif_new$decimalLat), ]
@@ -57,7 +58,8 @@ wal_gbif_new <- walrus_gbif_new %>% dplyr::select(genericNam,
                                                   decimalLon,
                                                   year,
                                                   month,
-                                                  day)
+                                                  day,
+                                                  basisOfRec)
 ## Geometry column will automatically be included too because of the spatial structure
 ## Can get rid of with st_drop_geometry()
 
@@ -91,14 +93,19 @@ walrus_gbif_clean <- walrus_gbif_clean %>% dplyr::select(scientificName,
                                                          day,
                                                          decimalLat,
                                                          decimalLon,
+                                                         basisOfRec,
                                                          source,
                                                          geometry)
 
 # Add a common name column to the walrus_gbif_clean df and fill it with 'Walrus'
 walrus_gbif_clean$commonName <- "Walrus"
 
-# Add a method of observation column
-walrus_gbif_clean$methodObservation <- "Human observation"
+# Rename basisOfRec column to methodObservation column
+walrus_gbif_clean <- walrus_gbif_clean %>% rename("methodObservation" = "basisOfRec")
+
+# Rename values of method column
+walrus_gbif_clean$methodObservation[walrus_gbif_clean$methodObservation == '"HUMAN_OBSERVATION"'] <- 'Human observation'
+walrus_gbif_clean$methodObservation[walrus_gbif_clean$methodObservation == '"PRESERVED_SPECIMEN"'] <- 'Preserved specimen'
 
 # Missing a groupSize column in the walrus_gbif_merge df??
 # Add groupSize column to walrus_gbif_merge df based on whether there are no NAs in the year, month, day cols
@@ -136,4 +143,4 @@ View(walrus_gbif_sp)
 
 
 # Save this df as a csv for importing - need to use st_write because of spatial geometry
-# st_write(walrus_gbif_sp, "../Data_Processed/1-1_ARCSS_GBIF_walrus/1-1_walrus_gbif_sp.csv")
+# st_write(walrus_gbif_sp, "../Data_Processed/1-1_ARCSS_GBIF_walrus/1-1_walrus_gbif_sp.shp")
