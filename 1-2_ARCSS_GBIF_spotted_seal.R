@@ -11,7 +11,7 @@
 # Only species featured in this script is the spotted seal.
 
 # This dataset was tidied and ready for data integration on 07Nov2022.
-# Last edited: 16Jan2023
+# Last edited: 26Feb2023
 
 # Libraries and Packages --------------------------------------------------
 
@@ -43,7 +43,7 @@ st_crs(spotted_gbif_3338)
 # Clean up this dataset further
 
 ## Get rid of unneeded columns 
-spotted_gbif_new <- spotted_gbif_3338[ , 14:50]
+spotted_gbif_new <- spotted_gbif_3338[ , 12:50]
 
 ## Get rid of unnecessary NA values (if any)
 spotted_gbif_new <- spotted_gbif_new[!is.na(spotted_gbif_new$decimalLat), ]
@@ -56,7 +56,8 @@ spot_gbif_new <- spotted_gbif_new %>% dplyr::select(genericNam,
                                                   decimalLon,
                                                   year,
                                                   month,
-                                                  day)
+                                                  day,
+                                                  basisOfRec)
 ## Geometry column will automatically be included too because of the spatial structure
 ## Can get rid of with st_drop_geometry()
 
@@ -89,11 +90,19 @@ spotted_gbif_clean <- spotted_gbif_clean %>% dplyr::select(scientificName,
                                                          day,
                                                          decimalLat,
                                                          decimalLon,
+                                                         basisOfRec,
                                                          source,
                                                          geometry)
 
 # Add a common name column to the spotted_gbif_clean df and fill it with 'Spotted Seal'
 spotted_gbif_clean$commonName <- "Spotted Seal"
+
+# Rename basisOfRec column to methodObservation column
+spotted_gbif_clean <- spotted_gbif_clean %>% rename("methodObservation" = "basisOfRec")
+
+# Rename values of method column
+spotted_gbif_clean$methodObservation[spotted_gbif_clean$methodObservation == '"HUMAN_OBSERVATION"'] <- 'Human observation'
+spotted_gbif_clean$methodObservation[spotted_gbif_clean$methodObservation == '"PRESERVED_SPECIMEN"'] <- 'Preserved specimen'
 
 # Missing a groupSize column in the spotted_gbif_clean df??
 # Add groupSize column to spotted_gbif_clean df based on if there are NO NAs in the year, month, day cols
@@ -113,6 +122,7 @@ spotted_gbif_merge <- spotted_gbif_merge %>% dplyr::select(scientificName,
                                                          groupSize,
                                                          decimalLat,
                                                          decimalLon,
+                                                         methodObservation,
                                                          source,
                                                          geometry)
 
@@ -130,5 +140,5 @@ View(spotted_gbif_sp) # this is an sf dataframe
 
 
 # Save as shp and csv
-# st_write(spotted_gbif_sp, "../Data_Processed/1-2_spotted_gbif_sp.shp")
+# st_write(spotted_gbif_sp, "../Data_Processed/1-2_ARCSS_GBIF_spotted_seal/1-2_spotted_gbif_sp.csv")
 
