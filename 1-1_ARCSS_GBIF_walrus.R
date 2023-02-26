@@ -11,7 +11,7 @@
 # Only species featured in this script is Pacific walrus.
 
 # This dataset was tidied and ready for data integration on 07Nov2022.
-# Last edited: 29Jan2023
+# Last edited: 26Feb2023
 
 # Libraries and Packages --------------------------------------------------
 
@@ -97,6 +97,9 @@ walrus_gbif_clean <- walrus_gbif_clean %>% dplyr::select(scientificName,
 # Add a common name column to the walrus_gbif_clean df and fill it with 'Walrus'
 walrus_gbif_clean$commonName <- "Walrus"
 
+# Add a method of observation column
+walrus_gbif_clean$methodObservation <- "Human observation"
+
 # Missing a groupSize column in the walrus_gbif_merge df??
 # Add groupSize column to walrus_gbif_merge df based on whether there are no NAs in the year, month, day cols
 ## Reference for code:
@@ -115,6 +118,7 @@ walrus_gbif_merge <- walrus_gbif_merge %>% dplyr::select(scientificName,
                                                          groupSize,
                                                          decimalLat,
                                                          decimalLon,
+                                                         methodObservation,
                                                          source,
                                                          geometry)
 
@@ -132,4 +136,4 @@ View(walrus_gbif_sp)
 
 
 # Save this df as a csv for importing - need to use st_write because of spatial geometry
-# st_write(walrus_gbif_sp, "../Data_Processed/1-1_walrus_gbif_sp.shp")
+# st_write(walrus_gbif_sp, "../Data_Processed/1-1_ARCSS_GBIF_walrus/1-1_walrus_gbif_sp.csv")
