@@ -9,7 +9,7 @@
 # Species isolated in this dataset: walrus
 
 # This dataset was tidied and ready for data integration on 10Jan2023
-# Last edited: 16Jan2023
+# Last edited: 1Mar2023
 
 
 # Libraries and Packages --------------------------------------------------
@@ -69,8 +69,9 @@ walrus_sp <- usgs_walrus_sp %>% left_join(usgs_latlon, by = "Flight")
 # Add a new column to specify data source so you can backtrack later if needed
 walrus_sp$source <- "USGS Walrus Behavior UAS 2015"
 # May also want to add other columns that help add information about the data source (e.g., vessel based, plane based, etc.)
-
 # walrus_sp$methodOfObservation <- "visual observations"
+# Add a new column to specify the method of data collection used
+walrus_sp$methodObservation <- "Research vessel visual observation"
 
 # Separate DateTimeStart into month and day cols by using substr()
 walrus_sp$year <- 2015
@@ -86,6 +87,7 @@ walrus_sp2 <- walrus_sp %>% dplyr::select(scientificName.x,
                                           Group_Size,
                                           Latitude,
                                           Longitude,
+                                          methodObservation,
                                           source) %>% 
   rename(scientificName = scientificName.x,
          groupSize = Group_Size,
@@ -98,4 +100,4 @@ walrus_sp2 <- walrus_sp %>% dplyr::select(scientificName.x,
 View(walrus_sp2)
 
 # Can save this data as an output as both shp and csv
-# st_write(walrus_sp2, "../Data_Processed/10_usgs_walrus_behavior_uas_2015.shp")
+# st_write(walrus_sp2, "../Data_Processed/10_usgs_walrus_behavior_uas_2015/10_usgs_walrus_behavior_uas_2015.csv")
