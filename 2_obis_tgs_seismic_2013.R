@@ -5,7 +5,7 @@
 # Source: https://obis.org/dataset/4b394534-8a6b-4bdb-bf1b-f07f983f9e37
 
 # This dataset was tidied and ready for data integration on 07Nov2022.
-# Last updated: 16Jan2023
+# Last updated: 1Mar2023
 
 # Libraries and Packages --------------------------------------------------
 
@@ -62,6 +62,10 @@ seismic_new <- seismic_mams %>% dplyr::select(scientific_name,
 # Add a new column to specify data source
 seismic_new$source <- "TGS Seismic 2013"
 
+# Add a new column to specify the method of data collection used
+seismic_new$methodObservation <- "Seismic visual observations"
+
+
 ## Add back in latitude and longitude columns - needs to correspond with number of rows
 ## and species of interest 
 # Merge latitude and longitude columns from latlon_mams to seismic_new
@@ -100,6 +104,7 @@ seismic_new2 <- seismic_new2 %>% dplyr::select(scientific_name,
                                                group_size,
                                                latitude,
                                                longitude,
+                                               methodObservation,
                                                source,
                                                geometry)
 
@@ -117,4 +122,4 @@ seismic_merge <- seismic_new2 %>% rename(scientificName = scientific_name,
 View(seismic_merge)
 
 # Save this df to a shp and csv for integration importing
-# st_write(seismic_merge, "../Data_Processed/2_obis_tgs_seismic_2013.shp")
+# st_write(seismic_merge, "../Data_Processed/2_obis_tgs_seismic_2013/2_obis_tgs_seismic_2013.csv")
