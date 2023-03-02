@@ -88,7 +88,7 @@ View(all_spot_df) # check to make sure all cols match
 unique_spot <- distinct(all_spot_df)
 
 # Save this to a csv
-write.csv(st_drop_geometry(unique_spot), "../Data_Processed/largha_integrated20230210.csv")
+write.csv(st_drop_geometry(unique_spot), "../Data_Processed/Largha_DataIntegration_20221223/largha_integrated20230210.csv")
 
 
 # Plotting ----------------------------------------------------------------
