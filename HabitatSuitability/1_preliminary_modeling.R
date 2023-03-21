@@ -31,55 +31,24 @@ all_seals <- read.csv("../Data_Processed/largha_integrated20230210.csv")
 head(all_seals)
 
 # Save lat/lon cols
+# use dplyr::select
 
 # Assign projection using lat/lon cols to WGS84
 
+
 # Transform projection
 # SW19Mar2023
+# Transform to Alaska Albers projection
+all_seals_3338 <- all_seals %>% st_transform(crs = 3338)
 
 # Check what projection it's in
 # st_crs(all_seals)
 
-# Transform to Alaska Albers projection
-all_seals_3338 <- all_seals %>% st_transform(crs = 3338)
 
 # Check to see if it's properly projected (NAD83 / Alaska Albers)
 st_crs(all_seals_3338)
 
-
-## Clean up this data further
-
-# Get rid of unneeded columns 
-all_seals_new <- all_seals_3338[ , 14:50]
-
-# Get rid of unnecessary NA values (if any)
-all_seals_new <- all_seals_new[!is.na(all_seals_new$decimalLat), ]
-
-# Remove extraneous columns - use select function to choose which columns to keep in new df
-colnames(all_seals_new)
-spot_gbif_new <- all_seals_new %>% dplyr::select(genericNam,
-                                                    specificEp,
-                                                    decimalLat,
-                                                    decimalLon,
-                                                    year,
-                                                    month,
-                                                    day)
-## Geometry column will automatically be included too because of the spatial structure
-## Can get rid of with st_drop_geometry()
-
-# Add a new column to specify data source to backtrack later
-spot_gbif_new$source <- "ARCSS GBIF Spotted Seal"
-
-# How is R classifying each column of data?
-lapply(spot_gbif_new, class)
-
-## Tada now you have a clean and tidy dataset to work with and merge
-
 View(all_seals_merge)
-
-# Save df to spatial csv and shp 
-# st_write(all_seals_merge, "Final_Project/Data_Processed/all_seals_merge.csv")
-# st_write(all_seals_merge, "Final_Project/Data_Processed/all_seals_merge.shp")
 
 
 # Summary data ------------------------------------------------------------
