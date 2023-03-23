@@ -16,6 +16,7 @@
 # 8_nmml_aerial_1979_2010
 # 9_usgs_walrus_sex_age_comp_2013_2015
 # 10_usgs_walrus_behavior_uas_2015
+# 12-1_gbif_moudry
 
 # Last edited: 10Feb2023
 
@@ -83,19 +84,25 @@ wal_comp <- subset(usgs_comp, commnNm == "Walrus")
 usgs_behavior <- st_read("../Data_Processed/10_usgs_walrus_behavior_uas_2015/10_usgs_walrus_behavior_uas_2015.shp")
 wal_behavior <- subset(usgs_behavior, commnNm == "Walrus")
 
+# 12-1 gbif moudry
+moudry1 <- st_read("../Data_Processed/12-1_gbif_moudry/12-1_gbif_moudry.shp")
+
 # Merge data sets ---------------------------------------------------------
 # Need to make sure that everything is standardized like the columns, column names, and format
 # of the columns
 
 # Merge to create all_df
 all_wal_df <- rbind(walrus_gbif_sp, wal_seismic_2013, wal_ambon_2015, wal_mmwatch16, wal_mmwatch17,
-                     wal_laurier19, wal_laurier18, wal_healy, wal_nmml, wal_comp, wal_behavior)
+                     wal_laurier19, wal_laurier18, wal_healy, wal_nmml, wal_comp, wal_behavior, moudry1)
+# Need to fix error with this merging
 
 View(all_wal_df) # check to make sure all cols match
 
 # Eliminate repeat occurrences
 # https://statisticsglobe.com/unique-rows-of-data-frame-based-on-selected-columns-in-r
 unique_wal <- distinct(all_wal_df)
+
+# Remove NAs
 
 # Save this to a csv
 # write.csv(st_drop_geometry(unique_wal), "../Data_Processed/odobenus_integrated20230210.csv")
