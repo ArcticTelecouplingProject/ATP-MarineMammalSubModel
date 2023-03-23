@@ -97,10 +97,14 @@ pwalrus_1_sp2 <- pwalrus_1_sp %>% dplyr::select(scientificName.x,
          decimalLat = decimalLatitude,
          decimalLon = decimalLongitude)
 
+# Remove rows that contain NAs in any of the columns
+# https://statisticsglobe.com/r-remove-data-frame-rows-with-some-or-all-na
+pwalrus2 <- na.omit(pwalrus_1_sp2)
+
 
 ## Tada now you have a clean and tidy dataset to work with and merge
 
-View(pwalrus_1_sp2)
+View(pwalrus2)
 
 # Can save this data as an output as both shp and csv
-# st_write(pwalrus_1_sp2, "../Data_Processed/12_gbif_moudry/12_gbif_moudry.csv")
+# st_write(pwalrus2, "../Data_Processed/12-1_gbif_moudry/12-1_gbif_moudry.csv")
