@@ -8,7 +8,7 @@
 # Species isolated in this dataset: walrus
 
 # This dataset was tidied and ready for data integration on 22Mar2023
-# Last edited: 22Mar2023 SW
+# Last edited: 23Mar2023 NP
 
 
 # Libraries and Packages --------------------------------------------------
@@ -80,6 +80,9 @@ pwalrus_1_sp <- pwalrus_1_sp %>% rename("methodObservation" = "basisOfRecord")
 # Rename values of method column
 pwalrus_1_sp$methodObservation[pwalrus_1_sp$methodObservation == "HUMAN_OBSERVATION"] <- 'Human observation'
 pwalrus_1_sp$methodObservation[pwalrus_1_sp$methodObservation == "PRESERVED_SPECIMEN"] <- 'Preserved specimen'
+pwalrus_1_sp$methodObservation[pwalrus_1_sp$methodObservation == "MACHINE_OBSERVATION"] <- 'Machine observation'
+pwalrus_1_sp$methodObservation[pwalrus_1_sp$methodObservation == "OBSERVATION"] <- 'Observation'
+pwalrus_1_sp$methodObservation[pwalrus_1_sp$methodObservation == "UNKNOWN"] <- 'NA'
 
 # Remove extraneous columns again, rearrange, and name
 pwalrus_1_sp2 <- pwalrus_1_sp %>% dplyr::select(scientificName.x,
