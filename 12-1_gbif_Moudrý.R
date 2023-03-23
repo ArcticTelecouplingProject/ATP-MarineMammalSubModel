@@ -7,8 +7,8 @@
 
 # Species isolated in this dataset: walrus
 
-# This dataset was tidied and ready for data integration on 15Feb2023
-# Last edited: 15Feb2023
+# This dataset was tidied and ready for data integration on 22Mar2023
+# Last edited: 22Mar2023 SW
 
 
 # Libraries and Packages --------------------------------------------------
@@ -21,14 +21,13 @@ library(tidyverse)
 rm(list=ls())
 
 
-
 # Walrus GBIF Database 1 ----------------------------------------
 
 # Import raw walrus occurrence data
 datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney - ATP-MarineMammal-DataRaw/"
 datadir <- "../../ATP-MarineMammal-DataRaw/"
 
-gbif_walrus_1 <- read.csv(paste0(datadir,"12_gbif_Moudrý/1-0024533-190918142434337.csv"))
+gbif_walrus_1 <- read.csv(paste0(datadir,"12_gbif_moudry/1-0024533-190918142434337.csv"))
 
 head(gbif_walrus_1)
 
@@ -64,7 +63,8 @@ gbif_latlon <- gbif_pwalrus_1_new %>% dplyr::select(scientificName,
 st_crs(gbif_pwalrus_1_new) # this is non-spatial so the CRS is NA
 
 # Convert data to a spatial object with CRS 4326 (since that is regular lat/lon) - this is still unprojected
-gbif_pwalrus_1_new_sp <- st_as_sf(gbif_pwalrus_1_new, coords = c("decimalLatitude", "decimalLongitude"), crs = 4326) 
+# Make sure longitude is listed first (longitude col, latitude col)
+gbif_pwalrus_1_new_sp <- st_as_sf(gbif_pwalrus_1_new, coords = c("decimalLongitude", "decimalLatitude"), crs = 4326) 
 
 # Project the data to Alaska Albers 3338
 gbif_pwalrus_1_new_sp <- gbif_pwalrus_1_new_sp %>% st_transform(crs = 3338)
@@ -103,4 +103,4 @@ pwalrus_1_sp2 <- pwalrus_1_sp %>% dplyr::select(scientificName.x,
 View(pwalrus_1_sp2)
 
 # Can save this data as an output as both shp and csv
-st_write(pwalrus_1_sp2, "../Data_Processed/12_gbif_Moudrý/1-gbif_database_walrus.shp")
+# st_write(pwalrus_1_sp2, "../Data_Processed/12_gbif_moudry/12_gbif_moudry.csv")
