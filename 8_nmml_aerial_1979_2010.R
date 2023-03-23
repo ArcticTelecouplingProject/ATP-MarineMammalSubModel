@@ -24,8 +24,6 @@ library(tidyverse)
 rm(list=ls())
 
 
-
-
 # NMML 1979-2010 ----------------------------------------------------------
 
 
@@ -107,4 +105,4 @@ mams_sp2 <- mams_sp %>% dplyr::select(verbatimScientificName.x,
 View(mams_sp2)
 
 # Can save this data as an output as both shp and csv
-st_write(mams_sp2, "../Data_Processed/8_nmml_aerial_1979_2010/8_nmml_aerial_1979_2010.csv")
+# st_write(mams_sp2, "../Data_Processed/8_nmml_aerial_1979_2010/8_nmml_aerial_1979_2010.shp")
