@@ -80,6 +80,9 @@ pwalrus_2_sp <- pwalrus_2_sp %>% rename("methodObservation" = "basisofrecord")
 # Rename values of method column
 pwalrus_2_sp$methodObservation[pwalrus_2_sp$methodObservation == "HUMAN_OBSERVATION"] <- 'Human observation'
 pwalrus_2_sp$methodObservation[pwalrus_2_sp$methodObservation == "PRESERVED_SPECIMEN"] <- 'Preserved specimen'
+pwalrus_2_sp$methodObservation[pwalrus_2_sp$methodObservation == "MACHINE_OBSERVATION"] <- 'Machine observation'
+pwalrus_2_sp$methodObservation[pwalrus_2_sp$methodObservation == "OBSERVATION"] <- 'Observation'
+pwalrus_2_sp$methodObservation[pwalrus_2_sp$methodObservation == "UNKNOWN"] <- 'NA'
 
 # Missing a groupSize column in the walrus_gbif_merge df??
 # Add groupSize column to walrus_gbif_merge df based on whether there are no NAs in the year, month, day cols
@@ -105,6 +108,9 @@ pwalrus_2_merge <- pwalrus_2_merge %>% dplyr::select(scientificname.x,
          decimalLat = decimallatitude,
          decimalLon = decimallongitude)
 
+# Remove rows that contain NAs in any of the columns
+# https://statisticsglobe.com/r-remove-data-frame-rows-with-some-or-all-na
+pwalrus_2_merge <- na.omit(pwalrus_2_merge)
 
 ## Tada now you have a clean and tidy dataset to work with and merge
 
