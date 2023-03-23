@@ -22,6 +22,8 @@ library(tidyverse)
 
 # Clear history 
 rm(list=ls())
+
+
 # Marine Mammal Watch 2017 ------------------------------------------------
 
 # Read in the data
