@@ -8,7 +8,7 @@
 # Species isolated in this dataset: walrus
 
 # This dataset was tidied and ready for data integration on 22Mar2023
-# Last edited: 23Mar2023 NP
+# Last edited: 26Mar2023 NP
 
 
 # Libraries and Packages --------------------------------------------------
@@ -33,7 +33,7 @@ head(gbif_walrus_1)
 
 # Remove extraneous columns of info 
 colnames(gbif_walrus_1)
-gbif_walrus_1_new <- gbif_walrus_1 %>% dplyr::select(scientificName,
+gbif_walrus_1_new <- gbif_walrus_1 %>% dplyr::select(verbatimScientificName,
                                                  individualCount,
                                                  decimalLatitude,
                                                  decimalLongitude,
@@ -42,10 +42,7 @@ gbif_walrus_1_new <- gbif_walrus_1 %>% dplyr::select(scientificName,
                                                  year,
                                                  basisOfRecord)
 # Isolate Pacific Walrus by scientificName
-gbif_pwalrus_1_new <- gbif_walrus_1_new[gbif_walrus_1_new$scientificName %in% c("Odobenus rosmarus divergens (Illiger, 1815)"),]
-
-#Change the scientific naming convention
-gbif_pwalrus_1_new$scientificName[gbif_pwalrus_1_new$scientificName == "Odobenus rosmarus divergens (Illiger, 1815)"] <- 'Odobenus rosmarus divergens'
+gbif_pwalrus_1_new <- gbif_walrus_1_new[gbif_walrus_1_new$verbatimScientificName %in% c("Odobenus rosmarus divergens", "Odobenus rosmarus"),]
 
 # Convert to spatial df ---------------------------------------------------
 
@@ -54,7 +51,7 @@ gbif_pwalrus_1_new$commonName <- "Walrus"
 
 # Save lat/lon columns info into their own df to add in again later on
 # or else they will disappear when converting to spatial object with st_as_sf
-gbif_latlon <- gbif_pwalrus_1_new %>% dplyr::select(scientificName,
+gbif_latlon <- gbif_pwalrus_1_new %>% dplyr::select(verbatimScientificName,
                                                    decimalLatitude,
                                                    decimalLongitude,
                                                    day)
@@ -85,7 +82,7 @@ pwalrus_1_sp$methodObservation[pwalrus_1_sp$methodObservation == "OBSERVATION"] 
 pwalrus_1_sp$methodObservation[pwalrus_1_sp$methodObservation == "UNKNOWN"] <- 'NA'
 
 # Remove extraneous columns again, rearrange, and name
-pwalrus_1_sp2 <- pwalrus_1_sp %>% dplyr::select(scientificName.x,
+pwalrus_1_sp2 <- pwalrus_1_sp %>% dplyr::select(verbatimScientificName.x,
                                           commonName,
                                           year,
                                           month,
@@ -95,7 +92,7 @@ pwalrus_1_sp2 <- pwalrus_1_sp %>% dplyr::select(scientificName.x,
                                           decimalLongitude,
                                           methodObservation,
                                           source) %>% 
-  rename(scientificName = scientificName.x,
+  rename(scientificName = verbatimScientificName.x,
          groupSize = individualCount,
          decimalLat = decimalLatitude,
          decimalLon = decimalLongitude)
