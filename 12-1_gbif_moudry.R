@@ -70,7 +70,8 @@ gbif_pwalrus_1_new_sp <- gbif_pwalrus_1_new_sp %>% st_transform(crs = 3338)
 pwalrus_1_sp <- gbif_pwalrus_1_new_sp %>% left_join(gbif_latlon, by = "day")
 
 # Add a new column to specify data source so you can backtrack later if needed
-pwalrus_1_sp$source <- "Moudrý GBIF Marine Mammal Walrus Data"
+pwalrus_1_sp$source <- "Moudry GBIF Marine Mammal Walrus Data"
+
 # May also want to add other columns that help add information about the data source (e.g., vessel based, plane based, etc.)
 # Rename basisOfRec column to methodObservation column
 pwalrus_1_sp <- pwalrus_1_sp %>% rename("methodObservation" = "basisOfRecord")
