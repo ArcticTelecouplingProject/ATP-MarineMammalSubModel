@@ -8,7 +8,7 @@
 # Species isolated in this dataset: walrus
 
 # This dataset was tidied and ready for data integration on 23Mar2023
-# Last edited: 23Mar2023
+# Last edited: 26Mar2023
 
 
 # Libraries and Packages --------------------------------------------------
@@ -41,10 +41,13 @@ gbif_walrus_2_new <- gbif_walrus_2 %>% dplyr::select(scientificname,
                                                      year,
                                                      basisofrecord)
 # Isolate Pacific Walrus by scientificName
-gbif_pwalrus_2_new <- gbif_walrus_2_new[gbif_walrus_2_new$scientificname %in% c("Odobenus rosmarus divergens (Illiger, 1815)"),]
+gbif_pwalrus_2_new <- gbif_walrus_2_new[gbif_walrus_2_new$scientificname %in% c("Odobenus rosmarus divergens (Illiger, 1815)", "Odobenus rosmarus (Linnaeus, 1758)"),]
 
 #Change the scientific naming convention
 gbif_pwalrus_2_new$scientificname[gbif_pwalrus_2_new$scientificname == "Odobenus rosmarus divergens (Illiger, 1815)"] <- 'Odobenus rosmarus divergens'
+
+#Change the scientific naming convention
+gbif_pwalrus_2_new$scientificname[gbif_pwalrus_2_new$scientificname == "Odobenus rosmarus (Linnaeus, 1758)"] <- 'Odobenus rosmarus'
 
 # Convert to spatial df ---------------------------------------------------
 
