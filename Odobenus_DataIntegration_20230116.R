@@ -16,8 +16,6 @@
 # 8_nmml_aerial_1979_2010
 # 9_usgs_walrus_sex_age_comp_2013_2015
 # 10_usgs_walrus_behavior_uas_2015
-# 12-1_gbif_moudry
-# 12-2_gbif_moudry
 
 # Last edited: 30Mar2023
 
