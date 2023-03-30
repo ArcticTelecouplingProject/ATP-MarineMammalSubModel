@@ -19,7 +19,7 @@
 # 12-1_gbif_moudry
 # 12-2_gbif_moudry
 
-# Last edited: 28Mar2023
+# Last edited: 30Mar2023
 
 
 # Libraries and Packages --------------------------------------------------
@@ -85,26 +85,26 @@ wal_comp <- subset(usgs_comp, commnNm == "Walrus")
 usgs_behavior <- st_read("../Data_Processed/10_usgs_walrus_behavior_uas_2015/10_usgs_walrus_behavior_uas_2015.shp")
 wal_behavior <- subset(usgs_behavior, commnNm == "Walrus")
 
-# 12-1 gbif moudry
-moudry1 <- st_read("../Data_Processed/12-1_gbif_moudry/12-1_gbif_moudry.shp")
-
-# 12-2 gbif moudry
-moudry2 <- st_read("../Data_Processed/12-2_gbif_moudry/12-2_gbif_moudry.shp")
-
 # Merge data sets ---------------------------------------------------------
 # Need to make sure that everything is standardized like the columns, column names, and format
 # of the columns
 
 # Merge to create all_df
 all_wal_df <- rbind(walrus_gbif_sp, wal_seismic_2013, wal_ambon_2015, wal_mmwatch16, wal_mmwatch17,
-                     wal_laurier19, wal_laurier18, wal_healy, wal_nmml, wal_comp, wal_behavior, moudry1, moudry2)
+                     wal_laurier19, wal_laurier18, wal_healy, wal_nmml, wal_comp, wal_behavior)
 # Need to fix error with this merging
 
 View(all_wal_df) # check to make sure all cols match
 
+# quantifying number of occurrences before eliminating repeats
+nrow(all_wal_df)
+
 # Eliminate repeat occurrences
 # https://statisticsglobe.com/unique-rows-of-data-frame-based-on-selected-columns-in-r
 unique_wal <- distinct(all_wal_df)
+
+# quantifying number of occurrences after eliminating repeats
+nrow(unique_wal)
 
 # Remove NAs
 
