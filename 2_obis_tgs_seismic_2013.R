@@ -130,11 +130,13 @@ seismic_merge <- seismic_new2 %>% rename(scientificName = scientific_name,
 
 # Eliminate repeat occurrences
 # https://statisticsglobe.com/unique-rows-of-data-frame-based-on-selected-columns-in-r
-# unique_seismic <- distinct(seismic_merge)
+unique_seismic <- distinct(seismic_merge)
 
 # quantifying number of occurrences after eliminating repeats
 # nrow(unique_seismic)
 
+#Remove Nas
+na.omit(unique_seismic)
 
 ## Woo now you have a tidy data set of all three species of interest to work with and merge!
 
