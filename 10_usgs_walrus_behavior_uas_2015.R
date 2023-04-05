@@ -33,12 +33,22 @@ usgs_walrus_uas <- read.csv(paste0(datadir,"10_usgs_walrus_behavior_uas_2015/wal
 
 head(usgs_walrus_uas)
 
+# Create a datafame to generate metadata summaries on the occurrence data at various steps of tidying
+# OccurrenceSummaries <- data.frame(name = usgs_walrus_uas) 
+# OccurrenceSummaries$before <- length(usgs_walrus_uas$Group_Size)
+
+# Add to metadata datafame for summaries on the occurrence data at various steps of tidying
+# OccurrenceSummaries$isolatedSpecies <- length(usgs_walrus_uas$Group_Size)
+
 # Remove extraneous columns of info 
 colnames(usgs_walrus_uas)
 usgs_walrus <- usgs_walrus_uas %>% dplyr::select(Flight,
                                                  Group_Size,
                                                  Latitude,
                                                  Longitude)
+
+# Add to metadata datafame for summaries on the occurrence data at various steps of tidying
+# OccurrenceSummaries$columnsofInterest <- length(usgs_walrus_uas$Group_Size)
 
 
 # Convert to spatial df ---------------------------------------------------
@@ -94,10 +104,30 @@ walrus_sp2 <- walrus_sp %>% dplyr::select(scientificName.x,
          decimalLat = Latitude,
          decimalLon = Longitude)
 
+# quantifying number of occurrences before eliminating repeats
+# nrow(walrus_sp2)
+
+# Eliminate repeat occurrences
+# https://statisticsglobe.com/unique-rows-of-data-frame-based-on-selected-columns-in-r
+unique_walrus <- distinct(walrus_sp2)
+
+# quantifying number of occurrences after eliminating repeats
+# nrow(unique_walrus)
+
+# Remove Nas
+na.omit(unique_walrus)
+
+# Add to metadata datafame for summaries on the occurrence data at various steps of tidying
+# OccurrenceSummaries$uniqueOccurrences <- length(unique_walrus$groupSize)
 
 ## Tada now you have a clean and tidy dataset to work with and merge
 
 View(walrus_sp2)
+# View(unique_walrus)
 
 # Can save this data as an output as both shp and csv
 # st_write(walrus_sp2, "../Data_Processed/10_usgs_walrus_behavior_uas_2015/10_usgs_walrus_behavior_uas_2015.csv")
+
+# Save metadata dataframe
+# write.csv(OccurrenceSummaries, "../Data_Processed/Metadata/Metadata_10_usgs_walrus_behavior_uas_2015.csv")
+

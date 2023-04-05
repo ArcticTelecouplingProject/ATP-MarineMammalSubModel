@@ -34,9 +34,16 @@ datadir <- "../../ATP-MarineMammal-DataRaw/"
 nmml_aerial <- read.csv(paste0(datadir,"8_nmml_aerial_1979_2010/8_nmml_aerial_1979_2010.csv"))
 head(nmml_aerial)
 
+# Create a datafame to generate metadata summaries on the occurrence data at various steps of tidying
+# OccurrenceSummaries <- data.frame(name = seismic_obis) 
+# OccurrenceSummaries$before <- length(seismic_obis$scientific_name)
+
 # Isolate out species of interest
 unique(nmml_aerial$verbatimScientificName)
 mmwatch_mams <- nmml_aerial[nmml_aerial$verbatimScientificName %in% c("Odobenus rosmarus", "Phoca largha", "Erignathus barbatus"), ]
+
+# Add to metadata datafame for summaries on the occurrence data at various steps of tidying
+# OccurrenceSummaries$isolatedSpecies <- length(mmwatch_mams$verbatimScientificName)
 
 # Remove extraneous columns of info 
 colnames(mmwatch_mams)
@@ -47,6 +54,9 @@ mams_new <- mmwatch_mams %>% dplyr::select(verbatimScientificName,
                                            eventDate,
                                            decimalLatitude,
                                            decimalLongitude)
+
+# Add to metadata datafame for summaries on the occurrence data at various steps of tidying
+# OccurrenceSummaries$columnsofInterest <- length(mams_new$verbatimScientificName)
 
 
 # Convert to spatial df ---------------------------------------------------
@@ -99,10 +109,30 @@ mams_sp2 <- mams_sp %>% dplyr::select(verbatimScientificName.x,
          decimalLat = decimalLatitude,
          decimalLon = decimalLongitude)
 
+# quantifying number of occurrences before eliminating repeats
+# nrow(mams_sp2)
+
+# Eliminate repeat occurrences
+# https://statisticsglobe.com/unique-rows-of-data-frame-based-on-selected-columns-in-r
+unique_mams <- distinct(mams_sp2)
+
+# quantifying number of occurrences after eliminating repeats
+# nrow(unique_mams)
+
+# Remove Nas
+na.omit(unique_mams)
+
+# Add to metadata datafame for summaries on the occurrence data at various steps of tidying
+# OccurrenceSummaries$uniqueOccurrences <- length(unique_mams$scientificName)
+
 
 ## Tada now you have a clean and tidy dataset to work with and merge
 
 View(mams_sp2)
+# View(unique_mams)
 
 # Can save this data as an output as both shp and csv
 # st_write(mams_sp2, "../Data_Processed/8_nmml_aerial_1979_2010/8_nmml_aerial_1979_2010.shp")
+
+# Save metadata dataframe
+# write.csv(OccurrenceSummaries, "../Data_Processed/Metadata/Metadata_8_nmml_aerial_1979_2010.csv")

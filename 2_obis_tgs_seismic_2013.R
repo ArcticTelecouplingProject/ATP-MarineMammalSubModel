@@ -150,4 +150,4 @@ View(seismic_merge)
 # st_write(seismic_merge, "../Data_Processed/2_obis_tgs_seismic_2013/2_obis_tgs_seismic_2013.csv")
 
 # Save metadata dataframe
-# write.csv(OccurrenceSummaries, "../Data_Processed/Metadata/Metadata_obis_tgs_seismic_2013.csv")
+# write.csv(OccurrenceSummaries, "../Data_Processed/Metadata/Metadata_2_obis_tgs_seismic_2013.csv")

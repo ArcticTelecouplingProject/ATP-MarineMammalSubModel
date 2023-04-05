@@ -9,7 +9,7 @@
 # Species isolated in this dataset: walrus, bearded seal, spotted seal
 
 # This dataset was tidied and ready for data integration on 08Jan2023
-# Last edited: 12Feb2023
+# Last edited: 4Apr2023
 
 
 
@@ -34,12 +34,19 @@ datadir <- "../../ATP-MarineMammal-DataRaw/"
 dbo_swl_2018 <- read.csv(paste0(datadir,"7_nsf_stafford_mmw_2018/data/DBO_SWL_2018.csv"))
 head(dbo_swl_2018)
 
+# Create a datafame to generate metadata summaries on the occurrence data at various steps of tidying
+# OccurrenceSummaries <- data.frame(name = dbo_swl_2018) 
+# OccurrenceSummaries$before <- length(dbo_swl_2018$SPP)
+
 # Isolate out species of interest (see metadata for more details)
 # SPP corresponds to species
 # 11 = walrus
 # 12 = bearded seal
 # 14 = spotted seal
 mmwatch_mams <- dbo_swl_2018[dbo_swl_2018$SPP %in% c(11, 12, 14), ]
+
+# Add to metadata datafame for summaries on the occurrence data at various steps of tidying
+# OccurrenceSummaries$isolatedSpecies <- length(mmwatch_mams$SPP)
 
 # Remove extraneous columns of info 
 colnames(mmwatch_mams)
@@ -48,6 +55,9 @@ mams_new <- mmwatch_mams %>% dplyr::select(SPP,
                                            LAT..N.,
                                            LONG..W.,
                                            NO)
+
+# Add to metadata datafame for summaries on the occurrence data at various steps of tidying
+# OccurrenceSummaries$columnsofInterest <- length(mams_new$SPP)
 
 
 # Convert to spatial df ---------------------------------------------------
@@ -124,9 +134,27 @@ mams_sp2 <- mams_sp %>% dplyr::select(scientificName,
          decimalLat = LAT..N.,
          decimalLon = LONG..W.)
 
+# quantifying number of occurrences before eliminating repeats
+# nrow(mams_sp2)
+
+# Eliminate repeat occurrences
+# https://statisticsglobe.com/unique-rows-of-data-frame-based-on-selected-columns-in-r
+unique_mams <- distinct(mams_sp2)
+
+# quantifying number of occurrences after eliminating repeats
+# nrow(unique_mams)
+
+# Remove Nas
+na.omit(unique_mams)
+
+
 ## Tada now you have a clean and tidy dataset to work with and merge
 
 View(mams_sp2)
+# View(unique_mams)
 
 # Can save this data as an output as both shp and csv
 # st_write(mams_sp2, "../Data_Processed/7-1_nsf_dbo_laurier_2018/7-1_nsf_dbo_laurier_2018.csv")
+
+# Save metadata dataframe
+# write.csv(OccurrenceSummaries, "../Data_Processed/Metadata/Metadata_7-1_nsf_dbo_laurier_2018.csv")
