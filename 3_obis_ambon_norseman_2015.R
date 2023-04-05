@@ -1,5 +1,5 @@
 # 05Jan2023
-# Author: Sydney Waloven
+# Author: Sydney Waloven and Natalia Portales
 
 # Source: OBIS
 # This dataset was obtained from: AMBON Chukchi Sea research cruse on the Norseman II
@@ -9,7 +9,7 @@
 # Species isolated in this dataset: walrus, bearded seal, spotted seal
 
 # This dataset was tidied and ready for data integration on 05Jan2023
-# Last edited: 4Apr2023
+# Last edited: 5Apr2023
 
 
 # Libraries and Packages --------------------------------------------------
@@ -44,8 +44,8 @@ bird <- left_join(birdocc, birdevent, by=c("eventID"))
 head(bird) # Now we've picked the matching lines from the birdevent and moved them over to the bird occ
 
 # Create a datafame to generate metadata summaries on the occurrence data at various steps of tidying
-# OccurrenceSummaries <- data.frame(name = bird) 
-# OccurrenceSummaries$before <- length(bird$scientificName)
+# OccurrenceSummaries <- data.frame(name = "obis_bird") 
+# OccurrenceSummaries$before <- length(bird$vernacularName)
 
 # Isolate out species of interest 
 unique(bird$vernacularName)
@@ -53,7 +53,7 @@ unique(bird$vernacularName)
 ambon_mams <- bird[bird$vernacularName %in% c("Walrus", "Bearded Seal", "Spotted Seal"), ] 
 
 # Add to metadata datafame for summaries on the occurrence data at various steps of tidying
-# OccurrenceSummaries$isolatedSpecies <- length(ambon_mams$scientificName)
+# OccurrenceSummaries$isolatedSpecies <- length(ambon_mams$vernacularName[which(ambon_mams$vernacularName == "Walrus")])
 
 # Remove extraneous columns of info 
 colnames(ambon_mams)
@@ -66,7 +66,7 @@ mams_new <- ambon_mams %>% dplyr::select(vernacularName,
                                          samplingProtocol)
 
 # Add to metadata datafame for summaries on the occurrence data at various steps of tidying
-# OccurrenceSummaries$columnsofInterest <- length(mams_new$scientificName)
+# OccurrenceSummaries$columnsofInterest <- length(mams_new$vernacularName[which(mams_new$vernacularName == "Walrus")])
 
 # Convert to spatial df ---------------------------------------------------
 
@@ -156,12 +156,13 @@ unique_mams <- distinct(mams_sp2)
 na.omit(unique_mams)
 
 # Add to metadata datafame for summaries on the occurrence data at various steps of tidying
-# OccurrenceSummaries$uniqueOccurrences <- length(unique_mams$scientificName)
+# OccurrenceSummaries$uniqueOccurrences <- length(unique_mams$commonName[which(unique_mams$commonName == "Walrus")])
+
+# View(OccurrenceSummaries)
 
 ## Tada now you have a clean and tidy dataset to work with and merge
 
-View(mams_sp2)
-# View(unique_mams)
+View(unique_mams)
 
 # Can save this data as an output as both shp and csv
 # st_write(mams_sp2, "../Data_Processed/3_obis_ambon_norseman_2015/3_obis_ambon_norseman_2015.csv")
