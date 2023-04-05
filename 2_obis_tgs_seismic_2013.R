@@ -5,7 +5,7 @@
 # Source: https://obis.org/dataset/4b394534-8a6b-4bdb-bf1b-f07f983f9e37
 
 # This dataset was tidied and ready for data integration on 07Nov2022.
-# Last updated: 2Apr2023
+# Last updated: 5Apr2023
 
 # Libraries and Packages --------------------------------------------------
 
@@ -27,8 +27,8 @@ seismic_obis <- read.csv(paste0(datadir, "2_obis_tgs_seismic_2013/obis_seamap_da
 head(seismic_obis)
 
 # Create a datafame to generate metadata summaries on the occurrence data at various steps of tidying
-# OccurrenceSummaries <- data.frame(name = seismic_obis) 
-# OccurrenceSummaries$before <- length(seismic_obis$scientific_name)
+# OccurrenceSummaries <- data.frame(name = "seismic_obis") 
+# OccurrenceSummaries$before <- length(seismic_obis$common_name)
 
 ## Save lat/lon columns info into their own df to add in again later on
 ## or else they will disappear when converting to spatial object with st_as_sf
@@ -56,7 +56,7 @@ unique(seismic_obis_sp$common_name)
 seismic_mams <- seismic_obis_sp[seismic_obis_sp$common_name %in% c("Walrus", "Bearded Seal", "Spotted Seal"), ]
 
 # Add to metadata datafame for summaries on the occurrence data at various steps of tidying
-# OccurrenceSummaries$isolatedSpecies <- length(seismic_mams$scientific_name)
+# OccurrenceSummaries$isolatedSpecies <- length(seismic_mams$common_name[which(seismic_mams$common_name == "Walrus")])
 
 # Remove extraneous columns - using the select function to select which columns to keep in the new df
 colnames(seismic_mams)
@@ -66,7 +66,7 @@ seismic_new <- seismic_mams %>% dplyr::select(scientific_name,
                                               date_time)
 
 # Add to metadata datafame for summaries on the occurrence data at various steps of tidying
-# OccurrenceSummaries$columnsofInterest <- length(seismic_new$scientific_name)
+OccurrenceSummaries$columnsofInterest <- length(seismic_new$common_name[which(seismic_mams$common_name == "Walrus")])
 
 # Add a new column to specify data source
 seismic_new$source <- "TGS Seismic 2013"
@@ -140,14 +140,15 @@ na.omit(unique_seismic)
 
 ## Woo now you have a tidy data set of all three species of interest to work with and merge!
 
-View(seismic_merge)
-# View(unique_seismic)
+View(unique_seismic)
 
 # Add to metadata datafame for summaries on the occurrence data at various steps of tidying
-# OccurrenceSummaries$uniqueOccurrences <- length(unique_seismic$scientificName)
+# OccurrenceSummaries$uniqueOccurrences <- length(unique_seismic$commonName[which(unique_seismic$commonName == "Walrus")])
+
+# View(OccurrenceSummaries)
 
 # Save this df to a shp and csv for integration importing
-# st_write(seismic_merge, "../Data_Processed/2_obis_tgs_seismic_2013/2_obis_tgs_seismic_2013.csv")
+# st_write(unique_seismic, "../Data_Processed/2_obis_tgs_seismic_2013/2_obis_tgs_seismic_2013.shp")
 
 # Save metadata dataframe
 # write.csv(OccurrenceSummaries, "../Data_Processed/Metadata/Metadata_2_obis_tgs_seismic_2013.csv")
