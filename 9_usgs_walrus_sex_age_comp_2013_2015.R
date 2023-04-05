@@ -9,7 +9,7 @@
 # Species isolated in this dataset: walrus
 
 # This dataset was tidied and ready for data integration on 10Jan2023
-# Last edited: 28Mar2023
+# Last edited: 5Apr2023
 
 
 # Libraries and Packages --------------------------------------------------
@@ -34,7 +34,7 @@ usgs_walrus_comp <- read.csv(paste0(datadir,"9_usgs_walrus_sex_age_comp_2013_201
 head(usgs_walrus_comp)
 
 # Create a datafame to generate metadata summaries on the occurrence data at various steps of tidying
-# OccurrenceSummaries <- data.frame(name = usgs_walrus_comp) 
+# OccurrenceSummaries <- data.frame(name = "usgs_walrus_comp") 
 # OccurrenceSummaries$before <- length(usgs_walrus_comp$GroupSize)
 
 # Add to metadata datafame for summaries on the occurrence data at various steps of tidying
@@ -128,10 +128,11 @@ na.omit(unique_walrus)
 # Add to metadata datafame for summaries on the occurrence data at various steps of tidying
 # OccurrenceSummaries$uniqueOccurrences <- length(unique_walrus$groupSize)
 
+# View(OccurrenceSummaries)
+
 ## Tada now you have a clean and tidy dataset to work with and merge
 
-View(walrus_sp2)
-# View(unique_walrus)
+View(unique_walrus)
 
 # Can save this data as an output as both shp and csv
 # st_write(walrus_sp2, "../Data_Processed/9_usgs_walrus_sex_age_comp_2013_2015/9_usgs_walrus_sex_age_comp_2013_2015.csv")
