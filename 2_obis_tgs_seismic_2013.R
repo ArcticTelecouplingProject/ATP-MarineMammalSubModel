@@ -66,7 +66,7 @@ seismic_new <- seismic_mams %>% dplyr::select(scientific_name,
                                               date_time)
 
 # Add to metadata datafame for summaries on the occurrence data at various steps of tidying
-OccurrenceSummaries$columnsofInterest <- length(seismic_new$common_name[which(seismic_mams$common_name == "Walrus")])
+# OccurrenceSummaries$columnsofInterest <- length(seismic_new$common_name[which(seismic_mams$common_name == "Walrus")])
 
 # Add a new column to specify data source
 seismic_new$source <- "TGS Seismic 2013"
