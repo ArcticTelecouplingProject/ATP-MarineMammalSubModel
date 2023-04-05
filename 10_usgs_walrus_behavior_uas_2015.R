@@ -1,5 +1,5 @@
 # 10Jan2023
-# Author: Sydney Waloven
+# Author: Sydney Waloven and Natalia Portales
 
 # Source: USGS
 # This dataset was obtained from Behavior of Pacific Walruses Hauled Out on Sea Ice
@@ -9,7 +9,7 @@
 # Species isolated in this dataset: walrus
 
 # This dataset was tidied and ready for data integration on 10Jan2023
-# Last edited: 1Mar2023
+# Last edited: 5Mar2023
 
 
 # Libraries and Packages --------------------------------------------------
@@ -34,7 +34,7 @@ usgs_walrus_uas <- read.csv(paste0(datadir,"10_usgs_walrus_behavior_uas_2015/wal
 head(usgs_walrus_uas)
 
 # Create a datafame to generate metadata summaries on the occurrence data at various steps of tidying
-# OccurrenceSummaries <- data.frame(name = usgs_walrus_uas) 
+# OccurrenceSummaries <- data.frame(name = "usgs_walrus_uas") 
 # OccurrenceSummaries$before <- length(usgs_walrus_uas$Group_Size)
 
 # Add to metadata datafame for summaries on the occurrence data at various steps of tidying
@@ -120,10 +120,11 @@ na.omit(unique_walrus)
 # Add to metadata datafame for summaries on the occurrence data at various steps of tidying
 # OccurrenceSummaries$uniqueOccurrences <- length(unique_walrus$groupSize)
 
+# View(OccurrenceSummaries)
+
 ## Tada now you have a clean and tidy dataset to work with and merge
 
-View(walrus_sp2)
-# View(unique_walrus)
+View(unique_walrus)
 
 # Can save this data as an output as both shp and csv
 # st_write(walrus_sp2, "../Data_Processed/10_usgs_walrus_behavior_uas_2015/10_usgs_walrus_behavior_uas_2015.csv")
