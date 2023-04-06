@@ -1,5 +1,5 @@
 # 07Nov2022
-# Author: Sydney Waloven
+# Author: Sydney Waloven and Natalia Portales
 
 # Source: NSF ARCSS Google Drive
 # Occurrence data of the three species to be evaluated in the project:
@@ -11,7 +11,7 @@
 # Only species featured in this script is Pacific walrus.
 
 # This dataset was tidied and ready for data integration on 07Nov2022.
-# Last edited: 26Feb2023
+# Last edited: 6Apr2023
 
 # Libraries and Packages --------------------------------------------------
 
@@ -34,11 +34,11 @@ head(walrus_gbif)
 colnames(walrus_gbif)
 
 # Create a datafame to generate metadata summaries on the occurrence data at various steps of tidying
-# OccurrenceSummaries <- data.frame(name = walrus_gbif) 
-# OccurrenceSummaries$before <- length(walrus_gbif$specificEp)
+OccurrenceSummaries <- data.frame(name = "walrus_gbif") 
+OccurrenceSummaries$before <- length(walrus_gbif$specificEp)
 
 # Add to metadata datafame for summaries on the occurrence data at various steps of tidying
-# OccurrenceSummaries$isolatedSpecies <- length(walrus_gbif$specificEp)
+OccurrenceSummaries$isolatedSpecies <- length(walrus_gbif$specificEp)
 
 # Transform to Alaska Albers projection
 walrus_gbif_3338 <- walrus_gbif %>% st_transform(crs = 3338)
@@ -69,7 +69,7 @@ wal_gbif_new <- walrus_gbif_new %>% dplyr::select(genericNam,
                                                   basisOfRec)
 
 # Add to metadata datafame for summaries on the occurrence data at various steps of tidying
-# OccurrenceSummaries$columnsofInterest <- length(wal_gbif_new$specificEp)
+OccurrenceSummaries$columnsofInterest <- length(wal_gbif_new$specificEp)
 
 ## Geometry column will automatically be included too because of the spatial structure
 ## Can get rid of with st_drop_geometry()
@@ -159,19 +159,19 @@ unique_walrus <- distinct(walrus_gbif_sp)
 # nrow(unique_walrus)
 
 # Remove Nas
-na.omit(unique_walrus)
+unique_walrus_omit <- na.omit(unique_walrus)
 
 # Add to metadata datafame for summaries on the occurrence data at various steps of tidying
-# OccurrenceSummaries$uniqueOccurrences <- length(unique_walrus$scientificName)
+OccurrenceSummaries$uniqueOccurrences <- length(unique_walrus_omit$scientificName)
+
+View(OccurrenceSummaries)
 
 ## Tada now you have a clean and tidy dataset to work with and merge
 
-View(walrus_gbif_sp)
-# View(unique_walrus)
-
+View(unique_walrus_omit)
 
 # Save this df as a csv for importing - need to use st_write because of spatial geometry
-# st_write(walrus_gbif_sp, "../Data_Processed/1-1_ARCSS_GBIF_walrus/1-1_walrus_gbif_sp.shp")
+# st_write(walrus_gbif_sp, "../Data_Processed/1-1_ARCSS_GBIF_walrus/1-1_walrus_gbif_sp.csv")
 
 # Save metadata dataframe
 # write.csv(OccurrenceSummaries, "../Data_Processed/Metadata/Metadata_1-1_walrus_gbif.csv")
