@@ -5,7 +5,7 @@
 # Source: https://obis.org/dataset/4b394534-8a6b-4bdb-bf1b-f07f983f9e37
 
 # This dataset was tidied and ready for data integration on 07Nov2022.
-# Last updated: 5Apr2023
+# Last updated: 6Apr2023
 
 # Libraries and Packages --------------------------------------------------
 
@@ -27,21 +27,21 @@ seismic_obis <- read.csv(paste0(datadir, "2_obis_tgs_seismic_2013/obis_seamap_da
 head(seismic_obis)
 
 # Create a datafame to generate metadata summaries on the occurrence data at various steps of tidying
-# OccurrenceSummaries <- data.frame(name = "seismic_obis") 
-# OccurrenceSummaries$before <- length(seismic_obis$common_name)
+OccurrenceSummaries <- data.frame(name = "seismic_obis") 
+OccurrenceSummaries$before <- length(seismic_obis$common_name)
 
 ## Save lat/lon columns info into their own df to add in again later on
 ## or else they will disappear when converting to spatial object with st_as_sf
-seismic_latlon <- seismic_obis %>% dplyr::select(common_name, latitude, longitude, date_time)
+# seismic_latlon <- seismic_obis %>% dplyr::select(common_name, latitude, longitude, date_time)
 ## Need to select lat/lons only for species of interest to be used later - needs to correspond
-latlon_mams <- seismic_latlon[seismic_latlon$common_name %in% c("Walrus", "Bearded Seal", "Spotted Seal"), ]
+# latlon_mams <- seismic_latlon[seismic_latlon$common_name %in% c("Walrus", "Bearded Seal", "Spotted Seal"), ]
 
 # Check the CRS
 st_crs(seismic_obis)
 # This is non-spatial so the CRS is NA
 
 # Convert data to a spatial object with CRS 4326 (since that is regular lat/lon) - this is still unprojected
-seismic_obis_sp <- st_as_sf(seismic_obis, coords = c("longitude", "latitude"), crs = 4326) 
+seismic_obis_sp <- st_as_sf(seismic_obis, coords = c("longitude", "latitude"), crs = 4326, remove=FALSE) 
 
 # Project the data to Alaska Albers 3338
 seismic_obis_sp <- seismic_obis_sp %>% st_transform(crs = 3338)
@@ -56,30 +56,32 @@ unique(seismic_obis_sp$common_name)
 seismic_mams <- seismic_obis_sp[seismic_obis_sp$common_name %in% c("Walrus", "Bearded Seal", "Spotted Seal"), ]
 
 # Add to metadata datafame for summaries on the occurrence data at various steps of tidying
-# OccurrenceSummaries$isolatedSpecies <- length(seismic_mams$common_name[which(seismic_mams$common_name == "Walrus")])
+OccurrenceSummaries$isolatedSpecies <- length(seismic_mams$common_name[which(seismic_mams$common_name == "Walrus")])
 
 # Remove extraneous columns - using the select function to select which columns to keep in the new df
 colnames(seismic_mams)
-seismic_new <- seismic_mams %>% dplyr::select(scientific_name,
+seismic_new2 <- seismic_mams %>% dplyr::select(scientific_name,
                                               common_name,
                                               group_size,
-                                              date_time)
+                                              date_time,
+                                              latitude,
+                                              longitude)
 
 # Add to metadata datafame for summaries on the occurrence data at various steps of tidying
-# OccurrenceSummaries$columnsofInterest <- length(seismic_new$common_name[which(seismic_mams$common_name == "Walrus")])
+OccurrenceSummaries$columnsofInterest <- length(seismic_new2$common_name[which(seismic_new2$common_name == "Walrus")])
 
 # Add a new column to specify data source
-seismic_new$source <- "TGS Seismic 2013"
+seismic_new2$source <- "TGS Seismic 2013"
 
 # Add a new column to specify the method of data collection used
-seismic_new$methodObservation <- "Seismic visual observations"
+seismic_new2$methodObservation <- "Seismic visual observations"
 
 
 ## Add back in latitude and longitude columns - needs to correspond with number of rows
 ## and species of interest 
 # Merge latitude and longitude columns from latlon_mams to seismic_new
 # Need to left join lat/lon data onto spatial data rather than spatial data onto lat/lon data
-seismic_new2 <- seismic_new %>% left_join(latlon_mams, by = "date_time")
+# seismic_new2 <- seismic_new %>% left_join(latlon_mams, by = "date_time")
 
 
 # Figure out how R is classifying each column of data
@@ -106,7 +108,7 @@ seismic_new2$day <- substr(seismic_new2$date_time, 9, 10)
 
 # Select only one of the common_name columns to include in the seismic_new2 df
 seismic_new2 <- seismic_new2 %>% dplyr::select(scientific_name,
-                                               common_name.x,
+                                               common_name,
                                                year,
                                                month,
                                                day,
@@ -120,7 +122,7 @@ seismic_new2 <- seismic_new2 %>% dplyr::select(scientific_name,
 
 # Renaming column names from the seismic_new2 df to match the arcss_gbif dfs
 seismic_merge <- seismic_new2 %>% rename(scientificName = scientific_name,
-                                         commonName = common_name.x,
+                                         commonName = common_name,
                                          groupSize = group_size,
                                          decimalLat = latitude,
                                          decimalLon = longitude)
@@ -135,20 +137,20 @@ unique_seismic <- distinct(seismic_merge)
 # quantifying number of occurrences after eliminating repeats
 # nrow(unique_seismic)
 
-#Remove Nas
-na.omit(unique_seismic)
+# Remove Nas
+unique_seismic_omit <- na.omit(unique_seismic)
 
 ## Woo now you have a tidy data set of all three species of interest to work with and merge!
 
-View(unique_seismic)
+View(unique_seismic_omit)
 
 # Add to metadata datafame for summaries on the occurrence data at various steps of tidying
-# OccurrenceSummaries$uniqueOccurrences <- length(unique_seismic$commonName[which(unique_seismic$commonName == "Walrus")])
+OccurrenceSummaries$uniqueOccurrences <- length(unique_seismic_omit$commonName[which(unique_seismic_omit$commonName == "Walrus")])
 
-# View(OccurrenceSummaries)
+View(OccurrenceSummaries)
 
 # Save this df to a shp and csv for integration importing
-# st_write(unique_seismic, "../Data_Processed/2_obis_tgs_seismic_2013/2_obis_tgs_seismic_2013.shp")
+# st_write(unique_seismic, "../Data_Processed/2_obis_tgs_seismic_2013/2_obis_tgs_seismic_2013.csv")
 
 # Save metadata dataframe
 # write.csv(OccurrenceSummaries, "../Data_Processed/Metadata/Metadata_2_obis_tgs_seismic_2013.csv")
