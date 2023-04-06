@@ -1,5 +1,5 @@
 # 08Jan2023
-# Author: Sydney Waloven
+# Author: Sydney Waloven and Natalia Portales
 
 # Source: Arctic Data Center
 # This dataset was obtained from Marine Mammal Sightings During Sir Wilfrid Laurier
@@ -9,7 +9,7 @@
 # Species isolated in this dataset: walrus, bearded seal, spotted seal
 
 # This dataset was tidied and ready for data integration on 08Jan2023
-# Last edited: 4Apr2023
+# Last edited: 6Apr2023
 
 
 
@@ -35,8 +35,8 @@ dbo_swl_2019 <- read.csv(paste0(datadir,"6_nsf_dbo_laurier_2019/data/DBO_SWL_201
 head(dbo_swl_2019)
 
 # Create a datafame to generate metadata summaries on the occurrence data at various steps of tidying
-# OccurrenceSummaries <- data.frame(name = dbo_swl_2019) 
-# OccurrenceSummaries$before <- length(dbo_swl_2019$SPP)
+OccurrenceSummaries <- data.frame(name = "nsf_dbo_swl_2019") 
+OccurrenceSummaries$before <- length(dbo_swl_2019$SPP)
 
 # Isolate out species of interest (see metadata for more details)
 # SPP corresponds to species
@@ -46,7 +46,7 @@ head(dbo_swl_2019)
 mmwatch_mams <- dbo_swl_2019[dbo_swl_2019$SPP %in% c(11, 12, 14), ]
 
 # Add to metadata datafame for summaries on the occurrence data at various steps of tidying
-# OccurrenceSummaries$isolatedSpecies <- length(mmwatch_mams$SPP)
+OccurrenceSummaries$isolatedSpecies <- length(mmwatch_mams$SPP[which(mmwatch_mams$SPP == "11")])
 
 # Remove extraneous columns of info 
 colnames(mmwatch_mams)
@@ -57,7 +57,7 @@ mams_new <- mmwatch_mams %>% dplyr::select(SPP,
                                            NO)
 
 # Add to metadata datafame for summaries on the occurrence data at various steps of tidying
-# OccurrenceSummaries$columnsofInterest <- length(mams_new$SPP)
+OccurrenceSummaries$columnsofInterest <- length(mams_new$SPP[which(mams_new$SPP == "11")])
 
 
 # Convert to spatial df ---------------------------------------------------
@@ -65,22 +65,22 @@ mams_new <- mmwatch_mams %>% dplyr::select(SPP,
 
 # Save lat/lon columns info into their own df to add in again later on
 # or else they will disappear when converting to spatial object with st_as_sf
-mmwatch_latlon <- mams_new %>% dplyr::select(SPP,
-                                             LAT..N.,
-                                             LONG..W.,
-                                             Date)
+# mmwatch_latlon <- mams_new %>% dplyr::select(SPP,
+                                            # LAT..N.,
+                                            # LONG..W.,
+                                            # Date)
 
 # Check the CRS
 st_crs(mams_new) # this is non-spatial so the CRS is NA
 
 # Convert data to a spatial object with CRS 4326 (since that is regular lat/lon) - this is still unprojected
-mams_new_sp <- st_as_sf(mams_new, coords = c("LONG..W.", "LAT..N."), crs = 4326) 
+mams_new_sp <- st_as_sf(mams_new, coords = c("LONG..W.", "LAT..N."), crs = 4326, remove=FALSE) 
 
 # Project the data to Alaska Albers 3338
-mams_new_sp <- mams_new_sp %>% st_transform(crs = 3338)
+mams_sp <- mams_new_sp %>% st_transform(crs = 3338)
 
 # Add back in lat/lon cols using left join to merge lat/lon data onto spatial data rather than spatial data onto lat/lon data
-mams_sp <- mams_new_sp %>% left_join(mmwatch_latlon, by = "Date")
+# mams_sp <- mams_new_sp %>% left_join(mmwatch_latlon, by = "Date")
 
 # Add a new column to specify data source so you can backtrack later if needed
 mams_sp$source <- "Marine Mammal Watch Laurier 2019"
@@ -89,7 +89,7 @@ mams_sp$source <- "Marine Mammal Watch Laurier 2019"
 mams_sp$methodObservation <- "Research cruise visual observation survey"
 
 # Remove extraneous columns again
-mams_sp <- mams_sp %>% dplyr::select(SPP.x,
+mams_sp <- mams_sp %>% dplyr::select(SPP,
                                      NO,
                                      LAT..N.,
                                      LONG..W.,
@@ -107,18 +107,18 @@ mams_sp$month <- 7
 mams_sp$day <- substr(mams_sp$Date, 3, 4)
 
 # Rename SPP code with common species name
-mams_sp$SPP.x[mams_sp$SPP.x == 11] <- "Walrus"
-mams_sp$SPP.x[mams_sp$SPP.x == 12] <- "Bearded Seal"
-mams_sp$SPP.x[mams_sp$SPP.x == 14] <- "Spotted Seal"
+mams_sp$SPP[mams_sp$SPP == 11] <- "Walrus"
+mams_sp$SPP[mams_sp$SPP == 12] <- "Bearded Seal"
+mams_sp$SPP[mams_sp$SPP == 14] <- "Spotted Seal"
 
 # Add scientific name column
-mams_sp$scientificName[mams_sp$SPP.x == "Walrus"] <- "Odobenus rosmarus divergens"
-mams_sp$scientificName[mams_sp$SPP.x == "Bearded Seal"] <- "Erignathus barbatus"
-mams_sp$scientificName[mams_sp$SPP.x == "Spotted Seal"] <- "Phoca largha"
+mams_sp$scientificName[mams_sp$SPP == "Walrus"] <- "Odobenus rosmarus divergens"
+mams_sp$scientificName[mams_sp$SPP == "Bearded Seal"] <- "Erignathus barbatus"
+mams_sp$scientificName[mams_sp$SPP == "Spotted Seal"] <- "Phoca largha"
 
 # Remove extraneous cols, rearrange, and rename
 mams_sp2 <- mams_sp %>% dplyr::select(scientificName,
-                                      SPP.x,
+                                      SPP,
                                       year,
                                       month,
                                       day,
@@ -127,7 +127,7 @@ mams_sp2 <- mams_sp %>% dplyr::select(scientificName,
                                       LONG..W.,
                                       methodObservation,
                                       source) %>% 
-  rename(commonName = SPP.x,
+  rename(commonName = SPP,
          groupSize = NO,
          decimalLat = LAT..N.,
          decimalLon = LONG..W.)
@@ -145,10 +145,14 @@ unique_mams <- distinct(mams_sp2)
 # Remove Nas
 na.omit(unique_mams)
 
+# Add to metadata datafame for summaries on the occurrence data at various steps of tidying
+OccurrenceSummaries$uniqueOccurrences <- length(unique_mams$commonName[which(unique_mams$commonName == "Walrus")])
+
+View(OccurrenceSummaries)
+
 ## Tada now you have a clean and tidy dataset to work with and merge
 
-View(mams_sp2)
-# View(unique_mams)
+View(unique_mams)
 
 # Can save this data as an output as both shp and csv
 # st_write(mams_sp2, "../Data_Processed/6_nsf_dbo_laurier_2019/6_nsf_dbo_laurier_2019.shp")
