@@ -44,8 +44,8 @@ bird <- left_join(birdocc, birdevent, by=c("eventID"))
 head(bird) # Now we've picked the matching lines from the birdevent and moved them over to the bird occ
 
 # Create a datafame to generate metadata summaries on the occurrence data at various steps of tidying
-# OccurrenceSummaries <- data.frame(name = "obis_bird") 
-# OccurrenceSummaries$before <- length(bird$vernacularName)
+OccurrenceSummaries <- data.frame(name = "obis_bird") 
+OccurrenceSummaries$before <- length(bird$vernacularName)
 
 # Isolate out species of interest 
 unique(bird$vernacularName)
@@ -53,7 +53,7 @@ unique(bird$vernacularName)
 ambon_mams <- bird[bird$vernacularName %in% c("Walrus", "Bearded Seal", "Spotted Seal"), ] 
 
 # Add to metadata datafame for summaries on the occurrence data at various steps of tidying
-# OccurrenceSummaries$isolatedSpecies <- length(ambon_mams$vernacularName[which(ambon_mams$vernacularName == "Walrus")])
+OccurrenceSummaries$isolatedSpecies <- length(ambon_mams$vernacularName[which(ambon_mams$vernacularName == "Walrus")])
 
 # Remove extraneous columns of info 
 colnames(ambon_mams)
@@ -66,29 +66,29 @@ mams_new <- ambon_mams %>% dplyr::select(vernacularName,
                                          samplingProtocol)
 
 # Add to metadata datafame for summaries on the occurrence data at various steps of tidying
-# OccurrenceSummaries$columnsofInterest <- length(mams_new$vernacularName[which(mams_new$vernacularName == "Walrus")])
+OccurrenceSummaries$columnsofInterest <- length(mams_new$vernacularName[which(mams_new$vernacularName == "Walrus")])
 
 # Convert to spatial df ---------------------------------------------------
 
 # Save lat/lon columns info into their own df to add in again later on
 # or else they will disappear when converting to spatial object with st_as_sf
-ambon_latlon <- mams_new %>% dplyr::select(vernacularName,
-                                           decimalLatitude,
-                                           decimalLongitude,
-                                           eventDate)
+# ambon_latlon <- mams_new %>% dplyr::select(vernacularName,
+                                           # decimalLatitude,
+                                           # decimalLongitude,
+                                           # eventDate)
 
 # Check the CRS
 st_crs(mams_new)
 # This is non-spatial so the CRS is NA
 
 # Convert data to a spatial object with CRS 4326 (since that is regular lat/lon) - this is still unprojected
-mams_new_sp <- st_as_sf(mams_new, coords = c("decimalLongitude", "decimalLatitude"), crs = 4326) 
+mams_new_sp <- st_as_sf(mams_new, coords = c("decimalLongitude", "decimalLatitude"), crs = 4326, remove=FALSE) 
 
 # Project the data to Alaska Albers 3338
-mams_new_sp <- mams_new_sp %>% st_transform(crs = 3338)
+mams_sp <- mams_new_sp %>% st_transform(crs = 3338)
 
 # Add back in lat/lon cols using left join to merge lat/lon data onto spatial data rather than spatial data onto lat/lon data
-mams_sp <- mams_new_sp %>% left_join(ambon_latlon, by = "eventDate")
+# mams_sp <- mams_new_sp %>% left_join(ambon_latlon, by = "eventDate")
 
 # Add a new column to specify data source so you can backtrack later if needed
 mams_sp$source <- "AMBON Norseman II Cruise 2015"
@@ -126,7 +126,7 @@ mams_sp$day <- substr(mams_sp$eventDate, 9, 10)
 
 # Remove eventDate col and rearrange order of cols
 mams_sp2 <- mams_sp %>% dplyr::select(scientificName,
-                                        vernacularName.x,
+                                        vernacularName,
                                         year,
                                         month,
                                         day,
@@ -136,7 +136,7 @@ mams_sp2 <- mams_sp %>% dplyr::select(scientificName,
                                       samplingProtocol,
                                         source) %>% 
 rename(scientificName = scientificName,
-           commonName = vernacularName.x,
+           commonName = vernacularName,
            groupSize = individualCount,
            decimalLat = decimalLatitude,
            decimalLon = decimalLongitude,
@@ -153,19 +153,19 @@ unique_mams <- distinct(mams_sp2)
 # nrow(unique_mams)
 
 # Remove Nas
-na.omit(unique_mams)
+unique_mams_omit <- na.omit(unique_mams)
 
 # Add to metadata datafame for summaries on the occurrence data at various steps of tidying
-# OccurrenceSummaries$uniqueOccurrences <- length(unique_mams$commonName[which(unique_mams$commonName == "Walrus")])
+OccurrenceSummaries$uniqueOccurrences <- length(unique_mams_omit$commonName[which(unique_mams_omit$commonName == "Walrus")])
 
-# View(OccurrenceSummaries)
+View(OccurrenceSummaries)
 
 ## Tada now you have a clean and tidy dataset to work with and merge
 
-View(unique_mams)
+View(unique_mams_omit)
 
 # Can save this data as an output as both shp and csv
-# st_write(mams_sp2, "../Data_Processed/3_obis_ambon_norseman_2015/3_obis_ambon_norseman_2015.csv")
+# st_write(mams_sp2, "../Data_Processed/3_obis_ambon_norseman_2015/3_obis_ambon_norseman_2015.shp")
 
 # Save metadata dataframe
 # write.csv(OccurrenceSummaries, "../Data_Processed/Metadata/Metadata_3_obis_ambon_norseman_2015.csv")
