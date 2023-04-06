@@ -1,5 +1,5 @@
 # 08Jan2023
-# Author: Sydney Waloven
+# Author: Sydney Waloven and Natalia Portales
 
 # Source: Arctic Data Center
 # This dataset was obtained from: Arctic Data Center Marine Mammal Watch,
@@ -9,7 +9,7 @@
 # Species isolated in this dataset: walrus, bearded seal, spotted seal
 
 # This dataset was tidied and ready for data integration on 08Jan2023
-# Last edited: 4Apr2023
+# Last edited: 6Apr2023
 
 
 
@@ -34,8 +34,8 @@ mmwatch2017 <- read.csv(paste0(datadir,"5_nsf_moore_mmw_2017/data/DBO_MMWatch_HL
 head(mmwatch2017)
 
 # Create a datafame to generate metadata summaries on the occurrence data at various steps of tidying
-# OccurrenceSummaries <- data.frame(name = mmwatch2017) 
-# OccurrenceSummaries$before <- length(mmwatch2017$SPP)
+OccurrenceSummaries <- data.frame(name = "nsf_mmwatch2017") 
+OccurrenceSummaries$before <- length(mmwatch2017$SPP)
 
 # Isolate out species of interest (see metadata for more details)
 # SPP corresponds to species
@@ -45,7 +45,7 @@ head(mmwatch2017)
 mmwatch_mams <- mmwatch2017[mmwatch2017$SPP %in% c(11, 12, 14), ]
 
 # Add to metadata datafame for summaries on the occurrence data at various steps of tidying
-# OccurrenceSummaries$isolatedSpecies <- length(mmwatch_mams$SPP)
+OccurrenceSummaries$isolatedSpecies <- length(mmwatch_mams$SPP[which(mmwatch_mams$SPP == "11")])
 
 # Remove extraneous columns of info 
 colnames(mmwatch_mams)
@@ -56,7 +56,7 @@ mams_new <- mmwatch_mams %>% dplyr::select(SPP,
                                            No.)
 
 # Add to metadata datafame for summaries on the occurrence data at various steps of tidying
-# OccurrenceSummaries$columnsofInterest <- length(mams_new$SPP)
+OccurrenceSummaries$columnsofInterest <- length(mams_new$SPP[which(mams_new$SPP == "11")])
 
 
 # Convert to spatial df ---------------------------------------------------
@@ -64,22 +64,21 @@ mams_new <- mmwatch_mams %>% dplyr::select(SPP,
 # Change format of lat/lon columns from degrees-decimal minutes to decimal degrees
 ## substr() takes the column name, starting position, and length of the string as arguments, returning
 ## the substring of the specific column - use this to separate LAT..N. and LONG..W. into two columns
-mams_new$deg_lat <- substr(mams_new$LAT..N., 1, 2)
-mams_new$min_lat <- substr(mams_new$LAT..N., 3, 6)
+mams_new$deg_lat <- as.numeric(substr(mams_new$LAT..N., 1, 2))
+mams_new$degfrac_lat <- as.numeric(substr(mams_new$LAT..N., 3, 6))/60
 
-mams_new$deg_lon <- substr(mams_new$LONG..W., 1, 3)
-mams_new$min_lon <- substr(mams_new$LONG..W., 4, 6)
+mams_new$deg_lon <- as.numeric(substr(mams_new$LONG..W., 1, 3))
+mams_new$degfrac_lon <- as.numeric(substr(mams_new$LONG..W., 4, 6))/60
 
-# Remove decimal point from min_lat col
-mams_new$min_lat <- gsub("[[:punct:]]", "", mams_new$min_lat) # [[:punct:]] removes punctuation like the decimal point
+# [[:punct:]] removes punctuation like the decimal point
 
 # Combine deg and min cols to make decimal degrees col that character string to a new colum
-mams_new$decimalLat <- paste(mams_new$deg_lat, mams_new$min_lat)
-mams_new$decimalLon <- paste(mams_new$deg_lon, mams_new$min_lon)
+mams_new$decimalLat <- mams_new$deg_lat + mams_new$degfrac_lat
+mams_new$decimalLon <- mams_new$deg_lon + mams_new$degfrac_lon
 
 # Replace space between deg and min with a decimal point
-mams_new$decimalLat <- gsub("[[:blank:]]", ".", mams_new$decimalLat)
-mams_new$decimalLon <- gsub("[[:blank:]]", ".", mams_new$decimalLon)
+# mams_new$decimalLat <- gsub("[[:blank:]]", ".", mams_new$decimalLat)
+# mams_new$decimalLon <- gsub("[[:blank:]]", ".", mams_new$decimalLon)
 
 # Figure out how R is classifying each column of data
 lapply(mams_new, class)
@@ -94,22 +93,22 @@ mams_new$decimalLon <- mams_new$decimalLon*(-1)
 
 # Save lat/lon columns info into their own df to add in again later on
 # or else they will disappear when converting to spatial object with st_as_sf
-mmwatch_latlon <- mams_new %>% dplyr::select(SPP,
-                                             decimalLat,
-                                             decimalLon,
-                                             Date)
+# mmwatch_latlon <- mams_new %>% dplyr::select(SPP,
+                                            # decimalLat,
+                                             # decimalLon,
+                                             # Date)
 
 # Check the CRS
 st_crs(mams_new) # this is non-spatial so the CRS is NA
 
 # Convert data to a spatial object with CRS 4326 (since that is regular lat/lon) - this is still unprojected
-mams_new_sp <- st_as_sf(mams_new, coords = c("decimalLon", "decimalLat"), crs = 4326) 
+mams_new_sp <- st_as_sf(mams_new, coords = c("decimalLon", "decimalLat"), crs = 4326, remove=FALSE) 
 
 # Project the data to Alaska Albers 3338
-mams_new_sp <- mams_new_sp %>% st_transform(crs = 3338)
+mams_sp <- mams_new_sp %>% st_transform(crs = 3338)
 
 # Add back in lat/lon cols using left join to merge lat/lon data onto spatial data rather than spatial data onto lat/lon data
-mams_sp <- mams_new_sp %>% left_join(mmwatch_latlon, by = "Date")
+# mams_sp <- mams_new_sp %>% left_join(mmwatch_latlon, by = "Date")
 
 # Add a new column to specify data source so you can backtrack later if needed
 mams_sp$source <- "Marine Mammal Watch Aug-Sep 2017"
@@ -118,7 +117,7 @@ mams_sp$source <- "Marine Mammal Watch Aug-Sep 2017"
 mams_sp$methodObservation <- "Research cruise visual observation survey"
 
 # Remove extraneous columns again
-mams_sp <- mams_sp %>% dplyr::select(SPP.x,
+mams_sp <- mams_sp %>% dplyr::select(SPP,
                                      No.,
                                      decimalLat,
                                      decimalLon,
@@ -134,20 +133,21 @@ mams_sp <- mams_sp %>% dplyr::select(SPP.x,
 mams_sp$year <- 2017
 mams_sp$month <- substr(mams_sp$Date, 1, 1)
 mams_sp$day <- substr(mams_sp$Date, 3, 4)
+mams_sp$day <- gsub("/", "", as.character(mams_sp$day))
 
 # Rename SPP code with common species name
-mams_sp$SPP.x[mams_sp$SPP.x == 11] <- "Walrus"
-mams_sp$SPP.x[mams_sp$SPP.x == 12] <- "Bearded Seal"
-mams_sp$SPP.x[mams_sp$SPP.x == 14] <- "Spotted Seal"
+mams_sp$SPP[mams_sp$SPP == 11] <- "Walrus"
+mams_sp$SPP[mams_sp$SPP == 12] <- "Bearded Seal"
+mams_sp$SPP[mams_sp$SPP == 14] <- "Spotted Seal"
 
 # Add scientific name column
-mams_sp$scientificName[mams_sp$SPP.x == "Walrus"] <- "Odobenus rosmarus divergens"
-mams_sp$scientificName[mams_sp$SPP.x == "Bearded Seal"] <- "Erignathus barbatus"
-mams_sp$scientificName[mams_sp$SPP.x == "Spotted Seal"] <- "Phoca largha"
+mams_sp$scientificName[mams_sp$SPP == "Walrus"] <- "Odobenus rosmarus divergens"
+mams_sp$scientificName[mams_sp$SPP == "Bearded Seal"] <- "Erignathus barbatus"
+mams_sp$scientificName[mams_sp$SPP == "Spotted Seal"] <- "Phoca largha"
 
 # Remove extraneous cols, rearrange, and rename
 mams_sp2 <- mams_sp %>% dplyr::select(scientificName,
-                                      SPP.x,
+                                      SPP,
                                       year,
                                       month,
                                       day,
@@ -156,11 +156,11 @@ mams_sp2 <- mams_sp %>% dplyr::select(scientificName,
                                       decimalLon,
                                       methodObservation,
                                       source) %>% 
-  rename(commonName = SPP.x,
+  rename(commonName = SPP,
          groupSize = No.)
 
 # quantifying number of occurrences before eliminating repeats
-nrow(mams_sp2)
+# nrow(mams_sp2)
 
 # Eliminate repeat occurrences
 # https://statisticsglobe.com/unique-rows-of-data-frame-based-on-selected-columns-in-r
@@ -173,16 +173,17 @@ unique_mams <- distinct(mams_sp2)
 na.omit(unique_mams)
 
 # Add to metadata datafame for summaries on the occurrence data at various steps of tidying
-# OccurrenceSummaries$uniqueOccurrences <- length(unique_mams$scientificName)
+OccurrenceSummaries$uniqueOccurrences <- length(unique_mams$commonName[which(unique_mams$commonName == "Walrus")])
+
+View(OccurrenceSummaries)
 
 ## Tada now you have a clean and tidy dataset to work with and merge
 
-View(mams_sp2)
-# View(unique_mams)
+View(unique_mams)
 
 # Can save this data as an output as both shp and csv
-# st_write(mams_sp2, "../Data_Processed/5_nsf_moore_mmw_2017/5_nsf_moore_mmw_2017.csv")
+# st_write(mams_sp2, "../Data_Processed/5_nsf_moore_mmw_2017/5_nsf_moore_mmw_2017.shp")
 
 # Save metadata dataframe
-# write.csv(OccurrenceSummaries, "../Data_Processed/Metadata/Metadata_nsf_moore_mmw_2017.csv")
+# write.csv(OccurrenceSummaries, "../Data_Processed/Metadata/Metadata_5_nsf_moore_mmw_2017.csv")
 
