@@ -35,7 +35,7 @@ dbo_swl_2018 <- read.csv(paste0(datadir,"7_nsf_stafford_mmw_2018/data/DBO_SWL_20
 head(dbo_swl_2018)
 
 # Create a datafame to generate metadata summaries on the occurrence data at various steps of tidying
-OccurrenceSummaries <- data.frame(name = "dbo_swl_2018") 
+OccurrenceSummaries <- data.frame(name = "nsf_dbo_swl_2018") 
 OccurrenceSummaries$before <- length(dbo_swl_2018$SPP)
 
 # Isolate out species of interest (see metadata for more details)
