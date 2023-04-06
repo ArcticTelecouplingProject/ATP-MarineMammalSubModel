@@ -34,11 +34,11 @@ usgs_walrus_comp <- read.csv(paste0(datadir,"9_usgs_walrus_sex_age_comp_2013_201
 head(usgs_walrus_comp)
 
 # Create a datafame to generate metadata summaries on the occurrence data at various steps of tidying
-# OccurrenceSummaries <- data.frame(name = "usgs_walrus_comp") 
-# OccurrenceSummaries$before <- length(usgs_walrus_comp$GroupSize)
+OccurrenceSummaries <- data.frame(name = "usgs_walrus_comp") 
+OccurrenceSummaries$before <- length(usgs_walrus_comp$GroupSize)
 
 # Add to metadata datafame for summaries on the occurrence data at various steps of tidying
-# OccurrenceSummaries$isolatedSpecies <- length(usgs_walrus_comp$GroupSize)
+OccurrenceSummaries$isolatedSpecies <- length(usgs_walrus_comp$GroupSize)
 
 # Remove extraneous columns of info 
 colnames(usgs_walrus_comp)
@@ -50,7 +50,7 @@ usgs_walrus <- usgs_walrus_comp %>% dplyr::select(Year,
                                            GroupSizingMethod)
 
 # Add to metadata datafame for summaries on the occurrence data at various steps of tidying
-# OccurrenceSummaries$columnsofInterest <- length(usgs_walrus$GroupSize)
+OccurrenceSummaries$columnsofInterest <- length(usgs_walrus$GroupSize)
 
 
 # Convert to spatial df ---------------------------------------------------
@@ -61,10 +61,10 @@ usgs_walrus$commonName <- "Walrus"
 
 # Save lat/lon columns info into their own df to add in again later on
 # or else they will disappear when converting to spatial object with st_as_sf
-usgs_latlon <- usgs_walrus %>% dplyr::select(scientificName,
-                                                Latitude,
-                                                Longitude,
-                                                DateTimeStart)
+# usgs_latlon <- usgs_walrus %>% dplyr::select(scientificName,
+                                               # Latitude,
+                                               # Longitude,
+                                               # DateTimeStart)
 
 # Check the CRS
 st_crs(usgs_walrus) # this is non-spatial so the CRS is NA
@@ -73,13 +73,13 @@ st_crs(usgs_walrus) # this is non-spatial so the CRS is NA
 usgs_walrus_new <- usgs_walrus[!is.na(usgs_walrus$Latitude), ]
 
 # Convert data to a spatial object with CRS 4326 (since that is regular lat/lon) - this is still unprojected
-usgs_walrus_sp <- st_as_sf(usgs_walrus_new, coords = c("Longitude", "Latitude"), crs = 4326) 
+usgs_walrus_sp <- st_as_sf(usgs_walrus_new, coords = c("Longitude", "Latitude"), crs = 4326, remove=FALSE) 
 
 # Project the data to Alaska Albers 3338
-usgs_walrus_sp <- usgs_walrus_sp %>% st_transform(crs = 3338)
+walrus_sp <- usgs_walrus_sp %>% st_transform(crs = 3338)
 
 # Add back in lat/lon cols using left join to merge lat/lon data onto spatial data rather than spatial data onto lat/lon data
-walrus_sp <- usgs_walrus_sp %>% left_join(usgs_latlon, by = "DateTimeStart")
+# walrus_sp <- usgs_walrus_sp %>% left_join(usgs_latlon, by = "DateTimeStart")
 
 # Add a new column to specify data source so you can backtrack later if needed
 walrus_sp$source <- "USGS Sex and Age Comp of Walrus Haulouts 2013-2015"
@@ -96,7 +96,7 @@ walrus_sp$month <- substr(walrus_sp$DateTimeStart, 6, 7)
 walrus_sp$day <- substr(walrus_sp$DateTimeStart, 9, 10)
 
 # Remove extraneous columns again, rearrange, and name
-walrus_sp2 <- walrus_sp %>% dplyr::select(scientificName.x,
+walrus_sp2 <- walrus_sp %>% dplyr::select(scientificName,
                                       commonName,
                                       Year,
                                       month,
@@ -106,7 +106,7 @@ walrus_sp2 <- walrus_sp %>% dplyr::select(scientificName.x,
                                       Longitude,
                                       methodObservation,
                                       source) %>% 
-  rename(scientificName = scientificName.x,
+  rename(scientificName = scientificName,
          year = Year,
          groupSize = GroupSize,
          decimalLat = Latitude,
@@ -123,19 +123,19 @@ unique_walrus <- distinct(walrus_sp2)
 # nrow(unique_walrus)
 
 # Remove Nas
-na.omit(unique_walrus)
+unique_walrus_omit <- na.omit(unique_walrus)
 
 # Add to metadata datafame for summaries on the occurrence data at various steps of tidying
-# OccurrenceSummaries$uniqueOccurrences <- length(unique_walrus$groupSize)
+OccurrenceSummaries$uniqueOccurrences <- length(unique_walrus_omit$groupSize)
 
-# View(OccurrenceSummaries)
+View(OccurrenceSummaries)
 
 ## Tada now you have a clean and tidy dataset to work with and merge
 
-View(unique_walrus)
+View(unique_walrus_omit)
 
 # Can save this data as an output as both shp and csv
-# st_write(walrus_sp2, "../Data_Processed/9_usgs_walrus_sex_age_comp_2013_2015/9_usgs_walrus_sex_age_comp_2013_2015.csv")
+# st_write(unique_walrus_omit, "../Data_Processed/9_usgs_walrus_sex_age_comp_2013_2015/9_usgs_walrus_sex_age_comp_2013_2015.shp")
 
 # Save metadata dataframe
 # write.csv(OccurrenceSummaries, "../Data_Processed/Metadata/Metadata_9_usgs_walrus_sex_age_comp_2013_2015.csv")
