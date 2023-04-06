@@ -1,5 +1,5 @@
 # 09Jan2023
-# Author: Sydney Waloven
+# Author: Sydney Waloven and Natalia Portales
 
 # Source: Arctic Data Center
 # This dataset was obtained from Marine Mammal aerial surveys in the Bering, Chukchi,
@@ -9,7 +9,7 @@
 # Species isolated in this dataset: walrus, bearded seal, spotted seal
 
 # This dataset was tidied and ready for data integration on 09Jan2023
-# Last edited: 12Feb2023
+# Last edited: 6Apr2023
 
 
 
@@ -35,15 +35,15 @@ nmml_aerial <- read.csv(paste0(datadir,"8_nmml_aerial_1979_2010/8_nmml_aerial_19
 head(nmml_aerial)
 
 # Create a datafame to generate metadata summaries on the occurrence data at various steps of tidying
-# OccurrenceSummaries <- data.frame(name = seismic_obis) 
-# OccurrenceSummaries$before <- length(seismic_obis$scientific_name)
+# OccurrenceSummaries <- data.frame(name = "gbif_nmml_aerial") 
+# OccurrenceSummaries$before <- length(nmml_aerial$verbatimScientificName)
 
 # Isolate out species of interest
 unique(nmml_aerial$verbatimScientificName)
 mmwatch_mams <- nmml_aerial[nmml_aerial$verbatimScientificName %in% c("Odobenus rosmarus", "Phoca largha", "Erignathus barbatus"), ]
 
 # Add to metadata datafame for summaries on the occurrence data at various steps of tidying
-# OccurrenceSummaries$isolatedSpecies <- length(mmwatch_mams$verbatimScientificName)
+# OccurrenceSummaries$isolatedSpecies <- length(mmwatch_mams$verbatimScientificName[which(mmwatch_mams$verbatimScientificName == "Odobenus rosmarus")])
 
 # Remove extraneous columns of info 
 colnames(mmwatch_mams)
@@ -56,7 +56,7 @@ mams_new <- mmwatch_mams %>% dplyr::select(verbatimScientificName,
                                            decimalLongitude)
 
 # Add to metadata datafame for summaries on the occurrence data at various steps of tidying
-# OccurrenceSummaries$columnsofInterest <- length(mams_new$verbatimScientificName)
+# OccurrenceSummaries$columnsofInterest <- length(mams_new$verbatimScientificName[which(mams_new$verbatimScientificName == "Odobenus rosmarus")])
 
 
 # Convert to spatial df ---------------------------------------------------
@@ -110,26 +110,26 @@ mams_sp2 <- mams_sp %>% dplyr::select(verbatimScientificName.x,
          decimalLon = decimalLongitude)
 
 # quantifying number of occurrences before eliminating repeats
-# nrow(mams_sp2)
+nrow(mams_sp2)
 
 # Eliminate repeat occurrences
 # https://statisticsglobe.com/unique-rows-of-data-frame-based-on-selected-columns-in-r
 unique_mams <- distinct(mams_sp2)
 
 # quantifying number of occurrences after eliminating repeats
-# nrow(unique_mams)
+nrow(unique_mams)
 
 # Remove Nas
 na.omit(unique_mams)
 
 # Add to metadata datafame for summaries on the occurrence data at various steps of tidying
-# OccurrenceSummaries$uniqueOccurrences <- length(unique_mams$scientificName)
+# OccurrenceSummaries$uniqueOccurrences <- length(unique_mams$scientificName[which(unique_mams$scientificName == "Odobenus rosmarus")])
 
+# View(OccurrenceSummaries)
 
 ## Tada now you have a clean and tidy dataset to work with and merge
 
-View(mams_sp2)
-# View(unique_mams)
+View(unique_mams)
 
 # Can save this data as an output as both shp and csv
 # st_write(mams_sp2, "../Data_Processed/8_nmml_aerial_1979_2010/8_nmml_aerial_1979_2010.shp")
