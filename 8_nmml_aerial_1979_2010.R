@@ -120,19 +120,19 @@ unique_mams <- distinct(mams_sp2)
 # nrow(unique_mams)
 
 # Remove Nas
-na.omit(unique_mams)
+unique_mams_omit <- na.omit(unique_mams)
 
 # Add to metadata datafame for summaries on the occurrence data at various steps of tidying
-OccurrenceSummaries$uniqueOccurrences <- length(unique_mams$scientificName[which(unique_mams$scientificName == "Odobenus rosmarus")])
+OccurrenceSummaries$uniqueOccurrences <- length(unique_mams_omit$scientificName[which(unique_mams_omit$scientificName == "Odobenus rosmarus")])
 
 # View(OccurrenceSummaries)
 
 ## Tada now you have a clean and tidy dataset to work with and merge
 
-View(unique_mams)
+View(unique_mams_omit)
 
 # Can save this data as an output as both shp and csv
-# st_write(mams_sp2, "../Data_Processed/8_nmml_aerial_1979_2010/8_nmml_aerial_1979_2010.csv")
+# st_write(unique_mams_omit, "../Data_Processed/8_nmml_aerial_1979_2010/8_nmml_aerial_1979_2010.shp")
 
 # Save metadata dataframe
 # write.csv(OccurrenceSummaries, "../Data_Processed/Metadata/Metadata_8_nmml_aerial_1979_2010.csv")

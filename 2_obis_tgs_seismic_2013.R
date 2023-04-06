@@ -150,7 +150,7 @@ OccurrenceSummaries$uniqueOccurrences <- length(unique_seismic_omit$commonName[w
 View(OccurrenceSummaries)
 
 # Save this df to a shp and csv for integration importing
-# st_write(unique_seismic, "../Data_Processed/2_obis_tgs_seismic_2013/2_obis_tgs_seismic_2013.csv")
+# st_write(unique_seismic_omit, "../Data_Processed/2_obis_tgs_seismic_2013/2_obis_tgs_seismic_2013.csv")
 
 # Save metadata dataframe
 # write.csv(OccurrenceSummaries, "../Data_Processed/Metadata/Metadata_2_obis_tgs_seismic_2013.csv")

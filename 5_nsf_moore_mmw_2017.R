@@ -182,7 +182,7 @@ View(OccurrenceSummaries)
 View(unique_mams_omit)
 
 # Can save this data as an output as both shp and csv
-# st_write(mams_sp2, "../Data_Processed/5_nsf_moore_mmw_2017/5_nsf_moore_mmw_2017.csv")
+# st_write(unique_mams_omit, "../Data_Processed/5_nsf_moore_mmw_2017/5_nsf_moore_mmw_2017.shp")
 
 # Save metadata dataframe
 # write.csv(OccurrenceSummaries, "../Data_Processed/Metadata/Metadata_5_nsf_moore_mmw_2017.csv")

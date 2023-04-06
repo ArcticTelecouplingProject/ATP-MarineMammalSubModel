@@ -1,5 +1,5 @@
 # 10Jan2023
-# Author: Sydney Waloven
+# Author: Sydney Waloven and Natalia Portales
 
 # Source: USGS
 # This dataset was obtained from Sex and Age Composition of Walrus Groups Hauled
@@ -9,7 +9,7 @@
 # Species isolated in this dataset: walrus
 
 # This dataset was tidied and ready for data integration on 10Jan2023
-# Last edited: 5Apr2023
+# Last edited: 6Apr2023
 
 
 # Libraries and Packages --------------------------------------------------

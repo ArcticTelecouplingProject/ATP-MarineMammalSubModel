@@ -95,7 +95,7 @@ mams_sp$source <- "AMBON Norseman II Cruise 2015"
 # May also want to add other columns that help add information about the data source (e.g., vessel based, plane based, etc.)
 
 # Remove extraneous columns again
-mams_sp <- mams_sp %>% dplyr::select(vernacularName.x,
+mams_sp <- mams_sp %>% dplyr::select(vernacularName,
                                          scientificName,
                                          individualCount,
                                          decimalLatitude,
@@ -165,7 +165,7 @@ View(OccurrenceSummaries)
 View(unique_mams_omit)
 
 # Can save this data as an output as both shp and csv
-# st_write(mams_sp2, "../Data_Processed/3_obis_ambon_norseman_2015/3_obis_ambon_norseman_2015.shp")
+# st_write(unique_mams_omit, "../Data_Processed/3_obis_ambon_norseman_2015/3_obis_ambon_norseman_2015.csv")
 
 # Save metadata dataframe
 # write.csv(OccurrenceSummaries, "../Data_Processed/Metadata/Metadata_3_obis_ambon_norseman_2015.csv")
