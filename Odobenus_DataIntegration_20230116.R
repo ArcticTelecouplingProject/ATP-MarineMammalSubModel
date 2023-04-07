@@ -1,5 +1,5 @@
 # 16Jan2023
-# Author: Sydney Waloven
+# Author: Sydney Waloven and Natalia Portales
 
 # This dataset was built to merge collected and Pacific walrus data sets.
 # There is also a plotting section and summary section.
@@ -17,7 +17,7 @@
 # 9_usgs_walrus_sex_age_comp_2013_2015
 # 10_usgs_walrus_behavior_uas_2015
 
-# Last edited: 30Mar2023
+# Last edited: 7Apr2023
 
 
 # Libraries and Packages --------------------------------------------------
@@ -104,10 +104,15 @@ unique_wal <- distinct(all_wal_df)
 # quantifying number of occurrences after eliminating repeats
 nrow(unique_wal)
 
-# Remove NAs
+# Remove Nas
+unique_wal_omit <- na.omit(unique_wal)
+
+nrow(unique_wal_omit)
+
+View(unique_wal_omit)
 
 # Save this to a csv
-# write.csv(st_drop_geometry(unique_wal), "../Data_Processed/odobenus_integrated20230210.csv")
+# write.csv(st_drop_geometry(unique_wal_omit), "../Data_Processed/Odobenus_DataIntegration_20230116/odobenus_integrated20230210.csv")
 
 # Plotting ----------------------------------------------------------------
 
@@ -136,18 +141,18 @@ base_crop <- st_crop(base_map, c(xmin = -2173499, ymin = 159766, xmax = 1661246,
 
 # Plot all Walrus occurrence points against uncropped base map
 ggplot() + geom_sf(data = base_crop) + 
-  geom_sf(data = unique_wal, mapping = aes(color = year)) +
+  geom_sf(data = unique_wal_omit, mapping = aes(color = year)) +
   labs(
     title = "Walrus occurrences in the Bering Strait Region")
 
 
 # Isolate number of rows after 2010
-unique2010 <- unique_wal[unique_wal$year > 2009, ]
+unique2010 <- unique_wal_omit[unique_wal_omit$year > 2009, ]
 
 # Save to csv
-write.csv(st_drop_geometry(unique2010), "../Data_Processed/odobenus2010_integrated20230210.csv")
+write.csv(st_drop_geometry(unique2010), "../Data_Processed/Odobenus_DataIntegration_20230116/odobenus2010_integrated20230210.csv")
 
-# Plotting points after 2010
+# Plotting points after 2010Odobenus_DataIntegration_20230116
 ggplot() + geom_sf(data = base_crop) + 
   geom_sf(data = unique2010, mapping = aes(color = year), size = 1.5) +
   labs(
@@ -159,7 +164,7 @@ ggplot() + geom_sf(data = base_crop) +
 
 
 # create new df with occurrence points and no geometry attached
-all_df_drop <- unique_wal %>%
+all_df_drop <- unique_wal_omit %>%
   st_drop_geometry() %>%
   group_by(year, month, day) %>%
   summarize(n=n()) %>%
