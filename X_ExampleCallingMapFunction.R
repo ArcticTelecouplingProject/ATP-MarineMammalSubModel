@@ -13,18 +13,20 @@
 # Load libraries
 library(sf) # For vector data (points, lines, polygons) 
 library(tidyverse) # For data manipulation 
+library(pgirmess) # for bounding box 
 
 # Load in makeMap function from MapFunction.R script
-source("./MapFunction.R")
+source("./X_MapFunction.R")
 
 # Load in data to test function 
 bmap <- st_read("../ATP-MarineMammal-DataRaw/base_map/AK_CAN_RUS.shp") %>% st_transform(3338)
-study <- st_read("../ATP-MarineMammal-DataRaw/study_area/StudyArea.shp") %>% st_transform(3338)
 locs <- st_read("../Data_Processed/1-1_ARCSS_GBIF_walrus/1-1_walrus_gbif_sp.shp") %>% st_transform(3338)
+rangepolys <- st_read("../OdobenusRosmarus_ExtentOfRange.shp") 
+rangepoly <- rangepolys %>% dplyr::filter(study_desc == "Summer and fall extent of range")
 
 # Run function with inputs described in "MapFunction.R" script. 
 testmap <- makeMap(basemap=bmap, 
-                   studyarea=study, 
+                   rangepoly = rangepoly,
                    pts=locs, 
                    maptitle = "Walrus locations", 
                    colorcol = "year", 
@@ -35,3 +37,4 @@ testmap
 
 # Save output 
 ggsave(filename = "../Figures/WalrusLocations", plot = testmap, width=10, height=8, units="in")
+
