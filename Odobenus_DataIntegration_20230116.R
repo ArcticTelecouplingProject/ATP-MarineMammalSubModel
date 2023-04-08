@@ -17,7 +17,7 @@
 # 9_usgs_walrus_sex_age_comp_2013_2015
 # 10_usgs_walrus_behavior_uas_2015
 
-# Last edited: 7Apr2023
+# Last edited: 8Apr2023
 
 
 # Libraries and Packages --------------------------------------------------
@@ -111,11 +111,33 @@ nrow(unique_wal_omit)
 
 View(unique_wal_omit)
 
-#Save integrated dataset as csv and shp
-st_write(unique_wal_omit, "../Data_Processed/Odobenus_DataIntegration_20230116/mapping_odobenus_integrated20230210.shp")
-
 # Save this to a csv
 # write.csv(st_drop_geometry(unique_wal_omit), "../Data_Processed/Odobenus_DataIntegration_20230116/odobenus_integrated20230210.csv")
+
+## For Natalia's Mapping ---------------------------------------------------------------------------------------------
+
+# Save integrated dataset as csv and shp for mapping entire dataset
+# st_write(unique_wal_omit, "../Data_Processed/Odobenus_DataIntegration_20230116/mapping_odobenus_integrated20230210.shp")
+
+# Isolate number of rows after 2010
+# unique2010 <- unique_wal_omit[unique_wal_omit$year > 2009, ]
+
+## Chose only one of the time windows
+#include time window of interest: june-aug
+# june_unique2010 <- unique2010[unique2010$month %in% c("6", "7", "8"), ]
+
+#include time window of interest: june-aug
+# sep_unique2010 <- unique2010[unique2010$month %in% c("9", "10", "11"), ]
+
+# View(june_unique2010)
+# View(sep_unique2010)
+
+# Save as shp and csv june-aug integrated dataset after 2010
+# st_write(june_unique2010, "../Data_Processed/Odobenus_DataIntegration_20230116/Summer/june_mapping_odobenus_integrated20230210.shp")
+
+# Save as shp and csv june-aug integrated dataset after 2010
+# st_write(sep_unique2010, "../Data_Processed/Odobenus_DataIntegration_20230116/Fall/sep_mapping_odobenus_integrated20230210.csv")
+
 
 # Plotting ----------------------------------------------------------------
 
