@@ -111,6 +111,7 @@ nrow(unique_wal_omit)
 
 View(unique_wal_omit)
 
+
 # Save this to a csv
 # write.csv(st_drop_geometry(unique_wal_omit), "../Data_Processed/Odobenus_DataIntegration_20230116/odobenus_integrated20230210.csv")
 
@@ -122,8 +123,11 @@ View(unique_wal_omit)
 # Isolate number of rows after 2010
 # unique2010 <- unique_wal_omit[unique_wal_omit$year > 2009, ]
 
+# class(unique2010$year)
+# unique2010$year <- as.numeric(unique2010$year)
+
 ## Chose only one of the time windows
-#include time window of interest: june-aug
+# include time window of interest: june-aug
 # june_unique2010 <- unique2010[unique2010$month %in% c("6", "7", "8"), ]
 
 #include time window of interest: june-aug
@@ -136,7 +140,7 @@ View(unique_wal_omit)
 # st_write(june_unique2010, "../Data_Processed/Odobenus_DataIntegration_20230116/Summer/june_mapping_odobenus_integrated20230210.shp")
 
 # Save as shp and csv june-aug integrated dataset after 2010
-# st_write(sep_unique2010, "../Data_Processed/Odobenus_DataIntegration_20230116/Fall/sep_mapping_odobenus_integrated20230210.csv")
+# st_write(sep_unique2010, "../Data_Processed/Odobenus_DataIntegration_20230116/Fall/sep_mapping_odobenus_integrated20230210.shp")
 
 
 # Plotting ----------------------------------------------------------------
