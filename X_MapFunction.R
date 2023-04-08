@@ -30,7 +30,7 @@ makeMap <- function(basemap, rangepoly, pts, maptitle=NA, colorcol="groupSz", co
   p0 <- ggplot() +
     geom_sf(data=rangepoly, fill=NA, color="#e31a1c", lwd=0.5) + # Add basemap and color land green
     geom_sf(data=basemapnew, fill="#878787", lwd=0) + # Add basemap and color land green
-    geom_sf(data=pts, aes_string(color = {{colorcol}}), size=3) + # Add points and color by the specified column
+    geom_sf(data=pts, aes_string(color = {{colorcol}}), size=6) + # Add points and color by the specified column
     scale_color_continuous(breaks = c(1900, 1950, 2000, 2020), type = "viridis", name=colorname) +
     scale_x_continuous(expand = c(0, 0)) + # Remove extra white space on x axis
     scale_y_continuous(expand = c(0, 0)) + # Remove extra white space on y axis
