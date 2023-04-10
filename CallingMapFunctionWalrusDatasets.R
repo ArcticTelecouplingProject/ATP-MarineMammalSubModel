@@ -13,6 +13,7 @@
 library(sf) # For vector data (points, lines, polygons) 
 library(tidyverse) # For data manipulation 
 library(pgirmess) # for bounding box 
+library(RColorBrewer)
 
 # Load in makeMap function from MapFunction.R script
 source("./X_MapFunction.R")
@@ -25,22 +26,40 @@ datadir <- "../../ATP-MarineMammal-DataRaw/"
 bmap <- st_read(paste0(datadir, "base_map/AK_CAN_RUS.shp"))
 bmap <- bmap %>% st_transform(3338)
 
-locs <- st_read("../Data_Processed/Odobenus_DataIntegration_20230116/Fall/sep_mapping_odobenus_integrated20230210.shp")
-locs <- locs %>% st_transform(3338)
-
 rangepolys <- st_read(paste0(datadir, "OdobenusRosmarus_ExtentOfRange/OdobenusRosmarus_ExtentOfRange.shp"))
 rangepoly <- rangepolys %>% dplyr::filter(study_desc == "Summer and fall extent of range")
 
-# Run function with inputs described in "MapFunction.R" script. 
-testmap <- makeMap(basemap=bmap, 
+# Run function for summer locations 
+locs_summer <- st_read("../Data_Processed/Odobenus_DataIntegration_20230116/Summer/june_mapping_odobenus_integrated20230210.shp")
+testseason <- makeSeasonMap(basemap=bmap, 
                    rangepoly = rangepoly,
-                   pts=locs, 
-                   maptitle = "Walrus locations", 
+                   pts=locs_summer, 
+                   maptitle = NA, 
                    colorcol = "year", 
                    colorname = "Year")
+testseason
+ggsave(testseason, filename = "../Figures/WalrusLocations_Summer", plot = testmap, width=10, height=8, units="in")
 
-# View output
-testmap
+# Run function for fall locations
+locs_fall <- st_read("../Data_Processed/Odobenus_DataIntegration_20230116/Fall/sep_mapping_odobenus_integrated20230210.shp")
+testseason <- makeSeasonMap(basemap=bmap, 
+                            rangepoly = rangepoly,
+                            pts=locs_fall, 
+                            maptitle = NA, 
+                            colorcol = "year", 
+                            colorname = "Year")
+testseason
+ggsave(testseason, filename = "../Figures/WalrusLocations_Fall", plot = testmap, width=10, height=8, units="in")
+
+# Run function with inputs described in "MapFunction.R" script. 
+alllocs <- rbind(locs_fall, locs_summer)
+testrange <- makeRangeMap(basemap=bmap, 
+                   rangepoly = rangepoly,
+                   pts=alllocs, 
+                   maptitle = NA, 
+                   colorcol = "year", 
+                   colorname = "Year")
+testrange
 
 # Save output 
-ggsave(filename = "../Figures/WalrusLocations", plot = testmap, width=10, height=8, units="in")
+ggsave(testrange, filename = "../Figures/WalrusRange", plot = testmap, width=10, height=8, units="in")
