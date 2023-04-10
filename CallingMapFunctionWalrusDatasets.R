@@ -25,10 +25,10 @@ datadir <- "../../ATP-MarineMammal-DataRaw/"
 bmap <- st_read(paste0(datadir, "base_map/AK_CAN_RUS.shp"))
 bmap <- bmap %>% st_transform(3338)
 
-locs <- st_read("../Data_Processed/Odobenus_DataIntegration_20230116/mapping_odobenus_integrated20230210.shp")
+locs <- st_read("../Data_Processed/Odobenus_DataIntegration_20230116/Fall/sep_mapping_odobenus_integrated20230210.shp")
 locs <- locs %>% st_transform(3338)
 
-rangepolys <- st_read("../OdobenusRosmarus_ExtentOfRange/OdobenusRosmarus_ExtentOfRange.shp") 
+rangepolys <- st_read(paste0(datadir, "OdobenusRosmarus_ExtentOfRange/OdobenusRosmarus_ExtentOfRange.shp"))
 rangepoly <- rangepolys %>% dplyr::filter(study_desc == "Summer and fall extent of range")
 
 # Run function with inputs described in "MapFunction.R" script. 
