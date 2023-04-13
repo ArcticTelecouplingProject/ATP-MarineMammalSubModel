@@ -17,7 +17,7 @@
 # 9_usgs_walrus_sex_age_comp_2013_2015
 # 10_usgs_walrus_behavior_uas_2015
 
-# Last edited: 8Apr2023
+# Last edited: 12Apr2023
 
 
 # Libraries and Packages --------------------------------------------------
@@ -95,14 +95,17 @@ all_wal_df <- rbind(walrus_gbif_sp, wal_seismic_2013, wal_ambon_2015, wal_mmwatc
 View(all_wal_df) # check to make sure all cols match
 
 # quantifying number of occurrences before eliminating repeats
-nrow(all_wal_df)
+# nrow(all_wal_df)
 
 # Eliminate repeat occurrences
 # https://statisticsglobe.com/unique-rows-of-data-frame-based-on-selected-columns-in-r
 unique_wal <- distinct(all_wal_df)
 
+# Eliminate repeat occurrences and for identifing overlaps between datasets
+# unique_wal <- all_wal_df %>% dplyr::select(-source) %>% distinct
+
 # quantifying number of occurrences after eliminating repeats
-nrow(unique_wal)
+# nrow(unique_wal)
 
 # Remove Nas
 unique_wal_omit <- na.omit(unique_wal)
