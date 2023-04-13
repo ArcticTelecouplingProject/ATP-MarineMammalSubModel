@@ -38,7 +38,7 @@ testseason <- makeSeasonMap(basemap=bmap,
                    colorcol = "year", 
                    colorname = "Year")
 testseason
-ggsave(testseason, filename = "../Figures/WalrusLocations_Summer", plot = testmap, width=10, height=8, units="in")
+ggsave(filename = "../Figures/WalrusLocations_Summer.png", plot = testseason, width=10, height=8, units="in")
 
 # Run function for fall locations
 locs_fall <- st_read("../Data_Processed/Odobenus_DataIntegration_20230116/Fall/sep_mapping_odobenus_integrated20230210.shp")
@@ -49,7 +49,7 @@ testseason <- makeSeasonMap(basemap=bmap,
                             colorcol = "year", 
                             colorname = "Year")
 testseason
-ggsave(testseason, filename = "../Figures/WalrusLocations_Fall", plot = testmap, width=10, height=8, units="in")
+ggsave(filename = "../Figures/WalrusLocations_Fall.png", plot = testseason, width=10, height=8, units="in")
 
 # Run function with inputs described in "MapFunction.R" script. 
 alllocs <- rbind(locs_fall, locs_summer)
@@ -61,5 +61,6 @@ testrange <- makeRangeMap(basemap=bmap,
                    colorname = "Year")
 testrange
 
-# Save output 
-ggsave(testrange, filename = "../Figures/WalrusRange", plot = testmap, width=10, height=8, units="in")
+# Save output
+
+ggsave(filename = "../Figures/WalrusRangetest2.png", plot = testrange, width=10, height=8, units="in")
