@@ -72,7 +72,7 @@ makeRangeMap <- function(basemap, rangepoly, pts, maptitle=NA, colorcol="groupSz
   pts <- pts[!is.na(pts$year),]
   
   p0 <- ggplot() +
-    geom_sf(data=rangepoly, fill=NA, color="#e31a1c", lwd=0.5) + # Add basemap and color land green
+    geom_sf(data=rangepoly, fill=NA, color="#e31a1c", lwd=1.5) + # Add basemap and color land green
     geom_sf(data=basemapnew, fill="#878787", lwd=0) + # Add basemap and color land green
     geom_sf(data=pts, aes_string(color = {{colorcol}}), size=3) + # Add points and color by the specified column
     # scale_color_distiller(palette = "Spectral") +
