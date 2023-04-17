@@ -16,7 +16,7 @@
 # 8_nmml_aerial_1979_2010
 
 
-# Last edited: 2Mar2023
+# Last edited: 17Apr2023
 
 # Libraries and Packages --------------------------------------------------
 
@@ -87,8 +87,21 @@ View(all_spot_df) # check to make sure all cols match
 # https://statisticsglobe.com/unique-rows-of-data-frame-based-on-selected-columns-in-r
 unique_spot <- distinct(all_spot_df)
 
+# Eliminate repeat occurrences and for identifing overlaps between datasets
+# unique_wal <- all_wal_df %>% dplyr::select(-source) %>% distinct
+
+# quantifying number of occurrences after eliminating repeats
+# nrow(unique_wal)
+
+# Remove Nas
+unique_spot_omit <- na.omit(unique_spot)
+
+nrow(unique_spot_omit)
+
+View(unique_spot_omit)
+
 # Save this to a csv
-write.csv(st_drop_geometry(unique_spot), "../Data_Processed/Largha_DataIntegration_20221223/largha_integrated20230210.csv")
+# write.csv(st_drop_geometry(unique_spot), "../Data_Processed/largha_integrations/largha_integrated20230417.csv")
 
 
 # Plotting ----------------------------------------------------------------
