@@ -15,7 +15,7 @@
 # 7-2_nsf_dbo_healy_2018
 # 8 nmml aerial 1979-2010
 
-# Last edited on: 2Mar2023
+# Last edited on: 17Apr2023
 
 
 
@@ -88,8 +88,21 @@ View(all_beard_df) # check to make sure all cols match
 # https://statisticsglobe.com/unique-rows-of-data-frame-based-on-selected-columns-in-r
 unique_beard <- distinct(all_beard_df)
 
-# Save this to a csv
-# write.csv(st_drop_geometry(unique_beard), "../Data_Processed/Barbatus_DataIntegration_20230109/barbatus_integrated20230210.csv")
+# Eliminate repeat occurrences and for identifying overlaps between datasets
+# unique_beard <- all_wal_df %>% dplyr::select(-source) %>% distinct
+
+# quantifying number of occurrences after eliminating repeats
+# nrow(unique_beard)
+
+# Remove Nas
+unique_beard_omit <- na.omit(unique_beard)
+
+nrow(unique_beard_omit)
+
+View(unique_beard_omit)
+
+# Save this to a csv in a folder called barbatus_integrations
+# write.csv(st_drop_geometry(unique_beard_omit), "../Data_Processed/barbatus_integrations/barbatus_integrated20230417.csv")
 
 
 # Plotting ----------------------------------------------------------------
