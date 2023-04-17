@@ -116,7 +116,7 @@ View(unique_wal_omit)
 
 
 # Save this to a csv
-# write.csv(st_drop_geometry(unique_wal_omit), "../Data_Processed/Odobenus_DataIntegration_20230116/odobenus_integrated20230210.csv")
+# write.csv(st_drop_geometry(unique_wal_omit), "../Data_Processed/odobenus_integrations/odobenus_integrated20230417.csv")
 
 ## For Natalia's Mapping ---------------------------------------------------------------------------------------------
 
