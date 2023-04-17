@@ -26,29 +26,83 @@ library(stars)
 # Importing and cleaning data ---------------------------------------------
 
 # Import integrated spotted seal data
-all_seals <- read.csv("../Data_Processed/largha_integrated20230210.csv")
+all_spot <- read.csv("../Data_Processed/largha_integrations/largha_integrated20230417.csv")
 
-head(all_seals)
+# Import integrated bearded seal data
+all_beard <- read.csv("../Data_Processed/barbatus_integrations/barbatus_integrated20230417.csv")
 
-# Save lat/lon cols
-# use dplyr::select
+# Import integrated walrus data
+all_walrus <- read.csv("../Data_Processed/odobenus_integrations/odobenus_integrated20230417.csv")
 
-# Assign projection using lat/lon cols to WGS84
+# Rename columns
+all_spot <- all_spot %>% dplyr::rename(uniqueID = X,
+                                scientificName = scntfcN,
+                                commonName = commnNm,
+                                groupSize = groupSz,
+                                decimalLat = decmlLt,
+                                decimalLon = decmlLn,
+                                methodObservation = mthdObs)
+
+all_beard <- all_beard %>% dplyr::rename(uniqueID = X,
+                                       scientificName = scntfcN,
+                                       commonName = commnNm,
+                                       groupSize = groupSz,
+                                       decimalLat = decmlLt,
+                                       decimalLon = decmlLn,
+                                       methodObservation = mthdObs)
+
+all_walrus <- all_walrus %>% dplyr::rename(uniqueID = X,
+                                       scientificName = scntfcN,
+                                       commonName = commnNm,
+                                       groupSize = groupSz,
+                                       decimalLat = decmlLt,
+                                       decimalLon = decmlLn,
+                                       methodObservation = mthdObs)
 
 
-# Transform projection
-# SW19Mar2023
+# Spotted seal tidying ----------------------------------------------------
+
+# Remove NAs from latitude and longitude columns
+all_spot <- all_spot[!is.na(all_spot$decimalLat), ]
+
+# Convert data to a spatial object with CRS 4326 (since that is regular lat/lon) - this is still unprojected
+all_spot <- st_as_sf(all_spot, coords = c("decimalLon", "decimalLat"), crs = 4326, remove=FALSE) 
+
 # Transform to Alaska Albers projection
-all_seals_3338 <- all_seals %>% st_transform(crs = 3338)
+all_spot_3338 <- all_spot %>% st_transform(crs = 3338)
 
 # Check what projection it's in
-# st_crs(all_seals)
+# st_crs(all_spot_3338)
 
 
-# Check to see if it's properly projected (NAD83 / Alaska Albers)
-st_crs(all_seals_3338)
+# Bearded seal tidying ----------------------------------------------------
 
-View(all_seals_merge)
+# Remove NAs from latitude and longitude columns
+all_beard <- all_beard[!is.na(all_beard$decimalLat), ]
+
+# Convert data to a spatial object with CRS 4326 (since that is regular lat/lon) - this is still unprojected
+all_beard <- st_as_sf(all_beard, coords = c("decimalLon", "decimalLat"), crs = 4326, remove=FALSE) 
+
+# Transform to Alaska Albers projection
+all_beard_3338 <- all_beard %>% st_transform(crs = 3338)
+
+# Check what projection it's in
+# st_crs(all_spot_3338)
+
+
+# Walrus tidying ----------------------------------------------------------
+
+# Remove NAs from latitude and longitude columns
+all_walrus <- all_walrus[!is.na(all_walrus$decimalLat), ]
+
+# Convert data to a spatial object with CRS 4326 (since that is regular lat/lon) - this is still unprojected
+all_walrus <- st_as_sf(all_walrus, coords = c("decimalLon", "decimalLat"), crs = 4326, remove=FALSE) 
+
+# Transform to Alaska Albers projection
+all_walrus_3338 <- all_walrus %>% st_transform(crs = 3338)
+
+# Check what projection it's in
+# st_crs(all_spot_3338)
 
 
 # Summary data ------------------------------------------------------------
