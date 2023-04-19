@@ -101,7 +101,7 @@ nrow(unique_spot_omit)
 View(unique_spot_omit)
 
 # Save this to a csv
-write.csv(st_drop_geometry(unique_spot_omit), "../Data_Processed/largha_integrations/largha_integrated20230417.csv")
+# write.csv(st_drop_geometry(unique_spot_omit), "../Data_Processed/largha_integrations/largha_integrated20230417.csv")
 
 
 # Plotting ----------------------------------------------------------------
