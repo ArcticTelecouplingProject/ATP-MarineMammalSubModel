@@ -154,7 +154,7 @@ ggplot() + geom_sf(data = base_crop) +
 all_df_drop <- unique_spot %>%
   st_drop_geometry() %>%
   group_by(year, month, day) %>%
-  summarize(n=n()) %>%
+  dplyr::summarize(n=n()) %>%
   ungroup()
 
 # check classes to make sure year and month cols are numeric
@@ -205,7 +205,7 @@ for (i in 1:n.years) {
 }
 
 # save summary to a csv
-write.csv(sum_since, "../Output/largha_summary2_20230210.csv")
+write.csv(sum_since, "../Output/prelim_models/fall/largha_fall_20230419.csv")
 
 
 
