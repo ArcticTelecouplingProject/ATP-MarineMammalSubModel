@@ -17,7 +17,7 @@
 # 9_usgs_walrus_sex_age_comp_2013_2015
 # 10_usgs_walrus_behavior_uas_2015
 
-# Last edited: 17Apr2023
+# Last edited: 19Apr2023
 
 
 # Libraries and Packages --------------------------------------------------
@@ -199,7 +199,7 @@ ggplot() + geom_sf(data = base_crop) +
 all_df_drop <- unique_wal_omit %>%
   st_drop_geometry() %>%
   group_by(year, month, day) %>%
-  summarize(n=n()) %>%
+  dplyr::summarize(n=n()) %>%
   ungroup()
 
 # check classes to make sure year and month cols are numeric
@@ -250,4 +250,4 @@ for (i in 1:n.years) {
 }
 
 # save summary to a csv
-write.csv(sum_since, "../Output/odobenus_summary2_20230210.csv")
+write.csv(sum_since, "../Output/prelim_models/fall/odobenus_fall20230419.csv")
