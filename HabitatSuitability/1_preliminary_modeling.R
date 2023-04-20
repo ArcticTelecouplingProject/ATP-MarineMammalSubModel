@@ -28,16 +28,16 @@ library(stars)
 # Importing and cleaning data ---------------------------------------------
 
 # Import integrated spotted seal data
-all_spot <- read.csv("../Data_Processed/largha_integrations/largha_integrated20230417.csv")
+all_spot <- st_read("../Data_Processed/largha_integrations/largha_integrated20230417.shp")
 
 # Import integrated bearded seal data
-all_beard <- read.csv("../Data_Processed/barbatus_integrations/barbatus_integrated20230417.csv")
+all_beard <- st_read("../Data_Processed/barbatus_integrations/barbatus_integrated20230417.shp")
 
 # Import integrated walrus data
-all_walrus <- read.csv("../Data_Processed/odobenus_integrations/odobenus_integrated20230417.csv")
+all_walrus <- st_read("../Data_Processed/odobenus_integrations/odobenus_integrated20230417.shp")
 
 # Rename columns
-all_spot <- all_spot %>% dplyr::rename(uniqueID = X,
+all_spot <- all_spot %>% dplyr::rename(
                                 scientificName = scntfcN,
                                 commonName = commnNm,
                                 groupSize = groupSz,
@@ -45,7 +45,7 @@ all_spot <- all_spot %>% dplyr::rename(uniqueID = X,
                                 decimalLon = decmlLn,
                                 methodObservation = mthdObs)
 
-all_beard <- all_beard %>% dplyr::rename(uniqueID = X,
+all_beard <- all_beard %>% dplyr::rename(
                                        scientificName = scntfcN,
                                        commonName = commnNm,
                                        groupSize = groupSz,
@@ -53,7 +53,7 @@ all_beard <- all_beard %>% dplyr::rename(uniqueID = X,
                                        decimalLon = decmlLn,
                                        methodObservation = mthdObs)
 
-all_walrus <- all_walrus %>% dplyr::rename(uniqueID = X,
+all_walrus <- all_walrus %>% dplyr::rename(
                                        scientificName = scntfcN,
                                        commonName = commnNm,
                                        groupSize = groupSz,
@@ -61,50 +61,6 @@ all_walrus <- all_walrus %>% dplyr::rename(uniqueID = X,
                                        decimalLon = decmlLn,
                                        methodObservation = mthdObs)
 
-
-# Spotted seal tidying ----------------------------------------------------
-
-# Remove NAs from latitude and longitude columns
-all_spot <- all_spot[!is.na(all_spot$decimalLat), ]
-
-# Convert data to a spatial object with CRS 4326 (since that is regular lat/lon) - this is still unprojected
-all_spot <- st_as_sf(all_spot, coords = c("decimalLon", "decimalLat"), crs = 4326, remove=FALSE) 
-
-# Transform to Alaska Albers projection
-all_spot_3338 <- all_spot %>% st_transform(crs = 3338)
-
-# Check what projection it's in
-# st_crs(all_spot_3338)
-
-
-# Bearded seal tidying ----------------------------------------------------
-
-# Remove NAs from latitude and longitude columns
-all_beard <- all_beard[!is.na(all_beard$decimalLat), ]
-
-# Convert data to a spatial object with CRS 4326 (since that is regular lat/lon) - this is still unprojected
-all_beard <- st_as_sf(all_beard, coords = c("decimalLon", "decimalLat"), crs = 4326, remove=FALSE) 
-
-# Transform to Alaska Albers projection
-all_beard_3338 <- all_beard %>% st_transform(crs = 3338)
-
-# Check what projection it's in
-# st_crs(all_spot_3338)
-
-
-# Walrus tidying ----------------------------------------------------------
-
-# Remove NAs from latitude and longitude columns
-all_walrus <- all_walrus[!is.na(all_walrus$decimalLat), ]
-
-# Convert data to a spatial object with CRS 4326 (since that is regular lat/lon) - this is still unprojected
-all_walrus <- st_as_sf(all_walrus, coords = c("decimalLon", "decimalLat"), crs = 4326, remove=FALSE) 
-
-# Transform to Alaska Albers projection
-all_walrus_3338 <- all_walrus %>% st_transform(crs = 3338)
-
-# Check what projection it's in
-# st_crs(all_spot_3338)
 
 
 # Summary data ------------------------------------------------------------
@@ -112,7 +68,7 @@ all_walrus_3338 <- all_walrus %>% st_transform(crs = 3338)
 # Spotted seal ------------------------------------------------------------
 
 # Create new df with occurrence points and no geometry attached
-largha_df_drop <- all_spot_3338 %>%
+largha_df_drop <- all_spot %>%
   st_drop_geometry() %>%
   group_by(year, month, day) %>%
   dplyr::summarize(n=n()) %>%
@@ -140,14 +96,14 @@ n.years <- n_distinct(my.years)
 my.sums <- rep(NA, n.years)
 
 ## choose one of the time windows for the loop
-month_selected <- seq(1,12);
-time_window = 'year round' ## year round
+# month_selected <- seq(1,12);
+# time_window = 'year round' ## year round
 
-# month_selected <- seq(6,10);
-# time_window = 'summer' ## summer - june through october
+month_selected <- seq(6,10);
+time_window = 'summer' ## summer - june through october
 
-# month_selected <- c(11, 12, seq(1,5));
-# time_window = 'winter' ## winter - november through may
+month_selected <- c(11, 12, seq(1,5));
+time_window = 'winter' ## winter - november through may
 
 sum_since <- data.frame()
 for (i in 1:n.years) {
@@ -167,12 +123,13 @@ for (i in 1:n.years) {
 
 # Save summary to a csv in a folder called prelim_models nested within Output
 write.csv(sum_since, "../Output/prelim_models/largha_yearRound20230418.csv")
+st_write(sum_since, "../Output/prelim_models/largha_yearRound20230418.shp")
 
 
 # Bearded seal ------------------------------------------------------------
 
 # Create new df with occurrence points and no geometry attached
-barbatus_df_drop <- all_beard_3338 %>%
+barbatus_df_drop <- all_beard %>%
   st_drop_geometry() %>%
   group_by(year, month, day) %>%
   dplyr::summarize(n=n()) %>%
@@ -232,7 +189,7 @@ for (i in 1:n.years) {
 # Walrus ------------------------------------------------------------------
 
 # Create new df with occurrence points and no geometry attached
-odobenus_df_drop <- all_walrus_3338 %>%
+odobenus_df_drop <- all_walrus %>%
   st_drop_geometry() %>%
   group_by(year, month, day) %>%
   dplyr::summarize(n=n()) %>%
@@ -303,8 +260,8 @@ study_area <- st_read("../../ATP-MarineMammal-DataRaw/study_area")
 
 # https://gis.stackexchange.com/questions/230900/crop-simple-features-object-in-r
 # Read xmin, ymin, xmax, and ymax values with st_bbox()
-st_bbox(base_map)
-st_bbox(study_area)
+# st_bbox(base_map)
+# st_bbox(study_area)
 
 # Crop base map to just Bering Strait Region area (based on study_bbox values)
 # Crop base map based on base_map and study area bbox values
@@ -314,13 +271,13 @@ base_crop <- st_crop(base_map, c(xmin = -2173499, ymin = 159766, xmax = 1100000,
 
 # Plot all spotted seal occurrence points against cropped base map
 ggplot() + geom_sf(data = base_crop) + 
-  geom_sf(data = all_spot_3338, mapping = aes(color = year)) +
+  geom_sf(data = all_spot, mapping = aes(color = year)) +
   labs(
     title = "Spotted seal occurrence in the Bering Strait Region",
     caption = "Source: Global Biodiversity Information Facility")
 
 # Isolate number of rows after 2000
-largha_2000 <- all_spot_3338[all_spot_3338$year > 1999, ]
+largha_2000 <- all_spot[all_spot$year > 1999, ]
 
 ggplot() + geom_sf(data = base_crop) + 
   geom_sf(data = largha_2000, mapping = aes(color = year)) +
@@ -339,15 +296,17 @@ source("X_MapFunction.R")
 #### maptitle: a text string with the desired title for each map (No title if not specified)
 #### colorcol: a text string specifying the column name used to color the points 
 
+datadir <- "../../ATP-MarineMammal-DataRaw/"
 # Load in data for function 
 bmap <- st_read(paste0(datadir, "base_map/AK_CAN_RUS.shp"))
-bmap <- bmap %>% st_transform(3338)
+# bmap <- bmap %>% st_transform(3338)
 
-rangepolys <- st_read(paste0(datadir, "OdobenusRosmarus_ExtentOfRange/OdobenusRosmarus_ExtentOfRange.shp"))
+rangepolys <- st_read("../Output/OdobenusRosmarus_ExtentOfRange/OdobenusRosmarus_ExtentOfRange.shp"))
 rangepoly <- rangepolys %>% dplyr::filter(study_desc == "Summer and fall extent of range")
 
-# Run function for summer locations 
-locs_summer <- st_read("../Data_Processed/Odobenus_DataIntegration_20230116/Summer/june_mapping_odobenus_integrated20230210.shp")
+# Run function for summer locations
+locs_summer <- st_read() # Figure what .shp output to upload 
+# june_mapping_odobenus_integrated20230210.shp")
 testseason <- makeSeasonMap(basemap=bmap, 
                             rangepoly = rangepoly,
                             pts=locs_summer, 
@@ -386,12 +345,8 @@ ggsave(filename = "../Figures/WalrusRangetest2.png", plot = testrange, width=10,
 
 # Preparing species occurrences for dismo ---------------------------------
 
-# Select the records that have decimalLongitude and latitude data
-# Can load all_spot_3338 data here also instead of running above
-all_spot_3338 <- st_read("Final_Project/Data_Processed/all_spot_3338.shp")
-largha <- all_spot_3338
-
-# la.geo <- subset(largha, !is.na(decimalLon) & !is.na(decimalLat))
+# Check to see if there are NAs just in case
+# largha.geo <- subset(all_spot, !is.na(decimalLon) & !is.na(decimalLat))
 # dim(la.geo) # number of occurrences match the number in original df which means there were no NAs
 
 
@@ -402,23 +357,15 @@ largha <- all_spot_3338
 # Create the folders (directories) "data"
 # if they exist already, this command won't over-write them.
 # create directory called "data"
-dir.create("Final_Project/data", recursive = TRUE)
+dir.create("../../ATP-MarineMammal-DataRaw/prelim_models_data", recursive = TRUE)
 
-# Download WorldClim 2 data and unzip it
-# Refer to the URL for your choice of data:
-
-# Download 10 minute res worldclim V 2.1
-wc_url_10m <- "https://geodata.ucdavis.edu/climate/worldclim/2_1/base/wc2.1_10m_bio.zip"
-
-# 10 minute per degree solution data in "data" folder
-# Download file
-download.file(url = wc_url_10m, destfile = here("Final_Project/data", "wc_10m.zip"),
-              mode = "wb")
-# Unzip file
-unzip(zipfile = here("Final_Project/data", "wc_10m.zip"), exdir = here("Final_Project/data"))
 # Load the data 
-bioclim_files <- list.files(here("Final_Project/data"), pattern = "wc2.1_10m_bio_",
-                            full.names = TRUE)
+chlorophyll_conc <- list.files(paste0(datadir, "Ascii_Environmental_Variables/Chlorophyll_Concentration"),
+                                      pattern = "*.asc",
+                                      full.names = TRUE)
+
+for (i in 1:length(chlorophyll_conc)) assign(chlorophyll_conc[i], read.csv(chlorophyll_conc[i]))
+
 
 # Create a RasterStack of predictor variables
 predictors <- stack(bioclim_files)
@@ -792,3 +739,48 @@ sapply( e, function(x){ threshold(x)['spec_sens'] } )
 
 
 # Graveyard ---------------------------------------------------------------
+
+
+# # Spotted seal tidying ----------------------------------------------------
+# 
+# # Remove NAs from latitude and longitude columns
+# all_spot <- all_spot[!is.na(all_spot$decimalLat), ]
+# 
+# # Convert data to a spatial object with CRS 4326 (since that is regular lat/lon) - this is still unprojected
+# all_spot <- st_as_sf(all_spot, coords = c("decimalLon", "decimalLat"), crs = 4326, remove=FALSE) 
+# 
+# # Transform to Alaska Albers projection
+# all_spot <- all_spot %>% st_transform(crs = 3338)
+# 
+# # Check what projection it's in
+# # st_crs(all_spot)
+# 
+# 
+# # Bearded seal tidying ----------------------------------------------------
+# 
+# # Remove NAs from latitude and longitude columns
+# all_beard <- all_beard[!is.na(all_beard$decimalLat), ]
+# 
+# # Convert data to a spatial object with CRS 4326 (since that is regular lat/lon) - this is still unprojected
+# all_beard <- st_as_sf(all_beard, coords = c("decimalLon", "decimalLat"), crs = 4326, remove=FALSE) 
+# 
+# # Transform to Alaska Albers projection
+# all_beard_3338 <- all_beard %>% st_transform(crs = 3338)
+# 
+# # Check what projection it's in
+# # st_crs(all_spot)
+# 
+# 
+# # Walrus tidying ----------------------------------------------------------
+# 
+# # Remove NAs from latitude and longitude columns
+# all_walrus <- all_walrus[!is.na(all_walrus$decimalLat), ]
+# 
+# # Convert data to a spatial object with CRS 4326 (since that is regular lat/lon) - this is still unprojected
+# all_walrus <- st_as_sf(all_walrus, coords = c("decimalLon", "decimalLat"), crs = 4326, remove=FALSE) 
+# 
+# # Transform to Alaska Albers projection
+# all_walrus_3338 <- all_walrus %>% st_transform(crs = 3338)
+# 
+# # Check what projection it's in
+# # st_crs(all_spot)
