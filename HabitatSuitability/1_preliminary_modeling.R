@@ -357,14 +357,47 @@ ggsave(filename = "../Figures/WalrusRangetest2.png", plot = testrange, width=10,
 # Create the folders (directories) "data"
 # if they exist already, this command won't over-write them.
 # create directory called "data"
+
 dir.create("../../ATP-MarineMammal-DataRaw/prelim_models_data", recursive = TRUE)
 
-# Load the data 
+datadir <- "../../ATP-MarineMammal-DataRaw/"
+
+## Load the data from Ascii_Environmental_Variables
+
+# Chlorophyll Concentration
 chlorophyll_conc <- list.files(paste0(datadir, "Ascii_Environmental_Variables/Chlorophyll_Concentration"),
                                       pattern = "*.asc",
                                       full.names = TRUE)
 
 for (i in 1:length(chlorophyll_conc)) assign(chlorophyll_conc[i], read.csv(chlorophyll_conc[i]))
+
+# Distance to Land
+dist_land <- list.files(paste0(datadir, "Ascii_Environmental_Variables/Distance_to_Land"),
+                        pattern = "*.asc",
+                        full.names = TRUE)
+
+for (i in 1:length(dist_land)) assign(dist_land[i], read.csv(dist_land[i]))
+
+# Sea Ice Extent
+sea_ice <- list.files(paste0(datadir, "Ascii_Environmental_Variables/Sea_Ice_Extent"),
+                      pattern = "*.asc",
+                      full.names = TRUE)
+
+for (i in 1:length(dist_land)) assign(dist_land[i], read.csv(dist_land[i]))
+
+# Sea Surface Temperature
+sst <- list.files(paste0(datadir, "Ascii_Environmental_Variables/Sea_Surface_Temperature"),
+                  pattern = "*.asc",
+                  full.names = TRUE)
+
+for (i in 1:length(sst)) assign(sst[i], read.csv(sst[i]))
+
+# Shipping
+shipping <- list.files(paste0(datadir, "Ascii_Environmental_Variables/shipping"),
+                       pattern = "*.asc",
+                       full.names = TRUE)
+
+for (i in 1:length(shipping)) assign(shipping[i], read.csv(shipping[i]))
 
 
 # Create a RasterStack of predictor variables
