@@ -19,10 +19,6 @@ library(plyr)
 library(terra)
 library(gstat)
 library(maptools)
-library(tmap)
-library(here)
-library(dismo)
-library(stars)
 
 
 # Importing and cleaning data ---------------------------------------------
@@ -383,7 +379,7 @@ sea_ice <- list.files(paste0(datadir, "Ascii_Environmental_Variables/Sea_Ice_Ext
                       pattern = "*.asc",
                       full.names = TRUE)
 
-for (i in 1:length(dist_land)) assign(dist_land[i], read.csv(dist_land[i]))
+for (i in 1:length(sea_ice)) assign(sea_ice[i], read.csv(sea_ice[i]))
 
 # Sea Surface Temperature
 sst <- list.files(paste0(datadir, "Ascii_Environmental_Variables/Sea_Surface_Temperature"),
@@ -400,13 +396,22 @@ shipping <- list.files(paste0(datadir, "Ascii_Environmental_Variables/shipping")
 for (i in 1:length(shipping)) assign(shipping[i], read.csv(shipping[i]))
 
 
-# Create a RasterStack of predictor variables
-predictors <- stack(bioclim_files)
+# Create a RasterStack of predictor variables for each variable
+chloro_pred <- stack(chlorophyll_conc)
+dist_pred <- stack(dist_land)
+ice_pred <- stack(sea_ice)
+sst_pred <- stack(sst)
+shipping_pred <- stack(shipping)
+
 # Plot to check
-predictors %>% plot()
+chloro_pred %>% plot()
+dist_pred %>% plot()
+ice_pred %>% plot()
+sst_pred %>% plot()
+shipping_pred %>% plot()
 
 # Create bounding box for extent of BSR using study_area extent
-study_area <- st_read("Final_Project/Data_Raw/study_area")
+study_area <- st_read(datadir, "study_area")
 
 # Make study_area spatial first
 study_area_sp <- as(study_area, "Spatial")
