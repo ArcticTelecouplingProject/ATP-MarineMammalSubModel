@@ -154,3 +154,8 @@ View(unique_seismic_omit)
 
 # Save metadata dataframe
 # write.csv(OccurrenceSummaries, "../Data_Processed/Metadata/Metadata_2_obis_tgs_seismic_2013.csv")
+
+# Read in metadata --------------------------------------------------------
+
+tgs_metadata <- read_xml("../../ATP-MarineMammal-DataRaw/2_obis_tgs_seismic_2013/obis_seamap_dataset_1110_csv_71491/fgdc_metadata/obis_seamap_dataset_1110_points_shapefile.shp.xml")
+View(tgs_metadata)
