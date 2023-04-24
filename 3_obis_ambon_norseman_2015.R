@@ -43,7 +43,7 @@ head(birdevent) # this one has lat and long - connected to birdocc via eventID c
 bird <- left_join(birdocc, birdevent, by=c("eventID"))
 head(bird) # Now we've picked the matching lines from the birdevent and moved them over to the bird occ
 
-# Create a datafame to generate metadata summaries on the occurrence data at various steps of tidying
+# Create a dataframe to generate metadata summaries on the occurrence data at various steps of tidying
 OccurrenceSummaries <- data.frame(name = "obis_bird") 
 OccurrenceSummaries$before <- length(bird$vernacularName)
 
@@ -52,7 +52,7 @@ unique(bird$vernacularName)
 
 ambon_mams <- bird[bird$vernacularName %in% c("Walrus", "Bearded Seal", "Spotted Seal"), ] 
 
-# Add to metadata datafame for summaries on the occurrence data at various steps of tidying
+# Add to metadata dataframe for summaries on the occurrence data at various steps of tidying
 OccurrenceSummaries$isolatedSpecies <- length(ambon_mams$vernacularName[which(ambon_mams$vernacularName == "Walrus")])
 
 # Remove extraneous columns of info 
@@ -65,8 +65,6 @@ mams_new <- ambon_mams %>% dplyr::select(vernacularName,
                                          eventDate,
                                          samplingProtocol)
 
-# Add to metadata datafame for summaries on the occurrence data at various steps of tidying
-OccurrenceSummaries$columnsofInterest <- length(mams_new$vernacularName[which(mams_new$vernacularName == "Walrus")])
 
 # Convert to spatial df ---------------------------------------------------
 
@@ -135,7 +133,7 @@ mams_sp2 <- mams_sp %>% dplyr::select(scientificName,
                                         decimalLongitude,
                                       samplingProtocol,
                                         source) %>% 
-rename(scientificName = scientificName,
+dplyr::rename(scientificName = scientificName,
            commonName = vernacularName,
            groupSize = individualCount,
            decimalLat = decimalLatitude,
@@ -155,7 +153,7 @@ unique_mams <- distinct(mams_sp2)
 # Remove Nas
 unique_mams_omit <- na.omit(unique_mams)
 
-# Add to metadata datafame for summaries on the occurrence data at various steps of tidying
+# Add to metadata dataframe for summaries on the occurrence data at various steps of tidying
 OccurrenceSummaries$uniqueOccurrences <- length(unique_mams_omit$commonName[which(unique_mams_omit$commonName == "Walrus")])
 
 View(OccurrenceSummaries)
