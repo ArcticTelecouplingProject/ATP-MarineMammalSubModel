@@ -84,11 +84,11 @@ datadir <- "../../ATP-MarineMammal-DataRaw/"
 ## Load the data from Ascii_Environmental_Variables
 
 # Chlorophyll Concentration
-chlorophyll_conc <- list.files(paste0(datadir, "Ascii_Environmental_Variables/Chlorophyll_Concentration"),
+chloro_conc <- list.files(paste0(datadir, "Ascii_Environmental_Variables/Chlorophyll_Concentration"),
                                       pattern = "*.asc",
                                       full.names = TRUE)
 
-for (i in 1:length(chlorophyll_conc)) assign(chlorophyll_conc[i], read.csv(chlorophyll_conc[i]))
+for (i in 1:length(chloro_conc)) assign(chloro_conc[i], read.csv(chloro_conc[i]))
 
 # Distance to Land
 dist_land <- list.files(paste0(datadir, "Ascii_Environmental_Variables/Distance_to_Land"),
@@ -120,15 +120,23 @@ for (i in 1:length(shipping)) assign(shipping[i], read.csv(shipping[i]))
 
 
 # Create a RasterStack of predictor variables for each variable
-chloro_pred <- stack(chlorophyll_conc)
+chloro_pred <- stack(chloro_conc)
 dist_pred <- stack(dist_land)
 ice_pred <- stack(sea_ice)
 sst_pred <- stack(sst)
 shipping_pred <- stack(shipping)
 
+# Create vector of names for each predictor stack
+chloro_names <- names(chloro_pred)
+dist_names <- names(dist_pred)
+ice_names <- names(ice_pred)
+sst_names <- names(sst_pred)
+ship_names <- names(shipping_pred)
+
 # Create vector of predictors
-predictors <- stack(c(chlorophyll_conc, dist_land, sea_ice, sst, shipping))
+predictors <- stack(c(chloro_conc, dist_land, sea_ice, sst, shipping))
 ## Are these all of the predictor variables compiled together properly? ## 
+
 
 # Plot to check
 chloro_pred %>% plot()
@@ -148,7 +156,7 @@ study_area <- st_read(paste0(datadir, "study_area/StudyArea.shp")) # Polygon
 study_area_sp <- as(study_area, "Spatial") # SpatialPolygonsDataFrame
 
 # Transform to Alaska Albers
- %>% st_transform(crs = 3338)
+# predictors %>% st_transform(crs = 3338)
 
 # Now crop
 predictors_na <- crop(predictors, study_area_sp)
@@ -160,7 +168,7 @@ plot(predictors_na)
 # Need to extract the values of the predictors at the locations of the points
 # Cast geometry to another type with st_cast()
 
-## Extracting values from rasters
+## Extracting values from rasters - presence values with predictors
 presvals_spot <- raster::extract(predictors_na, all_spot) # spotted seal
 presvals_beard <- raster::extract(predictors_na, all_beard) # bearded seal
 presvals_wal <- raster::extract(predictors_na, all_walrus) # walrus
@@ -224,16 +232,22 @@ head(sdmdata_wal)
 ## Model fitting
 
 # Load the data if not in the environment
-sdmdata <- readRDS("Final_Project/Data_Processed/sdm.Rds")
-presvals <- readRDS("Final_Project/Data_Processed/pvals.Rds")
+sdmdata_spot <- readRDS("../Data_Processed/prelim_models/sdmdata_spot.Rds")
+sdmdata_beard <- readRDS("../Data_Processed/prelim_models/sdmdata_beard.Rds")
+sdmdata_wal <- readRDS("../Data_Processed/prelim_models/sdmdata_wal.Rds")
+
+presvals_spot <- readRDS("../Data_Processed/prelim_models/presvals_spot.Rds")
+presvals_beard <- readRDS("../Data_Processed/prelim_models/presvals_beard.Rds")
+presvals_wal <- readRDS("../Data_Processed/prelim_models/presvals_wal.Rds")
 
 
-# Fit reduced model with bioclims 1, 5, 6, 12, and 19
-# Bioclims: 1 (annual mean temp), 5 (max temp of warmest month), 6 (min temp of coldest month),
-# 12 (annual precip), 19 (precipitation of coldest quarter)
+# Fit reduced models with shipping and sea ice
+# 1 = spotted seal
+# 2 = bearded seal
+# 3 = walrus
 
-# reduced temperature model
-m_temp <- glm(pb ~ bio_1 + bio_5 + bio_6 + bio_8 + bio_9 + bio_10 + bio_11, data = sdmdata)
+# reduced shipping and sea ice model for spotted seal
+m1_ship_sea <- glm(pb_spot ~ shipping_pred + ice_pred, data = sdmdata_spot) ## left off here
 
 # reduced precipitation model
 m_precip <- glm(pb ~ bio_12 + bio_13 + bio_14 + bio_16 + bio_17 + bio_18 + bio_19, data = sdmdata)
@@ -257,24 +271,8 @@ m_null %>% summary()
 # Lowest AIC value is always best
 
 ## Dismo model
-# Models that are implemented in dismo do not use a formula (and most models only take presence points). 
-# Bioclim is an example. It only uses presence data, so we use ‘presvals’ instead of ‘sdmdata’.
-bc_temp <- bioclim(presvals[,c('bio_1', 'bio_5', 'bio_6', 'bio_8', 'bio_9', 'bio_10', 'bio_11')])
-bc_temp %>% class() # dismo
-
-bc_temp
-
-bc_temp %>% pairs()
-
-
-bc_precip <- bioclim(presvals[,c('bio_12', 'bio_13', 'bio_14', 'bio_16', 'bio_17', 'bio_18', 'bio_19')])
-bc_precip %>% class()
-
-bc_precip
-
-bc_precip %>% pairs()
-
-
+# Models that are implemented in dismo do not use a formula (and most models
+# only take presence points). 
 
 ## Model prediction
 # Different modeling methods return diff types of 'model' objects. These objects
