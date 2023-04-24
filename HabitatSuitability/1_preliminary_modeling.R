@@ -147,46 +147,75 @@ study_area <- st_read(paste0(datadir, "study_area/StudyArea.shp")) # Polygon
 # Make study_area spatial first
 study_area_sp <- as(study_area, "Spatial") # SpatialPolygonsDataFrame
 
+# Transform to Alaska Albers
+ %>% st_transform(crs = 3338)
+
 # Now crop
 predictors_na <- crop(predictors, study_area_sp)
 
 # Check predictor data - should be the BSR
-plot(predictors_na) # transform to 3338
+plot(predictors_na)
 
 # Now we have predictor variables (rasters) and occurrences
 # Need to extract the values of the predictors at the locations of the points
 # Cast geometry to another type with st_cast()
 
 ## Extracting values from rasters
-presvals <- raster::extract(predictors_na, all_spot) # spotted seal
-presvals <- raster::extract(predictors_na, all_beard) # bearded seal
-presvals <- raster::extract(predictors_na, all_walrus) # walrus
+presvals_spot <- raster::extract(predictors_na, all_spot) # spotted seal
+presvals_beard <- raster::extract(predictors_na, all_beard) # bearded seal
+presvals_wal <- raster::extract(predictors_na, all_walrus) # walrus
 
 # Setting random seed to always create the same random set of points for this example
 set.seed(0)
 
-# Changed my # of random points to 4500 because I have around 4500 seal presences
-backgr <- randomPoints(predictors_na, 4500)
-absvals <- extract(predictors_na, backgr)
-# pb indicates whether this is a presence/background point
-pb <- c(rep(1, nrow(presvals)), rep(0, nrow(absvals)))
-# Create data tibble for sdm
-sdmdata <- data.frame(cbind(pb, rbind(presvals, absvals)))
-sdmdata %>% count(pb) # Nan originally had sort = TRUE as an argument but this is throwing an error for me
+# Changed # of random points based on number of species occurrences (e.g., all_spot = 2039)
+backgr_spot <- randomPoints(predictors_na, 2000)
+backgr_beard <- randomPoints(predictors_na, 5600)
+backgr_wal <- randomPoints(predictors_na, 9000)
 
-head(sdmdata)
+absvals_spot <- extract(predictors_na, backgr_spot)
+absvals_beard <- extract(predictors_na, backgr_beard)
+absvals_wal <- extract(predictors_na, backgr_wal)
+
+# pb indicates whether this is a presence/background point
+pb_spot <- c(rep(1, nrow(presvals_spot)), rep(0, nrow(absvals_spot)))
+pb_beard <- c(rep(1, nrow(presvals_beard)), rep(0, nrow(absvals_beard)))
+pb_wal <- c(rep(1, nrow(presvals_wal)), rep(0, nrow(absvals_wal)))
+
+# Create data tibble for sdm for each species
+
+## spotted seal
+sdmdata_spot <- data.frame(cbind(pb_spot, rbind(presvals_spot, absvals_spot)))
+sdmdata_spot %>% count(pb_spot) # Nan originally had sort = TRUE as an argument but this is throwing an error for me
+## bearded seal
+sdmdata_beard <- data.frame(cbind(pb_beard, rbind(presvals_beard, absvals_beard)))
+sdmdata_beard %>% count(pb_beard)
+## walrus
+sdmdata_wal <- data.frame(cbind(pb_wal, rbind(presvals_wal, absvals_wal)))
+sdmdata_wal %>% count(pb_wal)
+
+head(sdmdata_spot)
+head(sdmdata_beard)
+head(sdmdata_wal)
+
 
 # Pair plot for bioclims 1, 5, 12 to investigate collinearity
-pairs(sdmdata[,c(2,5,16)], cex = 0.1) # saved plot 
+# Pair plot for sea ice and shipping to investigate collinearity??
+# pairs(sdmdata[,c(2,5,16)], cex = 0.1) # saved plot 
 
 # Pairs plot for temp bioclims and precip bioclims
-pairs(sdmdata[,c(1,5,6,8,9,10,11)], cex = 0.1) # temp
-pairs(sdmdata[,c(12,13,14,16,17,18,19)], cex = 0.1) # precip
+# pairs(sdmdata[,c(1,5,6,8,9,10,11)], cex = 0.1) # temp
+# pairs(sdmdata[,c(12,13,14,16,17,18,19)], cex = 0.1) # precip
 
 # Save work
-# saveRDS(sdmdata, "Final_Project/Data_Processed/sdm.Rds")
-# saveRDS(presvals, "Final_Project/Data_Processed/pvals.Rds")
+# saveRDS(sdmdata_spot, "../Data_Processed/prelim_models/sdmdata_spot.Rds")
+# saveRDS(presvals_spot, "../Data_Processed/prelim_models/presvals_spot.Rds")
 
+# saveRDS(sdmdata_beard, "../Data_Processed/prelim_models/sdmdata_beard.Rds")
+# saveRDS(presvals_beard, "../Data_Processed/prelim_models/presvals_beard.Rds")
+
+# saveRDS(sdmdata_wal, "../Data_Processed/prelim_models/sdmdata_wal.Rds")
+# saveRDS(presvals_wal, "../Data_Processed/prelim_models/presvals_wal.Rds")
 
 
 # Part 2 ------------------------------------------------------------------
