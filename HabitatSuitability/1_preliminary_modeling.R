@@ -143,21 +143,20 @@ ship_fall <- shipping[grepl(pattern = "fall", x = shipping)] # takes all the fil
 
 ## Separate occurrences by season
 
-# Spotted seal
-largha2015 <- subset(all_spot, year == "2015")
-
 # Create vector of unique years
 unique_years <- unique(all_spot$year)
 
 # Create a for loop to subset the all_spot df per each unique_years
-# Then assign the resulting subset to a new df labeled with the name and year
 for (year in unique_years) {
-  assign(paste0("largha", year), all_spot[all_spot$year == year, ])
+  # select all rows where the "year" column matches the current value of the
+  # "year" variable in the loop
+  largha <- all_spot[all_spot$year == year, ]
+  # add a new column that assigns the value "summer" if the month is in the range
+  # 6-8 (inclusive) and "fall" if the month is in the range 9-11 (inclusive)
+  largha$season <- ifelse(largha$month %in% c(6, 7, 8), "summer", "fall")
+  # assign the resulting subset to a new df labeled with the name and year
+  assign(paste0("largha", year), largha)
 }
-# '[all_spot$year == year, ] is used to select all rows where the "year" column
-# matches the current value of the "year" variable in the loop
-
-
 
 
 ## Take the mean of means (2015-2020)
@@ -165,26 +164,26 @@ for (year in unique_years) {
 ## observations from that year for that stack. E.g., 2015 observations get 2015
 ## values, etc. 
 
-
-
-
-# Create a RasterStack of predictor variables for each variable
-chloro_pred <- stack(chloro_conc)
+# Create a RasterStack out of predictor variables
+chlsum_pred <- stack(chloro_sum)
+chlfall_pred <- stack(chloro_fall)
 dist_pred <- stack(dist_land)
-ice_pred <- stack(sea_ice)
-sst_pred <- stack(sst)
-shipping_pred <- stack(shipping)
+icesum_pred <- stack(ice_sum)
+icefall_pred <- stack(ice_fall)
+sstsum_pred <- stack(sst_sum)
+sstfall_pred <- stack(sst_fall)
+shipsum_pred <- stack(ship_sum)
+shipfall_pred <- stack(ship_fall)
 
 # Create vector of names for each predictor stack
-chloro_names <- names(chloro_pred)
-dist_names <- names(dist_pred)
-ice_names <- names(ice_pred)
-sst_names <- names(sst_pred)
-ship_names <- names(shipping_pred)
+# chloro_names <- names(chloro_pred)
+# dist_names <- names(dist_pred)
+# ice_names <- names(ice_pred)
+# sst_names <- names(sst_pred)
+# ship_names <- names(shipping_pred)
 
-# Create vector of predictors
-predictors <- stack(c(chloro_conc, dist_land, sea_ice, sst, shipping))
-## Are these all of the predictor variables compiled together properly? ## 
+# Create vector of predictors for summer
+sum_pred <- stack(c(chlsum_pred, dist_pred, sstsum_pred, shipsum_pred))
 
 
 # Plot to check
