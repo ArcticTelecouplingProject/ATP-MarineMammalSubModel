@@ -87,36 +87,79 @@ datadir <- "../../ATP-MarineMammal-DataRaw/"
 chloro_conc <- list.files(paste0(datadir, "Ascii_Environmental_Variables/Chlorophyll_Concentration"),
                                       pattern = "*.asc",
                                       full.names = TRUE)
+# Create a raster layer list
+# chloro_list <- lapply(chloro_conc, raster)
 
-for (i in 1:length(chloro_conc)) assign(chloro_conc[i], read.csv(chloro_conc[i]))
+# Select only the mean files - excluding the standard deviation files - for each season
+## Summer: june-aug
+chloro_ja <- chloro_conc[grepl(pattern = "ja", x = chloro_conc)] # takes all the files with "ja"
+## Fall: sep-nov
+chloro_sn <- chloro_conc[grepl(pattern = "sn", x = chloro_conc)] # takes all the files with "sn"
+
+chloro_sum <- chloro_ja[grepl(pattern = "_mn", x = chloro_ja)] # from ja, takes all the files with "_mn"
+chloro_fall <- chloro_sn[grepl(pattern = "_mn", x = chloro_sn)] # from sn, takes all the files with "_mn"
+
+
+# raster(chloro_conc[1]) # check value
+
+# for (i in 1:length(chloro_conc)) assign(chloro_conc[i], read.csv(chloro_conc[i]))
 
 # Distance to Land
 dist_land <- list.files(paste0(datadir, "Ascii_Environmental_Variables/Distance_to_Land"),
                         pattern = "*.asc",
                         full.names = TRUE)
+## This is just one file
 
-for (i in 1:length(dist_land)) assign(dist_land[i], read.csv(dist_land[i]))
+# for (i in 1:length(dist_land)) assign(dist_land[i], read.csv(dist_land[i]))
 
 # Sea Ice Extent
 sea_ice <- list.files(paste0(datadir, "Ascii_Environmental_Variables/Sea_Ice_Extent"),
                       pattern = "*.asc",
                       full.names = TRUE)
 
-for (i in 1:length(sea_ice)) assign(sea_ice[i], read.csv(sea_ice[i]))
+# Select files for each season
+## Summer: june-aug
+ice_sum <- sea_ice[grepl(pattern = "ja", x = sea_ice)] # takes all the files with "ja"
+## Fall: sep-nov
+ice_fall <- sea_ice[grepl(pattern = "sn", x = sea_ice)] # takes all the files with "sn"
+
+# for (i in 1:length(sea_ice)) assign(sea_ice[i], read.csv(sea_ice[i]))
 
 # Sea Surface Temperature
 sst <- list.files(paste0(datadir, "Ascii_Environmental_Variables/Sea_Surface_Temperature"),
                   pattern = "*.asc",
                   full.names = TRUE)
 
-for (i in 1:length(sst)) assign(sst[i], read.csv(sst[i]))
+# Select only the mean files - excluding the standard deviation files - for each season
+## Summer: june-aug
+sst_ja <- sst[grepl(pattern = "ja", x = sst)] # takes all the files with "ja"
+## Fall: sep-nov
+sst_sn <- sst[grepl(pattern = "sn", x = sst)] # takes all the files with "sn"
+
+sst_sum <- sst_ja[grepl(pattern = "_mn", x = sst_ja)] # from ja, takes all the files with "_mn"
+sst_fall <- sst_sn[grepl(pattern = "_mn", x = sst_sn)] # from sn, takes all the files with "_mn"
+
+# for (i in 1:length(sst)) assign(sst[i], read.csv(sst[i]))
 
 # Shipping
 shipping <- list.files(paste0(datadir, "Ascii_Environmental_Variables/shipping"),
                        pattern = "*.asc",
                        full.names = TRUE)
 
-for (i in 1:length(shipping)) assign(shipping[i], read.csv(shipping[i]))
+# Select files for each season
+## Summer: june-aug
+ship_sum <- shipping[grepl(pattern = "summer", x = shipping)] # takes all the files with "ja"
+## Fall: sep-nov
+ship_fall <- shipping[grepl(pattern = "fall", x = shipping)] # takes all the files with "sn"
+
+# for (i in 1:length(shipping)) assign(shipping[i], read.csv(shipping[i]))
+
+## Separate occurrences by season
+
+## Take the mean of means (2015-2020)
+## Or take observations from 2015-2020 and create 1 stack per year, only extracting
+## observations from that year for that stack. E.g., 2015 observations get 2015
+## values, etc. 
 
 
 # Create a RasterStack of predictor variables for each variable
@@ -247,7 +290,7 @@ presvals_wal <- readRDS("../Data_Processed/prelim_models/presvals_wal.Rds")
 # 3 = walrus
 
 # reduced shipping and sea ice model for spotted seal
-m1_ship_sea <- glm(pb_spot ~ shipping_pred + ice_pred, data = sdmdata_spot) ## left off here
+m1_ship_sea <- glm(pb_spot ~  + ice_pred, data = sdmdata_spot) ## left off here
 
 # reduced precipitation model
 m_precip <- glm(pb ~ bio_12 + bio_13 + bio_14 + bio_16 + bio_17 + bio_18 + bio_19, data = sdmdata)
