@@ -58,10 +58,6 @@ all_walrus <- all_walrus %>% dplyr::rename(
                                        methodObservation = mthdObs)
 
 
-
-
-
-
 # Preparing species occurrences for dismo ---------------------------------
 
 # Check to see if there are NAs just in case
@@ -69,9 +65,8 @@ all_walrus <- all_walrus %>% dplyr::rename(
 # dim(la.geo) # number of occurrences match the number in original df which means there were no NAs
 
 
-# Dismo -------------------------------------------------------------------
 
-## Environmental Data
+# Environmental Data ------------------------------------------------------
 
 # Create the folders (directories) "data"
 # if they exist already, this command won't over-write them.
@@ -102,15 +97,11 @@ chloro_fall <- chloro_sn[grepl(pattern = "_mn", x = chloro_sn)] # from sn, takes
 
 # raster(chloro_conc[1]) # check value
 
-# for (i in 1:length(chloro_conc)) assign(chloro_conc[i], read.csv(chloro_conc[i]))
-
 # Distance to Land
 dist_land <- list.files(paste0(datadir, "Ascii_Environmental_Variables/Distance_to_Land"),
                         pattern = "*.asc",
                         full.names = TRUE)
 ## This is just one file
-
-# for (i in 1:length(dist_land)) assign(dist_land[i], read.csv(dist_land[i]))
 
 # Sea Ice Extent
 sea_ice <- list.files(paste0(datadir, "Ascii_Environmental_Variables/Sea_Ice_Extent"),
@@ -122,8 +113,6 @@ sea_ice <- list.files(paste0(datadir, "Ascii_Environmental_Variables/Sea_Ice_Ext
 ice_sum <- sea_ice[grepl(pattern = "ja", x = sea_ice)] # takes all the files with "ja"
 ## Fall: sep-nov
 ice_fall <- sea_ice[grepl(pattern = "sn", x = sea_ice)] # takes all the files with "sn"
-
-# for (i in 1:length(sea_ice)) assign(sea_ice[i], read.csv(sea_ice[i]))
 
 # Sea Surface Temperature
 sst <- list.files(paste0(datadir, "Ascii_Environmental_Variables/Sea_Surface_Temperature"),
@@ -139,7 +128,6 @@ sst_sn <- sst[grepl(pattern = "sn", x = sst)] # takes all the files with "sn"
 sst_sum <- sst_ja[grepl(pattern = "_mn", x = sst_ja)] # from ja, takes all the files with "_mn"
 sst_fall <- sst_sn[grepl(pattern = "_mn", x = sst_sn)] # from sn, takes all the files with "_mn"
 
-# for (i in 1:length(sst)) assign(sst[i], read.csv(sst[i]))
 
 # Shipping
 shipping <- list.files(paste0(datadir, "Ascii_Environmental_Variables/shipping"),
@@ -152,14 +140,32 @@ ship_sum <- shipping[grepl(pattern = "summer", x = shipping)] # takes all the fi
 ## Fall: sep-nov
 ship_fall <- shipping[grepl(pattern = "fall", x = shipping)] # takes all the files with "sn"
 
-# for (i in 1:length(shipping)) assign(shipping[i], read.csv(shipping[i]))
 
 ## Separate occurrences by season
+
+# Spotted seal
+largha2015 <- subset(all_spot, year == "2015")
+
+# Create vector of unique years
+unique_years <- unique(all_spot$year)
+
+# Create a for loop to subset the all_spot df per each unique_years
+# Then assign the resulting subset to a new df labeled with the name and year
+for (year in unique_years) {
+  assign(paste0("largha", year), all_spot[all_spot$year == year, ])
+}
+# '[all_spot$year == year, ] is used to select all rows where the "year" column
+# matches the current value of the "year" variable in the loop
+
+
+
 
 ## Take the mean of means (2015-2020)
 ## Or take observations from 2015-2020 and create 1 stack per year, only extracting
 ## observations from that year for that stack. E.g., 2015 observations get 2015
 ## values, etc. 
+
+
 
 
 # Create a RasterStack of predictor variables for each variable
@@ -566,7 +572,8 @@ sapply( e, function(x){ threshold(x)['spec_sens'] } )
 
 
 
-# Summary data ------------------------------------------------------------
+# Summary Data ------------------------------------------------------------
+
 
 # Spotted seal ------------------------------------------------------------
 
