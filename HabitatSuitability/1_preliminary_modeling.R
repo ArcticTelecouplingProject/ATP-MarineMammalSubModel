@@ -255,7 +255,31 @@ dist_stack %>% plot()
 ship_sum_stack %>% plot()
 ship_fall_stack %>% plot()
 
-# Combine predictors into one stack per season
+# Combine predictors into one stack per year per season
+
+# Summer
+for (year in 15:20) {
+  chloro_sum <- get(paste0("chloro_sum_", year))
+  ice_sum <- get(paste0("ice_sum_", year))
+  sst_sum <- get(paste0("sst_sum_", year))
+  
+  year_stack <- stack(c(chloro_sum, ice_sum, sst_sum, dist_stack, ship_sum_stack))
+  
+  assign(paste0("pred_sum", year), year_stack)
+}
+
+# Fall
+for (year in 15:20) {
+  chloro_fall <- get(paste0("chloro_fall_", year))
+  ice_fall <- get(paste0("ice_fall_", year))
+  sst_fall <- get(paste0("sst_fall_", year))
+  
+  year_stack <- stack(c(chloro_sum, ice_sum, sst_sum, dist_stack, ship_sum_stack))
+  
+  assign(paste0("pred_fall", year), year_stack)
+}
+
+
 pred_sum <- stack(c(chloro_sum_15, ice_sum_15, sst_sum_15, dist_stack, ship_sum_stack))
 pred_fall <- stack(c(chloro_fall_15, ice_fall_15, sst_fall_15, dist_stack, ship_fall_stack))
 
