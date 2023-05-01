@@ -237,41 +237,27 @@ for (num in 15:20) {
   }
 }
 
+## Distance to Land
+dist_stack <- stack(dist_land)
 
-
- # ****************
-
-# Create a RasterStack out of predictor variables
-chlsum_pred <- stack(chloro_sum)
-chlfall_pred <- stack(chloro_fall)
-dist_pred <- stack(dist_land)
-icesum_pred <- stack(ice_sum)
-icefall_pred <- stack(ice_fall)
-sstsum_pred <- stack(sst_sum)
-sstfall_pred <- stack(sst_fall)
-shipsum_pred <- stack(ship_sum)
-shipfall_pred <- stack(ship_fall)
-
-# Create vector of names for each predictor stack
-# chloro_names <- names(chloro_pred)
-# dist_names <- names(dist_pred)
-# ice_names <- names(ice_pred)
-# sst_names <- names(sst_pred)
-# ship_names <- names(shipping_pred)
-
-# Create vector of predictors for summer
-sum_pred <- stack(c(chlsum_pred, dist_pred, sstsum_pred, shipsum_pred))
-
+## Shipping
+ship_sum_stack <- stack(ship_sum)
+ship_fall_stack <- stack(ship_fall)
 
 # Plot to check
-chloro_pred %>% plot()
-dist_pred %>% plot()
-ice_pred %>% plot()
-sst_pred %>% plot()
-shipping_pred %>% plot()
+chloro_sum_15 %>% plot()
+chloro_fall_15 %>% plot()
+ice_sum_15 %>% plot()
+ice_fall_15 %>% plot()
+sst_sum_15 %>% plot()
+sst_fall_15 %>% plot()
+dist_stack %>% plot()
+ship_sum_stack %>% plot()
+ship_fall_stack %>% plot()
 
-predictors %>% plot()
-
+# Combine predictors into one stack per season
+pred_sum <- stack(c(chloro_sum_15, ice_sum_15, sst_sum_15, dist_stack, ship_sum_stack))
+pred_fall <- stack(c(chloro_fall_15, ice_fall_15, sst_fall_15, dist_stack, ship_fall_stack))
 
 # Create bounding box for extent of BSR using study_area extent
 # Can check bbox values with this or using bbox()
@@ -280,8 +266,12 @@ study_area <- st_read(paste0(datadir, "study_area/StudyArea.shp")) # Polygon
 # Make study_area spatial first
 study_area_sp <- as(study_area, "Spatial") # SpatialPolygonsDataFrame
 
-# Transform to Alaska Albers
-# predictors %>% st_transform(crs = 3338)
+# Transform RasterStacks to Alaska Albers
+new_crs <- crs(all_spot)
+pred_sum <- stack(lapply(pred_sum, function(x) projectRaster(x, crs = new_crs)))
+
+stack2 <- stack(lapply(stack1, function(x) projectRaster(x, crs = new_crs)))
+
 
 # Now crop
 predictors_na <- crop(predictors, study_area_sp)
