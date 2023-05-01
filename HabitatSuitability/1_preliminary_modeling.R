@@ -86,6 +86,7 @@ chloro_conc <- list.files(paste0(datadir, "Ascii_Environmental_Variables/Chlorop
 # chloro_list <- lapply(chloro_conc, raster)
 
 # Select only the mean files - excluding the standard deviation files - for each season
+# aggregated for all years
 ## Summer: june-aug
 chloro_ja <- chloro_conc[grepl(pattern = "ja", x = chloro_conc)] # takes all the files with "ja"
 ## Fall: sep-nov
@@ -108,7 +109,7 @@ sea_ice <- list.files(paste0(datadir, "Ascii_Environmental_Variables/Sea_Ice_Ext
                       pattern = "*.asc",
                       full.names = TRUE)
 
-# Select files for each season
+# Select files for each season - aggregated for all years
 ## Summer: june-aug
 ice_sum <- sea_ice[grepl(pattern = "ja", x = sea_ice)] # takes all the files with "ja"
 ## Fall: sep-nov
@@ -120,6 +121,7 @@ sst <- list.files(paste0(datadir, "Ascii_Environmental_Variables/Sea_Surface_Tem
                   full.names = TRUE)
 
 # Select only the mean files - excluding the standard deviation files - for each season
+# aggregated for all years
 ## Summer: june-aug
 sst_ja <- sst[grepl(pattern = "ja", x = sst)] # takes all the files with "ja"
 ## Fall: sep-nov
@@ -135,7 +137,7 @@ shipping <- list.files(paste0(datadir, "Ascii_Environmental_Variables/shipping")
                        pattern = "*.asc",
                        full.names = TRUE)
 
-# Select files for each season
+# Select files for each season - aggregated for all years
 ## Summer: june-aug
 ship_sum <- shipping[grepl(pattern = "summer", x = shipping)] # takes all the files with "ja"
 ## Fall: sep-nov
@@ -159,31 +161,84 @@ for (year in unique_years) {
   assign(paste0("largha", year), largha)
 }
 
-## Take the mean of means (2015-2020)
-## Or take observations from 2015-2020 and create 1 stack per year, only extracting
+## Take observations from 2015-2020 and create 1 stack per year, only extracting
 ## observations from that year for that stack. E.g., 2015 observations get 2015
 ## values, etc. 
 
 # Iterate over the numbers 15-20 to create a raster stack for each predictor and year
-# for chloro, sea ice, and sst
+# for chlorophyll concentration, sea ice, and sst
+
+## Chlorophyll Concentration
 for (num in 15:20) {
-  # Construct the patterns to search for files
+  # Construct the pattern to search for files
   pattern1 <- paste0(num, "_ja_mn") # only want the mean files
-  pattern2 <- paste0(num, "_sn_mn")
+  pattern2 <- paste0(num, "_sn_mn") 
   
-  # Check if the patterns exist in the file names
-  if (any(grepl(pattern1, chloro_conc))) {
-    # Chlorophyll Concentration
-    chloro <- chloro_conc[grepl(pattern = pattern1, x = chloro_conc)]
+  # Check if the pattern exists in the file names
+  if (any(grepl(pattern1, chloro_sum))) {
+  # Summer
+    chloro <- chloro_sum[grepl(pattern = pattern1, x = chloro_sum)]
     chloro_stack <- stack(chloro) # Create chloro stack with files containing pattern
     assign(paste0("chloro_sum_", num), chloro_stack) # Rename files for summer
-  # If pattern 1 does not exist, check for pattern 2 ***************** check this
-  } else if (any(grepl(pattern2, chloro_conc))) {
-    chloro <- chloro_conc[grepl(pattern = pattern2, x = chloro_conc)]
-    chloro_stack <- stack(chloro)
+    
+  }
+  # Fall
+  if (any(grepl(pattern2, chloro_fall))) {
+    chloro <- chloro_fall[grepl(pattern = pattern2, x = chloro_fall)]
+    chloro_stack <- stack(chloro) # Create chloro stack with files containing pattern
     assign(paste0("chloro_fall_", num), chloro_stack) # Rename files for fall
   }
 }
+
+
+## Sea Ice Extent
+for (num in 15:20) {
+  # Construct the pattern to search for files
+  # sum (sm) - corresponds to the number of days when ice was present in each pixel
+  pattern1 <- paste0(num, "_ja_sm") 
+  pattern2 <- paste0(num, "_sn_sm") 
+  
+  # Check if the pattern exists in the file names
+  if (any(grepl(pattern1, ice_sum))) {
+    # Summer
+    ice <- ice_sum[grepl(pattern = pattern1, x = ice_sum)]
+    ice_stack <- stack(ice) # Create chloro stack with files containing pattern
+    assign(paste0("ice_sum_", num), ice_stack) # Rename files for summer
+    
+  }
+  # Fall
+  if (any(grepl(pattern2, ice_fall))) {
+    ice <- ice_fall[grepl(pattern = pattern2, x = ice_fall)]
+    ice_stack <- stack(ice) # Create chloro stack with files containing pattern
+    assign(paste0("ice_fall_", num), ice_stack) # Rename files for fall
+  }
+}
+
+
+## Sea Surface Temperature
+for (num in 15:20) {
+  # Construct the pattern to search for files
+  pattern1 <- paste0(num, "_ja_mn") # only want the mean files
+  pattern2 <- paste0(num, "_sn_mn") 
+  
+  # Check if the pattern exists in the file names
+  if (any(grepl(pattern1, sst_sum))) {
+    # Summer
+    sst <- sst_sum[grepl(pattern = pattern1, x = sst_sum)]
+    sst_stack <- stack(sst) # Create chloro stack with files containing pattern
+    assign(paste0("sst_sum_", num), sst_stack) # Rename files for summer
+    
+  }
+  # Fall
+  if (any(grepl(pattern2, sst_fall))) {
+    sst <- sst_fall[grepl(pattern = pattern2, x = sst_fall)]
+    sst_stack <- stack(sst) # Create chloro stack with files containing pattern
+    assign(paste0("sst_fall_", num), sst_stack) # Rename files for fall
+  }
+}
+
+
+
  # ****************
 
 # Create a RasterStack out of predictor variables
