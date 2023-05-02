@@ -180,7 +180,6 @@ for (num in 15:20) {
     chloro <- chloro_sum[grepl(pattern = pattern1, x = chloro_sum)]
     chloro_stack <- stack(chloro) # Create chloro stack with files containing pattern
     assign(paste0("chloro_sum_", num), chloro_stack) # Rename files for summer
-    
   }
   # Fall
   if (any(grepl(pattern2, chloro_fall))) {
@@ -200,11 +199,10 @@ for (num in 15:20) {
   
   # Check if the pattern exists in the file names
   if (any(grepl(pattern1, ice_sum))) {
-    # Summer
+  # Summer
     ice <- ice_sum[grepl(pattern = pattern1, x = ice_sum)]
     ice_stack <- stack(ice) # Create chloro stack with files containing pattern
     assign(paste0("ice_sum_", num), ice_stack) # Rename files for summer
-    
   }
   # Fall
   if (any(grepl(pattern2, ice_fall))) {
@@ -223,11 +221,10 @@ for (num in 15:20) {
   
   # Check if the pattern exists in the file names
   if (any(grepl(pattern1, sst_sum))) {
-    # Summer
+  # Summer
     sst <- sst_sum[grepl(pattern = pattern1, x = sst_sum)]
     sst_stack <- stack(sst) # Create chloro stack with files containing pattern
     assign(paste0("sst_sum_", num), sst_stack) # Rename files for summer
-    
   }
   # Fall
   if (any(grepl(pattern2, sst_fall))) {
@@ -255,7 +252,9 @@ dist_stack %>% plot()
 ship_sum_stack %>% plot()
 ship_fall_stack %>% plot()
 
-# Combine predictors into one stack per year per season
+# Combine predictors into one stack per year per season and set to same crs of
+# occurrence data
+new_crs <- crs(all_spot) # saves crs of all_spot data to new variable
 
 # Summer
 for (year in 15:20) {
@@ -264,6 +263,8 @@ for (year in 15:20) {
   sst_sum <- get(paste0("sst_sum_", year))
   
   year_stack <- stack(c(chloro_sum, ice_sum, sst_sum, dist_stack, ship_sum_stack))
+  # Set crs to same crs of occurrence data
+  year_stack <- projectRaster(year_stack, crs = new_crs)
   
   assign(paste0("pred_sum", year), year_stack)
 }
@@ -275,37 +276,20 @@ for (year in 15:20) {
   sst_fall <- get(paste0("sst_fall_", year))
   
   year_stack <- stack(c(chloro_sum, ice_sum, sst_sum, dist_stack, ship_sum_stack))
+  # Set crs to same crs of occurrence data
+  year_stack <- projectRaster(year_stack, crs = new_crs)
   
   assign(paste0("pred_fall", year), year_stack)
 }
 
+# Convert dist_stack to crs of occurrence data
+dist_stack <- crs(new_crs)
+# Convert shipping stack to crs of occurrence data
+ship_sum_stack <- crs(new_crs)
+ship_fall_stack <- crs(new_crs)
 
-pred_sum <- stack(c(chloro_sum_15, ice_sum_15, sst_sum_15, dist_stack, ship_sum_stack))
-pred_fall <- stack(c(chloro_fall_15, ice_fall_15, sst_fall_15, dist_stack, ship_fall_stack))
-
-# Create bounding box for extent of BSR using study_area extent
-# Can check bbox values with this or using bbox()
-study_area <- st_read(paste0(datadir, "study_area/StudyArea.shp")) # Polygon
-
-# Make study_area spatial first
-study_area_sp <- as(study_area, "Spatial") # SpatialPolygonsDataFrame
-
-# Transform RasterStacks to Alaska Albers
-new_crs <- crs(all_spot)
-pred_sum <- stack(lapply(pred_sum, function(x) projectRaster(x, crs = new_crs)))
-
-stack2 <- stack(lapply(stack1, function(x) projectRaster(x, crs = new_crs)))
-
-
-# Now crop
-predictors_na <- crop(predictors, study_area_sp)
-
-# Check predictor data - should be the BSR
-plot(predictors_na)
-
-# Now we have predictor variables (rasters) and occurrences
+# Now we have predictor variables (RasterStacks) and occurrences
 # Need to extract the values of the predictors at the locations of the points
-# Cast geometry to another type with st_cast()
 
 ## Extracting values from rasters - presence values with predictors
 presvals_spot <- raster::extract(predictors_na, all_spot) # spotted seal
