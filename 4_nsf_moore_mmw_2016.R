@@ -34,7 +34,7 @@ datadir <- "../../ATP-MarineMammal-DataRaw/"
 mmwatch2016 <- read.csv(paste0(datadir,"4_nsf_moore_mmw_2016/data/DBO_MMWatch_SWL2016_MooreGrebmeierVagle.csv"))
 head(mmwatch2016)
 
-# Create a datafame to generate metadata summaries on the occurrence data at various steps of tidying
+# Create a dataframe to generate metadata summaries on the occurrence data at various steps of tidying
 OccurrenceSummaries <- data.frame(name = "nsf_mmwatch2016") 
 OccurrenceSummaries$before <- length(mmwatch2016$SPP)
 
@@ -45,7 +45,7 @@ OccurrenceSummaries$before <- length(mmwatch2016$SPP)
 # 14 = spotted seal
 mmwatch_mams <- mmwatch2016[mmwatch2016$SPP %in% c(11, 12, 14), ]
 
-# Add to metadata datafame for summaries on the occurrence data at various steps of tidying
+# Add to metadata dataframe for summaries on the occurrence data at various steps of tidying
 OccurrenceSummaries$isolatedSpecies <- length(mmwatch_mams$SPP[which(mmwatch_mams$SPP == "11")])
 
 # Remove extraneous columns of info 
@@ -56,7 +56,7 @@ mams_new <- mmwatch_mams %>% dplyr::select(SPP,
                                          LONG_W,
                                          No.)
 
-# Add to metadata datafame for summaries on the occurrence data at various steps of tidying
+# Add to metadata dataframe for summaries on the occurrence data at various steps of tidying
 OccurrenceSummaries$columnsofInterest <- length(mams_new$SPP[which(mams_new$SPP == "11")])
 
 
@@ -173,7 +173,7 @@ unique_mams <- distinct(mams_sp2)
 # Remove Nas
 unique_mams_omit <- na.omit(unique_mams)
 
-# Add to metadata datafame for summaries on the occurrence data at various steps of tidying
+# Add to metadata dataframe for summaries on the occurrence data at various steps of tidying
 OccurrenceSummaries$uniqueOccurrences <- length(unique_mams_omit$commonName[which(unique_mams_omit$commonName == "Walrus")])
 
 View(OccurrenceSummaries)
