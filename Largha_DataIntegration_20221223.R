@@ -133,7 +133,7 @@ base_crop <- st_crop(base_map, c(xmin = -2173499, ymin = 159766, xmax = 1661246,
 ggplot() + geom_sf(data = base_crop) + 
   geom_sf(data = unique_spot, mapping = aes(color = year)) +
   labs(
-    title = "Spotted seal occurrence in the Bering Strait Region")
+    title = "Spotted seal occurrences in the Bering Strait Region")
 
 
 # Isolate number of rows after 2010
@@ -143,7 +143,7 @@ all_spot_2010 <- unique_spot[unique_spot$year > 2009, ]
 ggplot() + geom_sf(data = base_crop) + 
   geom_sf(data = all_spot_2010, mapping = aes(color = year), size = 1.5) +
   labs(
-    title = "Spotted seal occurrence points from 2010-2019 \n
+    title = "Spotted seal occurrences from 2010-2019 \n
     in the Bering Strait Region")
 
 
