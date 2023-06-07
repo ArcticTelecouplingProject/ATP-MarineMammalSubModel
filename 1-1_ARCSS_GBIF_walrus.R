@@ -33,11 +33,11 @@ walrus_gbif <- st_read(paste0(datadir, "1_arcss_gbif/odobenus_rosmarus_divergens
 head(walrus_gbif)
 colnames(walrus_gbif)
 
-# Create a datafame to generate metadata summaries on the occurrence data at various steps of tidying
+# Create a dataframe to generate metadata summaries on the occurrence data at various steps of tidying
 OccurrenceSummaries <- data.frame(name = "walrus_gbif") 
 OccurrenceSummaries$before <- length(walrus_gbif$specificEp)
 
-# Add to metadata datafame for summaries on the occurrence data at various steps of tidying
+# Add to metadata dataframe for summaries on the occurrence data at various steps of tidying
 OccurrenceSummaries$isolatedSpecies <- length(walrus_gbif$specificEp)
 
 # Transform to Alaska Albers projection
@@ -68,7 +68,7 @@ wal_gbif_new <- walrus_gbif_new %>% dplyr::select(genericNam,
                                                   day,
                                                   basisOfRec)
 
-# Add to metadata datafame for summaries on the occurrence data at various steps of tidying
+# Add to metadata dataframe for summaries on the occurrence data at various steps of tidying
 OccurrenceSummaries$columnsofInterest <- length(wal_gbif_new$specificEp)
 
 ## Geometry column will automatically be included too because of the spatial structure
@@ -161,7 +161,7 @@ unique_walrus <- distinct(walrus_gbif_sp)
 # Remove Nas
 unique_walrus_omit <- na.omit(unique_walrus)
 
-# Add to metadata datafame for summaries on the occurrence data at various steps of tidying
+# Add to metadata dataframe for summaries on the occurrence data at various steps of tidying
 OccurrenceSummaries$uniqueOccurrences <- length(unique_walrus_omit$scientificName)
 
 View(OccurrenceSummaries)
