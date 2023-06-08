@@ -69,8 +69,6 @@ walrus_3338$year <- as.numeric(walrus_gbif$year)
 walrus_3338$month <- as.numeric(walrus_gbif$month)
 walrus_3338$day <- as.numeric(walrus_3338$day)
 
-## Pick up from here
-
 # Add a common name column and fill it with 'Walrus'
 walrus_3338$commonName <- "Walrus"
 
@@ -86,7 +84,10 @@ walrus_3338$methodObservation[walrus_3338$methodObservation == '"HUMAN_OBSERVATI
 ## https://www.geeksforgeeks.org/how-to-add-a-column-based-on-other-columns-in-r-dataframe/
 walrus_3338 <- transform(walrus_3338, groupSize = ifelse
                                (is.na(year) & is.na(month) & is.na(day), 0, 1))
-# Right now this is marking records with no YMD as 0 - decide whether to mark records with an NA in any part of the YMD as 0?
+# This checks whether all three columns (year, month, and day) contain missing values (NA)
+# using the is.na() function. If all three columns have missing values, the condition
+# evaluates to TRUE and fills with 0, otherwise, it evaluates to FALSE and fills with 1.
+# Decide whether to mark records with an NA in any part of the YMD as 0?
 
 # Rearrange column names to match other dfs
 walrus_merge <- walrus_3338 %>% dplyr::select(verbatimScientificName,
@@ -99,7 +100,11 @@ walrus_merge <- walrus_3338 %>% dplyr::select(verbatimScientificName,
                                                          decimalLongitude,
                                                          methodObservation,
                                                          source,
-                                                         geometry)
+                                                         geometry) %>% rename(
+                                                           scientificName = verbatimScientificName,
+                                                           decimalLat = decimalLatitude,
+                                                           decimalLon = decimalLongitude,
+                                                         )
 
 
 # Quantify number of occurrences before eliminating repeats
@@ -120,7 +125,7 @@ unique_walrus_omit <- na.omit(unique_walrus)
 View(unique_walrus_omit)
 
 # Save this df as a csv for importing - need to use st_write because of spatial geometry
-# st_write(unique_walrus_omit, "../Data_Processed/1-1-1_gbif_walrus/1-1-1_gbif_walrus.csv")
+# st_write(unique_walrus_omit, "../Data_Processed/1-1-1_gbif_walrus/1-1-1_gbif_walrus.shp")
 
 
 # Graveyard ---------------------------------------------------------------
