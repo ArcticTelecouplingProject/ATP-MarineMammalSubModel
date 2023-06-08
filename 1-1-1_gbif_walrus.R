@@ -8,8 +8,8 @@
 
 # Only species featured in this script is Pacific walrus.
 
-# This dataset was tidied and ready for data integration on .
-# Last edited: 07Jun2023
+# This dataset was tidied and ready for data integration on 08Jun2023.
+# Last edited: 08Jun2023
 
 # Libraries and Packages --------------------------------------------------
 
