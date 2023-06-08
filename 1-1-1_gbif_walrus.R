@@ -71,41 +71,25 @@ walrus_3338$day <- as.numeric(walrus_3338$day)
 
 ## Pick up from here
 
-# Move scientificName column to first column
-walrus_gbif_clean <- walrus_3338 %>% dplyr::select(verbatimScientificName, everything())
+# Add a common name column and fill it with 'Walrus'
+walrus_3338$commonName <- "Walrus"
 
-# Remove old columns of genus, species, and subspecies
-walrus_gbif_clean <- walrus_gbif_clean %>% dplyr::select(scientificName,
-                                                         year,
-                                                         month,
-                                                         day,
-                                                         decimalLatitude,
-                                                         decimalLongitude,
-                                                         basisOfRec,
-                                                         source,
-                                                         geometry)
+# Rename basisOfRecord column to methodObservation column
+walrus_3338 <- walrus_3338 %>% rename("methodObservation" = "basisOfRecord")
 
-# Add a common name column to the walrus_gbif_clean df and fill it with 'Walrus'
-walrus_gbif_clean$commonName <- "Walrus"
+# Rename values of method column for consistency with other datasets
+walrus_3338$methodObservation[walrus_3338$methodObservation == '"HUMAN_OBSERVATION"'] <- 'Human observation'
+# walrus_3338$methodObservation[walrus_3338$methodObservation == '"PRESERVED_SPECIMEN"'] <- 'Preserved specimen'
 
-# Rename basisOfRec column to methodObservation column
-walrus_gbif_clean <- walrus_gbif_clean %>% rename("methodObservation" = "basisOfRec")
-
-# Rename values of method column
-walrus_gbif_clean$methodObservation[walrus_gbif_clean$methodObservation == '"HUMAN_OBSERVATION"'] <- 'Human observation'
-walrus_gbif_clean$methodObservation[walrus_gbif_clean$methodObservation == '"PRESERVED_SPECIMEN"'] <- 'Preserved specimen'
-
-# Missing a groupSize column in the walrus_gbif_merge df??
-# Add groupSize column to walrus_gbif_merge df based on whether there are no NAs in the year, month, day cols
+# Add groupSize column based on whether there are no NAs in the year, month, day cols
 ## Reference for code:
 ## https://www.geeksforgeeks.org/how-to-add-a-column-based-on-other-columns-in-r-dataframe/
-walrus_gbif_merge <- transform(walrus_gbif_clean, groupSize = ifelse
+walrus_3338 <- transform(walrus_3338, groupSize = ifelse
                                (is.na(year) & is.na(month) & is.na(day), 0, 1))
-# Right now this is marking records with no YMD as 0
-# Decide whether to mark records with an NA in any part of the YMD as 0?
+# Right now this is marking records with no YMD as 0 - decide whether to mark records with an NA in any part of the YMD as 0?
 
-# Rearrange column names to match dfs - or I think this can be solved with whatever merge function ends up used
-walrus_gbif_merge <- walrus_gbif_merge %>% dplyr::select(scientificName,
+# Rearrange column names to match other dfs
+walrus_merge <- walrus_3338 %>% dplyr::select(verbatimScientificName,
                                                          commonName,
                                                          year,
                                                          month,
@@ -117,42 +101,26 @@ walrus_gbif_merge <- walrus_gbif_merge %>% dplyr::select(scientificName,
                                                          source,
                                                          geometry)
 
-# Convert to SpatialPointsDataFrame ---------------------------------------
 
-# Need to convert to SpatialPointsDataFrame instead of multipoints df first
-
-# Cast geometry to another type with st_cast()
-walrus_gbif_sp <- walrus_gbif_merge %>% st_cast("POINT")
-
-
-# quantifying number of occurrences before eliminating repeats
-# nrow(walrus_gbif_sp)
+# Quantify number of occurrences before eliminating repeats
+# nrow(walrus_merge)
 
 # Eliminate repeat occurrences
 # https://statisticsglobe.com/unique-rows-of-data-frame-based-on-selected-columns-in-r
-unique_walrus <- distinct(walrus_gbif_sp)
+unique_walrus <- distinct(walrus_merge)
 
-# quantifying number of occurrences after eliminating repeats
+# Quantify number of occurrences after eliminating repeats
 # nrow(unique_walrus)
 
-# Remove Nas
+# Remove NAs
 unique_walrus_omit <- na.omit(unique_walrus)
-
-# Add to metadata dataframe for summaries on the occurrence data at various steps of tidying
-OccurrenceSummaries$uniqueOccurrences <- length(unique_walrus_omit$scientificName)
-
-View(OccurrenceSummaries)
 
 ## Tada now you have a clean and tidy dataset to work with and merge
 
 View(unique_walrus_omit)
 
 # Save this df as a csv for importing - need to use st_write because of spatial geometry
-# st_write(unique_walrus_omit, "../Data_Processed/1-1_ARCSS_GBIF_walrus/1-1_walrus_gbif_sp.shp")
-
-# Save metadata dataframe
-# write.csv(OccurrenceSummaries, "../Data_Processed/Metadata/Metadata_1-1_walrus_gbif.csv")
-
+# st_write(unique_walrus_omit, "../Data_Processed/1-1-1_gbif_walrus/1-1-1_gbif_walrus.csv")
 
 
 # Graveyard ---------------------------------------------------------------
@@ -166,3 +134,11 @@ View(unique_walrus_omit)
 #
 # # Add to metadata dataframe for summaries on the occurrence data at various steps of tidying
 # OccurrenceSummaries$columnsofInterest <- length(walrus_3338$specificEp)
+#
+# Add to metadata dataframe for summaries on the occurrence data at various steps of tidying
+# OccurrenceSummaries$uniqueOccurrences <- length(unique_walrus_omit$scientificName)
+#
+# View(OccurrenceSummaries)
+#
+# Save metadata dataframe
+# write.csv(OccurrenceSummaries, "../Data_Processed/Metadata/Metadata_1-1_walrus_gbif.csv")
