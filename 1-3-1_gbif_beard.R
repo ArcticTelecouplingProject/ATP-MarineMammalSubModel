@@ -27,7 +27,7 @@ rm(list=ls())
 datadir <- "../../ATP-MarineMammal-DataRaw/"
 
 # Import raw walrus occurrence data from gbif query
-bs_gbif <- st_read(paste0(datadir, "additional_data/new_gbif_queries/gbif_largha_20230522.csv"))
+bs_gbif <- st_read(paste0(datadir, "1-1_gbif_queries/gbif_barbatus_20230522.csv"))
 
 # Look at column names
 colnames(bs_gbif)
@@ -36,7 +36,7 @@ colnames(bs_gbif)
 bs_gbif <- bs_gbif[!is.na(bs_gbif$decimalLatitude), ]
 
 # Remove extraneous columns - use select function to choose which columns to keep in new df
-largha_new <- bs_gbif %>% dplyr::select(verbatimScientificName,
+bs_new <- bs_gbif %>% dplyr::select(verbatimScientificName,
                                             decimalLatitude,
                                             decimalLongitude,
                                             year,
@@ -44,45 +44,52 @@ largha_new <- bs_gbif %>% dplyr::select(verbatimScientificName,
                                             day,
                                             basisOfRecord)
 
+
+# Set CRS -----------------------------------------------------------------
+
 # Set projection using lat/lon cols
-largha_new <- st_as_sf(largha_new, coords = c("decimalLongitude", "decimalLatitude"), crs = 4326, remove=FALSE)
+bs_new <- st_as_sf(bs_new, coords = c("decimalLongitude", "decimalLatitude"), crs = 4326, remove=FALSE)
 
 # Transform to Alaska Albers projection
-largha_3338 <- largha_new %>% st_transform(crs = 3338)
+bs_3338 <- bs_new %>% st_transform(crs = 3338)
 
 # Check to see if it's properly projected (NAD83 / Alaska Albers)
-st_crs(largha_3338)
+st_crs(bs_3338)
 
 ## Geometry column will automatically be included too because of the spatial structure
 ## Can get rid of with st_drop_geometry()
 
-# Add a new column to specify data source to backtrack later
-largha_3338$source <- "GBIF Query"
-
 # How is R classifying each column of data?
-lapply(largha_3338, class)
+lapply(bs_3338, class)
 
 # Convert numeric columns to numeric - probably a more succinct way to do this but that's okay
-largha_3338$decimalLatitude <- as.numeric(largha_3338$decimalLatitude)
-largha_3338$decimalLongitude <- as.numeric(largha_3338$decimalLongitude)
-largha_3338$year <- as.numeric(bs_gbif$year)
-largha_3338$month <- as.numeric(bs_gbif$month)
-largha_3338$day <- as.numeric(largha_3338$day)
+bs_3338$decimalLatitude <- as.numeric(bs_3338$decimalLatitude)
+bs_3338$decimalLongitude <- as.numeric(bs_3338$decimalLongitude)
+bs_3338$year <- as.numeric(bs_gbif$year)
+bs_3338$month <- as.numeric(bs_gbif$month)
+bs_3338$day <- as.numeric(bs_3338$day)
 
-# Add a common name column and fill it with 'Walrus'
-largha_3338$commonName <- "Spotted seal"
+# Modify columns ----------------------------------------------------------
+
+# Add a new column to specify data source to backtrack later
+bs_3338$source <- "GBIF Query"
+
+# Add a common name column and fill it with 'Bearded seal'
+bs_3338$commonName <- "Bearded seal"
 
 # Rename basisOfRecord column to methodObservation column
-largha_3338 <- largha_3338 %>% rename("methodObservation" = "basisOfRecord")
+bs_3338 <- bs_3338 %>% rename("methodObservation" = "basisOfRecord")
 
+# Check to see what unique values there are in the methodObservation column
+unique(bs_3338$methodObservation)
 # Rename values of method column for consistency with other datasets
-largha_3338$methodObservation[largha_3338$methodObservation == '"HUMAN_OBSERVATION"'] <- 'Human observation'
-# largha_3338$methodObservation[largha_3338$methodObservation == '"PRESERVED_SPECIMEN"'] <- 'Preserved specimen'
+bs_3338$methodObservation[bs_3338$methodObservation == "HUMAN_OBSERVATION"] <- 'Human observation'
+bs_3338$methodObservation[bs_3338$methodObservation == "MACHINE_OBSERVATION"] <- 'Machine observation'
 
 # Add groupSize column based on whether there are no NAs in the year, month, day cols
 ## Reference for code:
 ## https://www.geeksforgeeks.org/how-to-add-a-column-based-on-other-columns-in-r-dataframe/
-largha_3338 <- transform(largha_3338, groupSize = ifelse
+bs_3338 <- transform(bs_3338, groupSize = ifelse
                          (is.na(year) & is.na(month) & is.na(day), 0, 1))
 # This checks whether all three columns (year, month, and day) contain missing values (NA)
 # using the is.na() function. If all three columns have missing values, the condition
@@ -90,7 +97,7 @@ largha_3338 <- transform(largha_3338, groupSize = ifelse
 # Decide whether to mark records with an NA in any part of the YMD as 0?
 
 # Rearrange column names to match other dfs
-largha_merge <- largha_3338 %>% dplyr::select(verbatimScientificName,
+bs_merge <- bs_3338 %>% dplyr::select(verbatimScientificName,
                                               commonName,
                                               year,
                                               month,
@@ -107,22 +114,24 @@ largha_merge <- largha_3338 %>% dplyr::select(verbatimScientificName,
                                               )
 
 
+# Eliminate repeats -------------------------------------------------------
+
 # Quantify number of occurrences before eliminating repeats
-# nrow(largha_merge)
+# nrow(bs_merge)
 
 # Eliminate repeat occurrences
 # https://statisticsglobe.com/unique-rows-of-data-frame-based-on-selected-columns-in-r
-unique_largha <- distinct(largha_merge)
+unique_bs <- distinct(bs_merge)
 
 # Quantify number of occurrences after eliminating repeats
-# nrow(unique_largha)
+# nrow(unique_bs)
 
 # Remove NAs
-unique_largha_omit <- na.omit(unique_largha)
+unique_bs_omit <- na.omit(unique_bs)
 
 ## Tada now you have a clean and tidy dataset to work with and merge
 
-View(unique_largha_omit)
+View(unique_bs_omit)
 
 # Save this df as a csv for importing - need to use st_write because of spatial geometry
-# st_write(unique_largha_omit, "../Data_Processed/1-1-1_gbif_walrus/1-1-1_gbif_walrus.csv")
+# st_write(unique_bs_omit, "../Data_Processed/1-3-1_gbif_beard/1-3-1_gbif_beard.shp")
