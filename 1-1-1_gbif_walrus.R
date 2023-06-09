@@ -27,7 +27,7 @@ rm(list=ls())
 datadir <- "../../ATP-MarineMammal-DataRaw/"
 
 # Import raw walrus occurrence data from gbif query
-walrus_gbif <- st_read(paste0(datadir, "additional_data/new_gbif_queries/gbif_odobenus_20230522.csv"))
+walrus_gbif <- st_read(paste0(datadir, "1-1_gbif_queries/gbif_odobenus_20230522.csv"))
 
 # Look at column names
 colnames(walrus_gbif)
@@ -44,6 +44,8 @@ walrus_new <- walrus_gbif %>% dplyr::select(verbatimScientificName,
                                             day,
                                             basisOfRecord)
 
+# Set CRS -----------------------------------------------------------------
+
 # Set projection using lat/lon cols
 walrus_new <- st_as_sf(walrus_new, coords = c("decimalLongitude", "decimalLatitude"), crs = 4326, remove=FALSE)
                                            
@@ -56,9 +58,6 @@ st_crs(walrus_3338)
 ## Geometry column will automatically be included too because of the spatial structure
 ## Can get rid of with st_drop_geometry()
 
-# Add a new column to specify data source to backtrack later
-walrus_3338$source <- "GBIF Query"
-
 # How is R classifying each column of data?
 lapply(walrus_3338, class)
 
@@ -69,15 +68,22 @@ walrus_3338$year <- as.numeric(walrus_gbif$year)
 walrus_3338$month <- as.numeric(walrus_gbif$month)
 walrus_3338$day <- as.numeric(walrus_3338$day)
 
+
+# Modify columns ----------------------------------------------------------
+
+# Add a new column to specify data source to backtrack later
+walrus_3338$source <- "GBIF Query"
+
 # Add a common name column and fill it with 'Walrus'
 walrus_3338$commonName <- "Walrus"
 
 # Rename basisOfRecord column to methodObservation column
 walrus_3338 <- walrus_3338 %>% rename("methodObservation" = "basisOfRecord")
 
+# Check to see what unique values there are in the methodObservation column
+unique(walrus_3338$methodObservation)
 # Rename values of method column for consistency with other datasets
-walrus_3338$methodObservation[walrus_3338$methodObservation == '"HUMAN_OBSERVATION"'] <- 'Human observation'
-# walrus_3338$methodObservation[walrus_3338$methodObservation == '"PRESERVED_SPECIMEN"'] <- 'Preserved specimen'
+walrus_3338$methodObservation[walrus_3338$methodObservation == "HUMAN_OBSERVATION"] <- 'Human observation'
 
 # Add groupSize column based on whether there are no NAs in the year, month, day cols
 ## Reference for code:
@@ -125,7 +131,7 @@ unique_walrus_omit <- na.omit(unique_walrus)
 View(unique_walrus_omit)
 
 # Save this df as a csv for importing - need to use st_write because of spatial geometry
-# st_write(unique_walrus_omit, "../Data_Processed/1-1-1_gbif_walrus/1-1-1_gbif_walrus.shp")
+# st_write(unique_walrus_omit, "../Data_Processed/1-1-1_gbif_walrus/1-1-1_gbif_walrus.csv")
 
 
 # Graveyard ---------------------------------------------------------------
