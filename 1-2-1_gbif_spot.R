@@ -27,7 +27,7 @@ rm(list=ls())
 datadir <- "../../ATP-MarineMammal-DataRaw/"
 
 # Import raw walrus occurrence data from gbif query
-largha_gbif <- st_read(paste0(datadir, "additional_data/new_gbif_queries/gbif_largha_20230522.csv"))
+largha_gbif <- st_read(paste0(datadir, "1-1_gbif_queries/gbif_largha_20230522.csv"))
 
 # Look at column names
 colnames(largha_gbif)
@@ -44,6 +44,9 @@ largha_new <- largha_gbif %>% dplyr::select(verbatimScientificName,
                                             day,
                                             basisOfRecord)
 
+
+# Set CRS -----------------------------------------------------------------
+
 # Set projection using lat/lon cols
 largha_new <- st_as_sf(largha_new, coords = c("decimalLongitude", "decimalLatitude"), crs = 4326, remove=FALSE)
 
@@ -56,9 +59,6 @@ st_crs(largha_3338)
 ## Geometry column will automatically be included too because of the spatial structure
 ## Can get rid of with st_drop_geometry()
 
-# Add a new column to specify data source to backtrack later
-largha_3338$source <- "GBIF Query"
-
 # How is R classifying each column of data?
 lapply(largha_3338, class)
 
@@ -69,15 +69,22 @@ largha_3338$year <- as.numeric(largha_gbif$year)
 largha_3338$month <- as.numeric(largha_gbif$month)
 largha_3338$day <- as.numeric(largha_3338$day)
 
-# Add a common name column and fill it with 'Walrus'
+# Modify columns ----------------------------------------------------------
+
+# Add a new column to specify data source to backtrack later
+largha_3338$source <- "GBIF Query"
+
+# Add a common name column and fill it with 'Spotted seal'
 largha_3338$commonName <- "Spotted seal"
 
 # Rename basisOfRecord column to methodObservation column
 largha_3338 <- largha_3338 %>% rename("methodObservation" = "basisOfRecord")
 
+# Check to see what unique values there are in the methodObservation column
+unique(largha_3338$methodObservation)
 # Rename values of method column for consistency with other datasets
-largha_3338$methodObservation[largha_3338$methodObservation == '"HUMAN_OBSERVATION"'] <- 'Human observation'
-# largha_3338$methodObservation[largha_3338$methodObservation == '"PRESERVED_SPECIMEN"'] <- 'Preserved specimen'
+largha_3338$methodObservation[largha_3338$methodObservation == 'HUMAN_OBSERVATION'] <- 'Human observation'
+largha_3338$methodObservation[largha_3338$methodObservation == 'MACHINE_OBSERVATION'] <- 'Machine observation'
 
 # Add groupSize column based on whether there are no NAs in the year, month, day cols
 ## Reference for code:
@@ -107,6 +114,8 @@ largha_merge <- largha_3338 %>% dplyr::select(verbatimScientificName,
                                               )
 
 
+# Eliminate repeats -------------------------------------------------------
+
 # Quantify number of occurrences before eliminating repeats
 # nrow(largha_merge)
 
@@ -125,4 +134,4 @@ unique_largha_omit <- na.omit(unique_largha)
 View(unique_largha_omit)
 
 # Save this df as a csv for importing - need to use st_write because of spatial geometry
-# st_write(unique_largha_omit, "../Data_Processed/1-1-1_gbif_walrus/1-1-1_gbif_walrus.csv")
+# st_write(unique_largha_omit, "../Data_Processed/1-2-1_gbif_spot/1-2-1_gbif_spot.csv")
