@@ -113,6 +113,8 @@ walrus_merge <- walrus_3338 %>% dplyr::select(verbatimScientificName,
                                                          )
 
 
+# Eliminate repeats -------------------------------------------------------
+
 # Quantify number of occurrences before eliminating repeats
 # nrow(walrus_merge)
 
