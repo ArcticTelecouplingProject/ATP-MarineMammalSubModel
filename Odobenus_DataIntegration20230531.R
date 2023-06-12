@@ -17,8 +17,9 @@
 # 8_nmml_aerial_1979_2010
 # 9_usgs_walrus_sex_age_comp_2013_2015
 # 10_usgs_walrus_behavior_uas_2015
+# 1-1-1_gbif_walrus
 
-# Last edited:
+# Last edited: 09Jun2023
 
 
 # Libraries and Packages --------------------------------------------------
@@ -84,13 +85,17 @@ wal_comp <- subset(usgs_comp, commnNm == "Walrus")
 usgs_behavior <- st_read("../Data_Processed/10_usgs_walrus_behavior_uas_2015/10_usgs_walrus_behavior_uas_2015.shp")
 wal_behavior <- subset(usgs_behavior, commnNm == "Walrus")
 
+# 1-1-1_gbif_walrus
+gbif_walrus <- st_read("../Data_Processed/1-1-1_gbif_walrus/1-1-1_gbif_walrus.shp")
+
 # Merge data sets ---------------------------------------------------------
 # Need to make sure that everything is standardized like the columns, column names, and format
 # of the columns
 
 # Merge to create all_df
 all_wal_df <- rbind(walrus_gbif_sp, wal_seismic_2013, wal_ambon_2015, wal_mmwatch16, wal_mmwatch17,
-                    wal_laurier19, wal_laurier18, wal_healy, wal_nmml, wal_comp, wal_behavior)
+                    wal_laurier19, wal_laurier18, wal_healy, wal_nmml, wal_comp, wal_behavior,
+                    gbif_walrus)
 # Need to fix error with this merging
 
 View(all_wal_df) # check to make sure all cols match
@@ -108,7 +113,7 @@ unique_wal <- distinct(all_wal_df)
 # quantifying number of occurrences after eliminating repeats
 # nrow(unique_wal)
 
-# Remove Nas
+# Remove NAs
 unique_wal_omit <- na.omit(unique_wal)
 
 nrow(unique_wal_omit)
@@ -117,7 +122,10 @@ View(unique_wal_omit)
 
 
 # Save this to a csv
-# write.csv(st_drop_geometry(unique_wal_omit), "../Data_Processed/odobenus_integrations/odobenus_integrated20230417.csv")
+write.csv(st_drop_geometry(unique_wal_omit), "../Data_Processed/odobenus_integrations/odobenus_integrated20230609.shp")
+
+# Save to shp
+st_write(unique_wal_omit, "../Data_Processed/odobenus_integrations/odobenus_integrated20230609.shp")
 
 ## For Natalia's Mapping ---------------------------------------------------------------------------------------------
 
@@ -130,7 +138,7 @@ View(unique_wal_omit)
 # class(unique2010$year)
 # unique2010$year <- as.numeric(unique2010$year)
 
-## Chose only one of the time windows
+## Choose only one of the time windows
 # include time window of interest: june-aug
 # june_unique2010 <- unique2010[unique2010$month %in% c("6", "7", "8"), ]
 
@@ -150,7 +158,6 @@ View(unique_wal_omit)
 # Plotting ----------------------------------------------------------------
 
 # Will need to use datadir for this part since it is using the DataRaw folder
-datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney - ATP-MarineMammal-DataRaw/"
 datadir <- "../../ATP-MarineMammal-DataRaw/"
 
 # Import base map - this is already projected 
