@@ -107,7 +107,7 @@ View(all_wal_df) # check to make sure all cols match
 # https://statisticsglobe.com/unique-rows-of-data-frame-based-on-selected-columns-in-r
 unique_wal <- distinct(all_wal_df)
 
-# Eliminate repeat occurrences and for identifing overlaps between datasets
+# Eliminate repeat occurrences and for identifying overlaps between datasets
 # unique_wal <- all_wal_df %>% dplyr::select(-source) %>% distinct
 
 # quantifying number of occurrences after eliminating repeats
