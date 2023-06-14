@@ -138,13 +138,13 @@ base_crop <- st_crop(base_map, c(xmin = -2173499, ymin = 159766, xmax = 1661246,
 
 # Plot all spotted seal occurrence points against uncropped base map
 ggplot() + geom_sf(data = base_crop) + 
-  geom_sf(data = unique_spot, mapping = aes(color = year)) +
+  geom_sf(data = unique_spot_omit, mapping = aes(color = year)) +
   labs(
     title = "Spotted seal occurrences in the Bering Strait Region")
 
 
 # Isolate number of rows after 2010
-all_spot_2010 <- unique_spot[unique_spot$year > 2009, ]
+all_spot_2010 <- unique_spot_omit[unique_spot_omit$year > 2009, ]
 
 # Plotting points after 2010
 ggplot() + geom_sf(data = base_crop) + 
@@ -158,7 +158,7 @@ ggplot() + geom_sf(data = base_crop) +
 
 
 # create new df with occurrence points and no geometry attached
-all_df_drop <- unique_spot %>%
+all_df_drop <- unique_spot_omit %>%
   st_drop_geometry() %>%
   group_by(year, month, day) %>%
   dplyr::summarize(n=n()) %>%
