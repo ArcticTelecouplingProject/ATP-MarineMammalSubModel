@@ -136,13 +136,13 @@ base_crop <- st_crop(base_map, c(xmin = -2173499, ymin = 159766, xmax = 1661246,
 
 # Plot all bearded seal occurrence points against uncropped base map
 ggplot() + geom_sf(data = base_crop) + 
-  geom_sf(data = unique_beard, mapping = aes(color = year)) +
+  geom_sf(data = unique_beard_omit, mapping = aes(color = year)) +
   labs(
     title = "Bearded seal occurrences in the Bering Strait Region")
 
 
 # Isolate number of rows after 2010
-all_beard_2010 <- unique_beard[unique_beard$year > 2009, ]
+all_beard_2010 <- unique_beard_omit[unique_beard_omit$year > 2009, ]
 
 # Plotting points after 2010
 ggplot() + geom_sf(data = base_crop) + 
@@ -156,7 +156,7 @@ ggplot() + geom_sf(data = base_crop) +
 
 
 # create new df with occurrence points and no geometry attached
-all_df_drop <- unique_beard %>%
+all_df_drop <- unique_beard_omit %>%
   st_drop_geometry() %>%
   group_by(year, month, day) %>%
   dplyr::summarize(n=n()) %>%
