@@ -24,13 +24,13 @@ library(maptools)
 # Importing and cleaning data ---------------------------------------------
 
 # Import integrated spotted seal data
-all_spot <- st_read("../Data_Processed/largha_integrations/largha_integrated20230417.shp")
+all_spot <- st_read("../Data_Processed/largha_integrations/largha_integrated20230609.shp")
 
 # Import integrated bearded seal data
-all_beard <- st_read("../Data_Processed/barbatus_integrations/barbatus_integrated20230417.shp")
+all_beard <- st_read("../Data_Processed/barbatus_integrations/barbatus_integrated20230609.shp")
 
 # Import integrated walrus data
-all_walrus <- st_read("../Data_Processed/odobenus_integrations/odobenus_integrated20230417.shp")
+all_walrus <- st_read("../Data_Processed/odobenus_integrations/odobenus_integrated20230609.shp")
 
 # Rename columns
 all_spot <- all_spot %>% dplyr::rename(
