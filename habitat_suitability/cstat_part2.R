@@ -24,34 +24,34 @@ library(maptools)
 ## Model fitting
 
 # Load the data if not in the environment
-sdmdata_sum <- readRDS("../Data_Processed/sdmdata_sum_wal.Rds") # summer
-sdmdata_fall <- readRDS("../Data_Processed/sdmdata_fall_wal.Rds") # fall
+sdmdata_sum <- readRDS("../Data_Processed/prelim_models/CSTAT/sdmdata_sum_wal.Rds") # summer
+sdmdata_fall <- readRDS("../Data_Processed/prelim_models/CSTAT/sdmdata_fall_wal.Rds") # fall
 
 # predictor values at occurrence locations
-pvals_sum15 <- readRDS("../Data_Processed/pvals_sum15.Rds")
-pvals_sum16 <- readRDS("../Data_Processed/pvals_sum16.Rds")
-pvals_sum16 <- readRDS("../Data_Processed/pvals_sum17.Rds")
-pvals_sum17 <- readRDS("../Data_Processed/pvals_sum18.Rds")
-pvals_sum18 <- readRDS("../Data_Processed/pvals_sum19.Rds")
+pvals_sum15 <- readRDS("../Data_Processed/prelim_models/CSTAT/pvals_sum15.Rds")
+pvals_sum16 <- readRDS("../Data_Processed/prelim_models/CSTAT/pvals_sum16.Rds")
+pvals_sum16 <- readRDS("../Data_Processed/prelim_models/CSTAT/pvals_sum17.Rds")
+pvals_sum17 <- readRDS("../Data_Processed/prelim_models/CSTAT/pvals_sum18.Rds")
+pvals_sum18 <- readRDS("../Data_Processed/prelim_models/CSTAT/pvals_sum19.Rds")
 
-pvals_fall15 <- readRDS("../Data_Processed/pvals_fall15.Rds")
-pvals_fall16 <- readRDS("../Data_Processed/pvals_fall16.Rds")
-pvals_fall17 <- readRDS("../Data_Processed/pvals_fall17.Rds")
-pvals_fall18 <- readRDS("../Data_Processed/pvals_fall18.Rds")
-pvals_fall19 <- readRDS("../Data_Processed/pvals_fall19.Rds")
+pvals_fall15 <- readRDS("../Data_Processed/prelim_models/CSTAT/pvals_fall15.Rds")
+pvals_fall16 <- readRDS("../Data_Processed/prelim_models/CSTAT/pvals_fall16.Rds")
+pvals_fall17 <- readRDS("../Data_Processed/prelim_models/CSTAT/pvals_fall17.Rds")
+pvals_fall18 <- readRDS("../Data_Processed/prelim_models/CSTAT/pvals_fall18.Rds")
+pvals_fall19 <- readRDS("../Data_Processed/prelim_models/CSTAT/pvals_fall19.Rds")
 
 # predictors
-pred_sum15 <- readRDS("../Data_Processed/pred_sum15.Rds")
-pred_sum16 <- readRDS("../Data_Processed/pred_sum16.Rds")
-pred_sum17 <- readRDS("../Data_Processed/pred_sum17.Rds")
-pred_sum18 <- readRDS("../Data_Processed/pred_sum18.Rds")
-pred_sum19 <- readRDS("../Data_Processed/pred_sum19.Rds")
+pred_sum15 <- readRDS("../Data_Processed/prelim_models/CSTAT/pred_sum15.Rds")
+pred_sum16 <- readRDS("../Data_Processed/prelim_models/CSTAT/pred_sum16.Rds")
+pred_sum17 <- readRDS("../Data_Processed/prelim_models/CSTAT/pred_sum17.Rds")
+pred_sum18 <- readRDS("../Data_Processed/prelim_models/CSTAT/pred_sum18.Rds")
+pred_sum19 <- readRDS("../Data_Processed/prelim_models/CSTAT/pred_sum19.Rds")
 
-pred_fall15 <- readRDS("../Data_Processed/pred_fall15.Rds")
-pred_fall16 <- readRDS("../Data_Processed/pred_fall16.Rds")
-pred_fall17 <- readRDS("../Data_Processed/pred_fall17.Rds")
-pred_fall18 <- readRDS("../Data_Processed/pred_fall18.Rds")
-pred_fall19 <- readRDS("../Data_Processed/pred_fall19.Rds")
+pred_fall15 <- readRDS("../Data_Processed/prelim_models/CSTAT/pred_fall15.Rds")
+pred_fall16 <- readRDS("../Data_Processed/prelim_models/CSTAT/pred_fall16.Rds")
+pred_fall17 <- readRDS("../Data_Processed/prelim_models/CSTAT/pred_fall17.Rds")
+pred_fall18 <- readRDS("../Data_Processed/prelim_models/CSTAT/pred_fall18.Rds")
+pred_fall19 <- readRDS("../Data_Processed/prelim_models/CSTAT/pred_fall19.Rds")
 
 # Corresponding predictor names
 # chloro = layer.1
