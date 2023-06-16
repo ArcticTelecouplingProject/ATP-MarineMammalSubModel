@@ -24,7 +24,7 @@ library(maptools)
 datadir <- "../Data_Processed/"
 
 # Import integrated walrus data
-all_walrus <- st_read(paste0(datadir, "odobenus_integrated20230417.shp"))
+all_walrus <- st_read(paste0(datadir, "odobenus_integrations/odobenus_integrated20230609.shp"))
 
 # Rename columns
 all_walrus <- all_walrus %>% dplyr::rename(
@@ -89,7 +89,7 @@ walrus2019_sum <- walrus2019[walrus2019$season == "summer", ]
 # if they exist already, this command won't over-write them.
 # create directory called "data"
 
-datadir <- "../Data_Raw/"
+datadir <- "../../ATP-MarineMammal-DataRaw/"
 
 # Load the data and subset by season --------------------------------------
 # This loads the environmental variables found in the Ascii_Environmental_Variables
@@ -111,7 +111,6 @@ chloro_sn <- chloro_conc[grepl(pattern = "sn", x = chloro_conc)] # takes all the
 chloro_sum <- chloro_ja[grepl(pattern = "_mn", x = chloro_ja)] # from ja, takes all the files with "_mn"
 chloro_fall <- chloro_sn[grepl(pattern = "_mn", x = chloro_sn)] # from sn, takes all the files with "_mn"
 
-
 # raster(chloro_conc[1]) # check value
 
 # Distance to Land
@@ -119,6 +118,7 @@ dist_land <- list.files(paste0(datadir, "Ascii_Environmental_Variables/Distance_
                         pattern = "*.asc",
                         full.names = TRUE)
 ## This is just one file
+
 
 # Sea Ice Extent
 sea_ice <- list.files(paste0(datadir, "Ascii_Environmental_Variables/Sea_Ice_Extent"),
@@ -130,6 +130,7 @@ sea_ice <- list.files(paste0(datadir, "Ascii_Environmental_Variables/Sea_Ice_Ext
 ice_sum <- sea_ice[grepl(pattern = "ja", x = sea_ice)] # takes all the files with "ja"
 # Fall: sep-nov
 ice_fall <- sea_ice[grepl(pattern = "sn", x = sea_ice)] # takes all the files with "sn"
+
 
 # Sea Surface Temperature
 sst <- list.files(paste0(datadir, "Ascii_Environmental_Variables/Sea_Surface_Temperature"),
@@ -160,9 +161,8 @@ ship_sum <- shipping[grepl(pattern = "summer", x = shipping)] # takes all the fi
 ship_fall <- shipping[grepl(pattern = "fall", x = shipping)] # takes all the files with "sn"
 
 
-## Take observations from 2015-2020 and create 1 stack per year, only extracting
+## Now, take observations from 2015-2020 and create 1 stack per year, only extracting
 ## observations from that year for that stack. 
-
 
 # Raster Stacks -----------------------------------------------------------
 # Iterate over the numbers 15-20 to create a raster stack for each predictor and year
@@ -422,31 +422,31 @@ head(sdmdata_fall_wal)
 
 # Save work ---------------------------------------------------------------
 
-saveRDS(sdmdata_sum_wal, "../Data_Processed/sdmdata_sum_wal.Rds") # summer
-saveRDS(sdmdata_fall_wal, "../Data_Processed/sdmdata_fall_wal.Rds") # fall
+saveRDS(sdmdata_sum_wal, "../Data_Processed/prelim_models/CSTAT/sdmdata_sum_wal.Rds") # summer
+saveRDS(sdmdata_fall_wal, "../Data_Processed/prelim_models/CSTAT/sdmdata_fall_wal.Rds") # fall
 
 # predictor values at occurrence locations
-saveRDS(presvals_sum15, "../Data_Processed/pvals_sum15.Rds")
-saveRDS(presvals_sum16, "../Data_Processed/pvals_sum16.Rds")
-saveRDS(presvals_sum17, "../Data_Processed/pvals_sum17.Rds")
-saveRDS(presvals_sum18, "../Data_Processed/pvals_sum18.Rds")
-saveRDS(presvals_sum19, "../Data_Processed/pvals_sum19.Rds")
+saveRDS(presvals_sum15, "../Data_Processed/prelim_models/CSTAT/pvals_sum15.Rds")
+saveRDS(presvals_sum16, "../Data_Processed/prelim_models/CSTAT/pvals_sum16.Rds")
+saveRDS(presvals_sum17, "../Data_Processed/prelim_models/CSTAT/pvals_sum17.Rds")
+saveRDS(presvals_sum18, "../Data_Processed/prelim_models/CSTAT/pvals_sum18.Rds")
+saveRDS(presvals_sum19, "../Data_Processed/prelim_models/CSTAT/pvals_sum19.Rds")
 
-saveRDS(presvals_fall15, "../Data_Processed/pvals_fall15.Rds")
-saveRDS(presvals_fall16, "../Data_Processed/pvals_fall16.Rds")
-saveRDS(presvals_fall17, "../Data_Processed/pvals_fall17.Rds")
-saveRDS(presvals_fall18, "../Data_Processed/pvals_fall18.Rds")
-saveRDS(presvals_fall19, "../Data_Processed/pvals_fall19.Rds")
+saveRDS(presvals_fall15, "../Data_Processed/prelim_models/CSTAT/pvals_fall15.Rds")
+saveRDS(presvals_fall16, "../Data_Processed/prelim_models/CSTAT/pvals_fall16.Rds")
+saveRDS(presvals_fall17, "../Data_Processed/prelim_models/CSTAT/pvals_fall17.Rds")
+saveRDS(presvals_fall18, "../Data_Processed/prelim_models/CSTAT/pvals_fall18.Rds")
+saveRDS(presvals_fall19, "../Data_Processed/prelim_models/CSTAT/pvals_fall19.Rds")
 
 # predictors
-saveRDS(pred_sum15, "../Data_Processed/pred_sum15.Rds")
-saveRDS(pred_sum16, "../Data_Processed/pred_sum16.Rds")
-saveRDS(pred_sum17, "../Data_Processed/pred_sum17.Rds")
-saveRDS(pred_sum18, "../Data_Processed/pred_sum18.Rds")
-saveRDS(pred_sum19, "../Data_Processed/pred_sum19.Rds")
+saveRDS(pred_sum15, "../Data_Processed/prelim_models/CSTAT/pred_sum15.Rds")
+saveRDS(pred_sum16, "../Data_Processed/prelim_models/CSTAT/pred_sum16.Rds")
+saveRDS(pred_sum17, "../Data_Processed/prelim_models/CSTAT/pred_sum17.Rds")
+saveRDS(pred_sum18, "../Data_Processed/prelim_models/CSTAT/pred_sum18.Rds")
+saveRDS(pred_sum19, "../Data_Processed/prelim_models/CSTAT/pred_sum19.Rds")
 
-saveRDS(pred_fall15, "../Data_Processed/pred_fall15.Rds")
-saveRDS(pred_fall16, "../Data_Processed/pred_fall16.Rds")
-saveRDS(pred_fall17, "../Data_Processed/pred_fall17.Rds")
-saveRDS(pred_fall18, "../Data_Processed/pred_fall18.Rds")
-saveRDS(pred_fall19, "../Data_Processed/pred_fall19.Rds")
+saveRDS(pred_fall15, "../Data_Processed/prelim_models/CSTAT/pred_fall15.Rds")
+saveRDS(pred_fall16, "../Data_Processed/prelim_models/CSTAT/pred_fall16.Rds")
+saveRDS(pred_fall17, "../Data_Processed/prelim_models/CSTAT/pred_fall17.Rds")
+saveRDS(pred_fall18, "../Data_Processed/prelim_models/CSTAT/pred_fall18.Rds")
+saveRDS(pred_fall19, "../Data_Processed/prelim_models/CSTAT/pred_fall19.Rds")
