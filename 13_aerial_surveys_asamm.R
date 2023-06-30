@@ -20,7 +20,8 @@ library(terra)
 library(sf)
 library(tidyverse)
 library(readr)
-library(xml2)
+library(xml2) # to read in metadata xml file 
+library(lubridate) # to separate date into year, month, day columns
 
 # Clear history 
 rm(list=ls())
@@ -65,11 +66,11 @@ v0_mams <- master_v0 %>%
     ArcLong,
     Species,
     Sightcue,
-    Totalno
+    Totalno,
   ) %>%
   # Only keep rows that contain the following Species names
   dplyr::filter(
-    Species %in% c("bearded seal", "unid pinniped", "small unid pinniped", "ringed seal", "walrus"),
+    Species %in% c("bearded seal", "walrus"), # data also contains "unid pinniped", "small unid pinniped", "ringed seal"
     # Keep rows where the Sightcue column == body to only keep observations where the animal was ID'd by its full body
     Sightcue == "body"
   ) %>% 
@@ -79,13 +80,48 @@ v0_mams <- master_v0 %>%
   )
 
 # Separate GMT_Minus8_DateTime column into year, month, day by using substr()
-v0_mams$year <- substr(v0_mams$GMT_Minus8_DateTime, ) # add first and last value
-v0_mams$month <- substr(v0_mams$GMT_Minus8_DateTime, ) # add first and last value
-v0_mams$day <- substr(v0_mams$GMT_Minus8_DateTime, 1, 2)
+# mdy_hms() function is used to parse the date-time value, assuming the format
+# "month/day/year hour:minute:second AM/PM". 
+v0_datetime <- mdy_hms(v0_mams$GMT_Minus8_DateTime)
+v0_mams$year <- year(v0_datetime)
+v0_mams$month <- month(v0_datetime)
+v0_mams$day <- day(v0_datetime)
 
-# Transform to 3338
+# Add scientific name columns
+v0_mams$scientificName[v0_mams$Species == "walrus"] <- "Odobenus rosmarus divergens"
+v0_mams$scientificName[v0_mams$Species == "bearded seal"] <- "Erignathus barbatus"
+
+# Rename walrus and bearded seal to Walrus and Bearded Seal for consistency with
+# other dataframes when integrating
+v0_mams$Species[v0_mams$Species == "walrus"] <- "Walrus"
+v0_mams$Species[v0_mams$Species == "bearded seal"] <- "Bearded Seal"
+
+# Add methodObservation column and fill it with Aerial survey
+v0_mams$methodObservation <- "Aerial survey"
 
 
+# Convert data to a spatial object with CRS 4326 (since this is regular lat/lon) - this is still unprojected
+v0_sp <- st_as_sf(v0_mams, coords = c("ArcLong", "ArcLat"), crs = 4326, remove=FALSE) %>%
+  # Project the data to Alaska Albers CRS = 3338
+  st_transform(
+  crs = 3338
+)
+
+# Remove extraneous cols, rearrange, and rename
+v0_sp <- v0_sp %>% dplyr::select(scientificName,
+                                      Species,
+                                      year,
+                                      month,
+                                      day,
+                                      Totalno,
+                                      ArcLat,
+                                      ArcLong,
+                                      source) %>% 
+  rename(commonName = Species,
+         groupSize = Totalno,
+         decimalLat = ArcLat,
+         decimalLon = ArcLong,
+         )
 
 # 2015-2017 Data ----------------------------------------------------------
 
@@ -133,6 +169,17 @@ v2_mams <- master_v2 %>%
   dplyr::mutate(
     source = "ASAMM 1979-2019"
   )
+
+
+# Save data ---------------------------------------------------------------
+
+# Integrate the three time periods and save as one csv and shp
+
+# Save to csv and shp
+
+# st_write(unique_mams_omit, "../Data_Processed/6_nsf_dbo_laurier_2019/6_nsf_dbo_laurier_2019.csv")
+
+
 
 
 
