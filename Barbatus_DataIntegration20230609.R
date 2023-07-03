@@ -17,7 +17,7 @@
 # 8 nmml aerial 1979-2010
 # 1-3-1_gbif_beard
 
-# Last edited on: 09Jun2023
+# Last edited: 03Jul2023
 
 
 # Libraries and Packages --------------------------------------------------
@@ -77,13 +77,17 @@ beard_nmml <- subset(nmml_aerial, commnNm == "Bearded Seal")
 # 1-3-1_gbif_beard
 gbif_beard <- st_read("../Data_Processed/1-3-1_gbif_beard/1-3-1_gbif_beard.shp")
 
+# 13 aerial surveys asamm
+asamm <- st_read("../Data_Processed/13_aerial_surveys_asamm/13_aerial_surveys_asamm.shp")
+asamm_beard <- subset(asamm, commnNm == "Bearded Seal")
+
 # Merge data sets ---------------------------------------------------------
 # Need to make sure that everything is standardized like the columns, column names, and format
 # of the columns
 
 # Merge to create all_df
 all_beard_df <- rbind(bearded_gbif_sp, beard_seismic, beard_ambon, beard_mmwatch16, beard_mmwatch17,
-                      beard_laurier19, beard_laurier18, beard_healy, beard_nmml, gbif_beard)
+                      beard_laurier19, beard_laurier18, beard_healy, beard_nmml, gbif_beard, asamm_beard)
 
 View(all_beard_df) # check to make sure all cols match
 
@@ -105,10 +109,10 @@ nrow(unique_beard_omit)
 View(unique_beard_omit)
 
 # Save this to a csv in a folder called barbatus_integrations
-write.csv(st_drop_geometry(unique_beard_omit), "../Data_Processed/barbatus_integrations/barbatus_integrated20230609.shp")
+write.csv(st_drop_geometry(unique_beard_omit), "../Data_Processed/barbatus_integrations/barbatus_integrated20230703.csv")
 
 # Save to shp
-st_write(unique_beard_omit, "../Data_Processed/barbatus_integrations/barbatus_integrated20230609.shp")
+st_write(unique_beard_omit, "../Data_Processed/barbatus_integrations/barbatus_integrated20230703.shp")
 
 # Plotting ----------------------------------------------------------------
 

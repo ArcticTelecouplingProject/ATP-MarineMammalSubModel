@@ -17,7 +17,7 @@
 # 1-2-1_gbif_spot
 
 
-# Last edited: 09Jun2023
+# Last edited: 03Jul2023
 
 
 # Libraries and Packages --------------------------------------------------
@@ -106,10 +106,10 @@ nrow(unique_spot_omit)
 View(unique_spot_omit)
 
 # Save this to a csv
-write.csv(st_drop_geometry(unique_spot_omit), "../Data_Processed/largha_integrations/largha_integrated20230609.csv")
+write.csv(st_drop_geometry(unique_spot_omit), "../Data_Processed/largha_integrations/largha_integrated20230703.csv")
 
 # Save to shp
-st_write(unique_spot_omit, "../Data_Processed/largha_integrations/largha_integrated20230609.shp")
+st_write(unique_spot_omit, "../Data_Processed/largha_integrations/largha_integrated20230703.shp")
 
 # Plotting ----------------------------------------------------------------
 
