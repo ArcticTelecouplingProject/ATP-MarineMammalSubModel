@@ -74,8 +74,8 @@ largha_3338$day <- as.numeric(largha_3338$day)
 # Add a new column to specify data source to backtrack later
 largha_3338$source <- "GBIF Query"
 
-# Add a common name column and fill it with 'Spotted seal'
-largha_3338$commonName <- "Spotted seal"
+# Add a common name column and fill it with 'Spotted Seal'
+largha_3338$commonName <- "Spotted Seal"
 
 # Rename basisOfRecord column to methodObservation column
 largha_3338 <- largha_3338 %>% rename("methodObservation" = "basisOfRecord")
@@ -134,4 +134,4 @@ unique_largha_omit <- na.omit(unique_largha)
 View(unique_largha_omit)
 
 # Save this df as a csv for importing - need to use st_write because of spatial geometry
-# st_write(unique_largha_omit, "../Data_Processed/1-2-1_gbif_spot/1-2-1_gbif_spot.csv")
+st_write(unique_largha_omit, "../Data_Processed/1-2-1_gbif_spot/1-2-1_gbif_spot.shp")

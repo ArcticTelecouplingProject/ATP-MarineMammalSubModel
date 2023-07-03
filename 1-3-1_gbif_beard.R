@@ -74,8 +74,8 @@ bs_3338$day <- as.numeric(bs_3338$day)
 # Add a new column to specify data source to backtrack later
 bs_3338$source <- "GBIF Query"
 
-# Add a common name column and fill it with 'Bearded seal'
-bs_3338$commonName <- "Bearded seal"
+# Add a common name column and fill it with 'Bearded Seal'
+bs_3338$commonName <- "Bearded Seal"
 
 # Rename basisOfRecord column to methodObservation column
 bs_3338 <- bs_3338 %>% rename("methodObservation" = "basisOfRecord")
@@ -134,4 +134,4 @@ unique_bs_omit <- na.omit(unique_bs)
 View(unique_bs_omit)
 
 # Save this df as a csv for importing - need to use st_write because of spatial geometry
-# st_write(unique_bs_omit, "../Data_Processed/1-3-1_gbif_beard/1-3-1_gbif_beard.shp")
+st_write(unique_bs_omit, "../Data_Processed/1-3-1_gbif_beard/1-3-1_gbif_beard.csv")
