@@ -19,7 +19,7 @@
 # 10_usgs_walrus_behavior_uas_2015
 # 1-1-1_gbif_walrus
 
-# Last edited: 09Jun2023
+# Last edited: 03Jul2023
 
 
 # Libraries and Packages --------------------------------------------------
@@ -88,6 +88,11 @@ wal_behavior <- subset(usgs_behavior, commnNm == "Walrus")
 # 1-1-1_gbif_walrus
 gbif_walrus <- st_read("../Data_Processed/1-1-1_gbif_walrus/1-1-1_gbif_walrus.shp")
 
+# 13 aerial surveys asamm
+asamm <- st_read("../Data_Processed/13_aerial_surveys_asamm/13_aerial_surveys_asamm.shp")
+asamm_walrus <- subset(asamm, commnNm == "Walrus")
+
+
 # Merge data sets ---------------------------------------------------------
 # Need to make sure that everything is standardized like the columns, column names, and format
 # of the columns
@@ -95,8 +100,7 @@ gbif_walrus <- st_read("../Data_Processed/1-1-1_gbif_walrus/1-1-1_gbif_walrus.sh
 # Merge to create all_df
 all_wal_df <- rbind(walrus_gbif_sp, wal_seismic_2013, wal_ambon_2015, wal_mmwatch16, wal_mmwatch17,
                     wal_laurier19, wal_laurier18, wal_healy, wal_nmml, wal_comp, wal_behavior,
-                    gbif_walrus)
-# Need to fix error with this merging
+                    gbif_walrus, asamm_walrus)
 
 View(all_wal_df) # check to make sure all cols match
 
@@ -122,10 +126,10 @@ View(unique_wal_omit)
 
 
 # Save this to a csv
-write.csv(st_drop_geometry(unique_wal_omit), "../Data_Processed/odobenus_integrations/odobenus_integrated20230609.shp")
+write.csv(st_drop_geometry(unique_wal_omit), "../Data_Processed/odobenus_integrations/odobenus_integrated20230703.csv")
 
 # Save to shp
-st_write(unique_wal_omit, "../Data_Processed/odobenus_integrations/odobenus_integrated20230609.shp")
+st_write(unique_wal_omit, "../Data_Processed/odobenus_integrations/odobenus_integrated20230703.shp")
 
 ## For Natalia's Mapping ---------------------------------------------------------------------------------------------
 
