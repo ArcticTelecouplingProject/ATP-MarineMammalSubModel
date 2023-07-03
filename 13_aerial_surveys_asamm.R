@@ -10,8 +10,8 @@
 
 # Species isolated in this dataset: 
 
-# This dataset was tidied and ready for data integration on 
-# Last edited: 
+# This dataset was tidied and ready for data integration on 03Jul2023
+# Last edited: 03Jul2023
 
 
 # Libraries and Packages --------------------------------------------------
@@ -116,6 +116,7 @@ v0_sp <- v0_sp %>% dplyr::select(scientificName,
                                       Totalno,
                                       ArcLat,
                                       ArcLong,
+                                      methodObservation,
                                       source) %>% 
   rename(commonName = Species,
          groupSize = Totalno,
@@ -125,7 +126,7 @@ v0_sp <- v0_sp %>% dplyr::select(scientificName,
 
 # 2015-2017 Data ----------------------------------------------------------
 
-# Subset 2015-2017 dataframe 
+# Subset 2012-2014 dataframe to get rid of extraneous columns
 v24_mams <- master_v24 %>%
   dplyr::select(
     GMT_Minus8_DateTime,
@@ -133,11 +134,11 @@ v24_mams <- master_v24 %>%
     ArcLong,
     Species,
     Sightcue,
-    Totalno
+    Totalno,
   ) %>%
   # Only keep rows that contain the following Species names
   dplyr::filter(
-    Species %in% c("bearded seal", "unid pinniped", "small unid pinniped", "ribbon seal", "walrus"),
+    Species %in% c("bearded seal", "walrus"), # data also contains "unid pinniped", "small unid pinniped", "ringed seal"
     # Keep rows where the Sightcue column == body to only keep observations where the animal was ID'd by its full body
     Sightcue == "body"
   ) %>% 
@@ -146,10 +147,54 @@ v24_mams <- master_v24 %>%
     source = "ASAMM 1979-2019"
   )
 
+# Separate GMT_Minus8_DateTime column into year, month, day by using substr()
+# mdy_hms() function is used to parse the date-time value, assuming the format
+# "month/day/year hour:minute:second AM/PM". 
+v24_datetime <- mdy_hms(v24_mams$GMT_Minus8_DateTime)
+v24_mams$year <- year(v24_datetime)
+v24_mams$month <- month(v24_datetime)
+v24_mams$day <- day(v24_datetime)
+
+# Add scientific name columns
+v24_mams$scientificName[v24_mams$Species == "walrus"] <- "Odobenus rosmarus divergens"
+v24_mams$scientificName[v24_mams$Species == "bearded seal"] <- "Erignathus barbatus"
+
+# Rename walrus and bearded seal to Walrus and Bearded Seal for consistency with
+# other dataframes when integrating
+v24_mams$Species[v24_mams$Species == "walrus"] <- "Walrus"
+v24_mams$Species[v24_mams$Species == "bearded seal"] <- "Bearded Seal"
+
+# Add methodObservation column and fill it with Aerial survey
+v24_mams$methodObservation <- "Aerial survey"
+
+
+# Convert data to a spatial object with CRS 4326 (since this is regular lat/lon) - this is still unprojected
+v24_sp <- st_as_sf(v24_mams, coords = c("ArcLong", "ArcLat"), crs = 4326, remove=FALSE) %>%
+  # Project the data to Alaska Albers CRS = 3338
+  st_transform(
+    crs = 3338
+  )
+
+# Remove extraneous cols, rearrange, and rename
+v24_sp <- v24_sp %>% dplyr::select(scientificName,
+                                 Species,
+                                 year,
+                                 month,
+                                 day,
+                                 Totalno,
+                                 ArcLat,
+                                 ArcLong,
+                                 methodObservation,
+                                 source) %>% 
+  rename(commonName = Species,
+         groupSize = Totalno,
+         decimalLat = ArcLat,
+         decimalLon = ArcLong,
+  )
 
 # 2018-2021 Data ----------------------------------------------------------
 
-# Subset 2018-2021 dataframe 
+# Subset 2012-2014 dataframe to get rid of extraneous columns
 v2_mams <- master_v2 %>%
   dplyr::select(
     GMT_Minus8_DateTime,
@@ -157,11 +202,11 @@ v2_mams <- master_v2 %>%
     ArcLong,
     Species,
     Sightcue,
-    Totalno
+    Totalno,
   ) %>%
   # Only keep rows that contain the following Species names
   dplyr::filter(
-    Species %in% c("bearded seal", "unid pinniped", "small unid pinniped", "walrus"),
+    Species %in% c("bearded seal", "walrus"), # data also contains "unid pinniped", "small unid pinniped", "ringed seal"
     # Keep rows where the Sightcue column == body to only keep observations where the animal was ID'd by its full body
     Sightcue == "body"
   ) %>% 
@@ -170,20 +215,70 @@ v2_mams <- master_v2 %>%
     source = "ASAMM 1979-2019"
   )
 
+# Separate GMT_Minus8_DateTime column into year, month, day by using substr()
+# mdy_hms() function is used to parse the date-time value, assuming the format
+# "month/day/year hour:minute:second AM/PM". 
+v2_datetime <- mdy_hms(v2_mams$GMT_Minus8_DateTime)
+v2_mams$year <- year(v2_datetime)
+v2_mams$month <- month(v2_datetime)
+v2_mams$day <- day(v2_datetime)
+
+# Add scientific name columns
+v2_mams$scientificName[v2_mams$Species == "walrus"] <- "Odobenus rosmarus divergens"
+v2_mams$scientificName[v2_mams$Species == "bearded seal"] <- "Erignathus barbatus"
+
+# Rename walrus and bearded seal to Walrus and Bearded Seal for consistency with
+# other dataframes when integrating
+v2_mams$Species[v2_mams$Species == "walrus"] <- "Walrus"
+v2_mams$Species[v2_mams$Species == "bearded seal"] <- "Bearded Seal"
+
+# Add methodObservation column and fill it with Aerial survey
+v2_mams$methodObservation <- "Aerial survey"
+
+
+# Convert data to a spatial object with CRS 4326 (since this is regular lat/lon) - this is still unprojected
+v2_sp <- st_as_sf(v2_mams, coords = c("ArcLong", "ArcLat"), crs = 4326, remove=FALSE) %>%
+  # Project the data to Alaska Albers CRS = 3338
+  st_transform(
+    crs = 3338
+  )
+
+# Remove extraneous cols, rearrange, and rename
+v2_sp <- v2_sp %>% dplyr::select(scientificName,
+                                   Species,
+                                   year,
+                                   month,
+                                   day,
+                                   Totalno,
+                                   ArcLat,
+                                   ArcLong,
+                                   methodObservation,
+                                   source) %>% 
+  rename(commonName = Species,
+         groupSize = Totalno,
+         decimalLat = ArcLat,
+         decimalLon = ArcLong,
+  )
+
 
 # Save data ---------------------------------------------------------------
 
 # Integrate the three time periods and save as one csv and shp
+all_asamm <- rbind(v0_sp, v24_sp, v2_sp)
+
+# Eliminate repeat records
+unique_asamm <- distinct(all_asamm)
+
+# Remove NAs
+unique_omit <- na.omit(unique_asamm)
 
 # Save to csv and shp
-
-# st_write(unique_mams_omit, "../Data_Processed/6_nsf_dbo_laurier_2019/6_nsf_dbo_laurier_2019.csv")
-
+st_write(unique_omit, "../Data_Processed/13_aerial_surveys_asamm/13_aerial_surveys_asamm.shp")
 
 
 
 
-
+# COMIDA and BWASP --------------------------------------------------------
 
 # Look at data of COMIDA (Chukchi Offshore Monitoring in Drilling Area) and 
 # BWASP (Bowhead Whale Aerial Survey Project)
