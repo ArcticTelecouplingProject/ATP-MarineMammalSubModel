@@ -19,7 +19,7 @@
 # 10_usgs_walrus_behavior_uas_2015
 # 1-1-1_gbif_walrus
 
-# Last edited: 03Jul2023
+# Last edited: 01Aug2023
 
 
 # Libraries and Packages --------------------------------------------------
