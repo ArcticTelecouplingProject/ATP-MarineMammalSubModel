@@ -101,62 +101,28 @@ asamm_walrus <- subset(asamm, commnNm == "Walrus")
 all_wal_df <- rbind(walrus_gbif_sp, wal_seismic_2013, wal_ambon_2015, wal_mmwatch16, wal_mmwatch17,
                     wal_laurier19, wal_laurier18, wal_healy, wal_nmml, wal_comp, wal_behavior,
                     gbif_walrus, asamm_walrus)
+# Check to make sure all columns match
 
-View(all_wal_df) # check to make sure all cols match
-
-# quantifying number of occurrences before eliminating repeats
+# Number of occurrences before eliminating repeats
 # nrow(all_wal_df)
 
 # Eliminate repeat occurrences
-# https://statisticsglobe.com/unique-rows-of-data-frame-based-on-selected-columns-in-r
 unique_wal <- distinct(all_wal_df)
-
-# Eliminate repeat occurrences and for identifying overlaps between datasets
-# unique_wal <- all_wal_df %>% dplyr::select(-source) %>% distinct
-
-# quantifying number of occurrences after eliminating repeats
-# nrow(unique_wal)
 
 # Remove NAs
 unique_wal_omit <- na.omit(unique_wal)
 
 nrow(unique_wal_omit)
 
-View(unique_wal_omit)
-
-
 # Save this to a csv
-write.csv(st_drop_geometry(unique_wal_omit), "../Data_Processed/odobenus_integrations/odobenus_integrated20230703.csv")
+# write.csv(st_drop_geometry(unique_wal_omit), "../Data_Processed/odobenus_integrations/odobenus_integrated20230801.csv")
 
 # Save to shp
-st_write(unique_wal_omit, "../Data_Processed/odobenus_integrations/odobenus_integrated20230703.shp")
+# st_write(unique_wal_omit, "../Data_Processed/odobenus_integrations/odobenus_integrated20230801.shp")
 
-## For Natalia's Mapping ---------------------------------------------------------------------------------------------
-
-# Save integrated dataset as csv and shp for mapping entire dataset
-# st_write(unique_wal_omit, "../Data_Processed/Odobenus_DataIntegration_20230116/mapping_odobenus_integrated20230210.shp")
-
-# Isolate number of rows after 2010
-# unique2010 <- unique_wal_omit[unique_wal_omit$year > 2009, ]
-
-# class(unique2010$year)
-# unique2010$year <- as.numeric(unique2010$year)
-
-## Choose only one of the time windows
-# include time window of interest: june-aug
-# june_unique2010 <- unique2010[unique2010$month %in% c("6", "7", "8"), ]
-
-#include time window of interest: june-aug
-# sep_unique2010 <- unique2010[unique2010$month %in% c("9", "10", "11"), ]
-
-# View(june_unique2010)
-# View(sep_unique2010)
-
-# Save as shp and csv june-aug integrated dataset after 2010
-# st_write(june_unique2010, "../Data_Processed/Odobenus_DataIntegration_20230116/Summer/june_mapping_odobenus_integrated20230210.shp")
-
-# Save as shp and csv june-aug integrated dataset after 2010
-# st_write(sep_unique2010, "../Data_Processed/Odobenus_DataIntegration_20230116/Fall/sep_mapping_odobenus_integrated20230210.shp")
+### SKIP TO THIS LINE TO AVOID HAVING TO RUN THE ABOVE CODE TO IMPORT THE
+### INTEGRATED DATASET INTO THE ENVIRONMENT
+all_walrus <- st_read("../Data_Processed/odobenus_integrations/odobenus_integrated20230801.shp")
 
 
 # Plotting ----------------------------------------------------------------
@@ -208,7 +174,7 @@ ggplot() + geom_sf(data = base_crop) +
 
 
 # create new df with occurrence points and no geometry attached
-all_df_drop <- unique_wal_omit %>%
+all_df_drop <- all_walrus %>%
   st_drop_geometry() %>%
   group_by(year, month, day) %>%
   dplyr::summarize(n=n()) %>%
@@ -236,8 +202,8 @@ n.years <- n_distinct(my.years)
 my.sums <- rep(NA, n.years)
 
 ## choose one of the time windows for the loop
-# month_selected <- seq(1,12);
-# time_window = 'year round' ## year round
+month_selected <- seq(1,12);
+time_window = 'year round' ## year round
 
 month_selected <- seq(6,8);
 time_window = 'june-aug' ## time window 1 - june through august
@@ -262,4 +228,34 @@ for (i in 1:n.years) {
 }
 
 # save summary to a csv
-write.csv(sum_since, "../Output/prelim_models/fall/odobenus_fall20230419.csv")
+write.csv(sum_since, "../Output/prelim_models/summer/odobenus_summer20230801.csv")
+
+
+## For Natalia's Mapping ---------------------------------------------------------------------------------------------
+
+# Save integrated dataset as csv and shp for mapping entire dataset
+# st_write(unique_wal_omit, "../Data_Processed/Odobenus_DataIntegration_20230116/mapping_odobenus_integrated20230210.shp")
+
+# Isolate number of rows after 2010
+# unique2010 <- unique_wal_omit[unique_wal_omit$year > 2009, ]
+
+# class(unique2010$year)
+# unique2010$year <- as.numeric(unique2010$year)
+
+## Choose only one of the time windows
+# include time window of interest: june-aug
+# june_unique2010 <- unique2010[unique2010$month %in% c("6", "7", "8"), ]
+
+# include time window of interest: june-aug
+# sep_unique2010 <- unique2010[unique2010$month %in% c("9", "10", "11"), ]
+
+# View(june_unique2010)
+# View(sep_unique2010)
+
+# Save as shp and csv june-aug integrated dataset after 2010
+# st_write(june_unique2010, "../Data_Processed/Odobenus_DataIntegration_20230116/Summer/june_mapping_odobenus_integrated20230210.shp")
+
+# Save as shp and csv june-aug integrated dataset after 2010
+# st_write(sep_unique2010, "../Data_Processed/Odobenus_DataIntegration_20230116/Fall/sep_mapping_odobenus_integrated20230210.shp")
+
+
