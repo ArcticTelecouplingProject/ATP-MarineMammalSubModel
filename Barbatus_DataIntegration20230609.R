@@ -17,7 +17,7 @@
 # 8 nmml aerial 1979-2010
 # 1-3-1_gbif_beard
 
-# Last edited: 03Jul2023
+# Last edited: 01Aug2023
 
 
 # Libraries and Packages --------------------------------------------------
@@ -89,30 +89,48 @@ asamm_beard <- subset(asamm, commnNm == "Bearded Seal")
 all_beard_df <- rbind(bearded_gbif_sp, beard_seismic, beard_ambon, beard_mmwatch16, beard_mmwatch17,
                       beard_laurier19, beard_laurier18, beard_healy, beard_nmml, gbif_beard, asamm_beard)
 
-View(all_beard_df) # check to make sure all cols match
 
-# Eliminate repeat occurrences
-# https://statisticsglobe.com/unique-rows-of-data-frame-based-on-selected-columns-in-r
-unique_beard <- distinct(all_beard_df)
+# Eliminate other subspecies and outlier occurrences ----------------------
 
-# Eliminate repeat occurrences and for identifying overlaps between datasets
-# unique_beard <- all_wal_df %>% dplyr::select(-source) %>% distinct
+# can see the min/max values for the lat/lon cols using min() and max() to
+# determine the bounding box
+lat_min = 45
+lat_max = 90
+lon_min = -170
+lon_max = 185
 
-# quantifying number of occurrences after eliminating repeats
+# Convert lat/lon columns to numeric
+all_beard_df$decmlLt <- as.numeric(all_beard_df$decmlLt)
+all_beard_df$decmlLn <- as.numeric(all_beard_df$decmlLn)
+
+pacific_beard <- all_beard_df %>%
+  filter(scntfcN %in% c("Erignathus barbatus", "Erignathus barbatus nauticus") &
+        decmlLt >= lat_min & decmlLt <= lat_max,
+        decmlLn >= lon_min & decmlLn <= lon_max)
+
+# Eliminate repeats -------------------------------------------------------
+
+# Eliminate repeat occurrences to ensure they were handled properly in each individual script
+unique_beard <- distinct(pacific_beard)
+
+# Number of occurrences after eliminating repeats
 # nrow(unique_beard)
 
-# Remove Nas
+# Remove NAs
 unique_beard_omit <- na.omit(unique_beard)
 
 nrow(unique_beard_omit)
 
-View(unique_beard_omit)
-
 # Save this to a csv in a folder called barbatus_integrations
-write.csv(st_drop_geometry(unique_beard_omit), "../Data_Processed/barbatus_integrations/barbatus_integrated20230703.csv")
+write.csv(st_drop_geometry(unique_beard_omit), "../Data_Processed/barbatus_integrations/barbatus_integrated20230801.csv")
 
 # Save to shp
-st_write(unique_beard_omit, "../Data_Processed/barbatus_integrations/barbatus_integrated20230703.shp")
+st_write(unique_beard_omit, "../Data_Processed/barbatus_integrations/barbatus_integrated20230801.shp")
+
+### SKIP TO THIS LINE TO AVOID HAVING TO RUN THE ABOVE CODE TO IMPORT THE
+### INTEGRATED DATASET INTO THE ENVIRONMENT
+ugruk <- st_read("../Data_Processed/barbatus_integrations/barbatus_integrated20230801.shp")
+# Inupiaq word for bearded seal
 
 # Plotting ----------------------------------------------------------------
 
@@ -138,7 +156,7 @@ study_area <- study_area %>% st_transform(3338)
 base_crop <- st_crop(base_map, c(xmin = -2173499, ymin = 159766, xmax = 1661246, ymax = 3000000))
 
 
-# Plot all bearded seal occurrence points against uncropped base map
+# Plot all bearded seal occurrence points against cropped base map
 ggplot() + geom_sf(data = base_crop) + 
   geom_sf(data = unique_beard_omit, mapping = aes(color = year)) +
   labs(
@@ -160,7 +178,7 @@ ggplot() + geom_sf(data = base_crop) +
 
 
 # create new df with occurrence points and no geometry attached
-all_df_drop <- unique_beard_omit %>%
+all_df_drop <- ugruk %>%
   st_drop_geometry() %>%
   group_by(year, month, day) %>%
   dplyr::summarize(n=n()) %>%
@@ -188,8 +206,8 @@ n.years <- n_distinct(my.years)
 my.sums <- rep(NA, n.years)
 
 ## choose one of the time windows for the loop
-# month_selected <- seq(1,12);
-# time_window = 'year round' ## year round
+month_selected <- seq(1,12);
+time_window = 'year round' ## year round
 
 month_selected <- seq(6,8);
 time_window = 'june-aug' ## time window 1 - june through august
@@ -214,5 +232,5 @@ for (i in 1:n.years) {
 }
 
 # save summary to a csv
-write.csv(sum_since, "../Output/prelim_models/fall/barbatus_fall_20230419.csv")
+write.csv(sum_since, "../Output/prelim_models/fall/barbatus_fall20230801.csv")
 
