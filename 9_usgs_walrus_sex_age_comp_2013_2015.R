@@ -8,8 +8,8 @@
 
 # Species isolated in this dataset: walrus
 
-# This dataset was tidied and ready for data integration on 10Jan2023
-# Last edited: 6Apr2023
+# This dataset was tidied and ready for data integration on 01Aug2023
+# Last edited: 01Aug2023
 
 
 # Libraries and Packages --------------------------------------------------
@@ -29,16 +29,16 @@ rm(list=ls())
 datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney - ATP-MarineMammal-DataRaw/"
 datadir <- "../../ATP-MarineMammal-DataRaw/"
 
-usgs_walrus_comp <- read.csv(paste0(datadir,"9_usgs_walrus_sex_age_comp_2013_2015/walrus_hauloutGroupComp_battaile_2013_2015.csv"))
+usgs_walrus_comp <- read.csv(paste0(datadir, "9_usgs_walrus_sex_age_comp_2013_2015/walrus_hauloutGroupComp_battaile_2013_2015.csv"))
 
 head(usgs_walrus_comp)
 
-# Create a datafame to generate metadata summaries on the occurrence data at various steps of tidying
-OccurrenceSummaries <- data.frame(name = "usgs_walrus_comp") 
-OccurrenceSummaries$before <- length(usgs_walrus_comp$GroupSize)
+# Create a dataframe to generate metadata summaries on the occurrence data at various steps of tidying
+# OccurrenceSummaries <- data.frame(name = "usgs_walrus_comp") 
+# OccurrenceSummaries$before <- length(usgs_walrus_comp$GroupSize)
 
-# Add to metadata datafame for summaries on the occurrence data at various steps of tidying
-OccurrenceSummaries$isolatedSpecies <- length(usgs_walrus_comp$GroupSize)
+# Add to metadata dataframe for summaries on the occurrence data at various steps of tidying
+# OccurrenceSummaries$isolatedSpecies <- length(usgs_walrus_comp$GroupSize)
 
 # Remove extraneous columns of info 
 colnames(usgs_walrus_comp)
@@ -48,23 +48,15 @@ usgs_walrus <- usgs_walrus_comp %>% dplyr::select(Year,
                                            Latitude,
                                            Longitude,
                                            GroupSizingMethod)
+## GroupSizingMethod does not need to be included in the saved output this time but
+## I saved it for easy backtracking through the script to include it if needed.
+## Might be necessary to revisit for potential error source. SW 01Aug2023
 
-# Add to metadata datafame for summaries on the occurrence data at various steps of tidying
-OccurrenceSummaries$columnsofInterest <- length(usgs_walrus$GroupSize)
+# Add to metadata dataframe for summaries on the occurrence data at various steps of tidying
+# OccurrenceSummaries$columnsofInterest <- length(usgs_walrus$GroupSize)
 
 
-# Convert to spatial df ---------------------------------------------------
-
-# Add scientificName and commonName columns
-usgs_walrus$scientificName <- "Odobenus rosmarus divergens"
-usgs_walrus$commonName <- "Walrus"
-
-# Save lat/lon columns info into their own df to add in again later on
-# or else they will disappear when converting to spatial object with st_as_sf
-# usgs_latlon <- usgs_walrus %>% dplyr::select(scientificName,
-                                               # Latitude,
-                                               # Longitude,
-                                               # DateTimeStart)
+# Set CRS -----------------------------------------------------------------
 
 # Check the CRS
 st_crs(usgs_walrus) # this is non-spatial so the CRS is NA
@@ -78,18 +70,21 @@ usgs_walrus_sp <- st_as_sf(usgs_walrus_new, coords = c("Longitude", "Latitude"),
 # Project the data to Alaska Albers 3338
 walrus_sp <- usgs_walrus_sp %>% st_transform(crs = 3338)
 
-# Add back in lat/lon cols using left join to merge lat/lon data onto spatial data rather than spatial data onto lat/lon data
-# walrus_sp <- usgs_walrus_sp %>% left_join(usgs_latlon, by = "DateTimeStart")
+
+# Modify columns ----------------------------------------------------------
+
+# Add scientificName and commonName columns
+usgs_walrus$scientificName <- "Odobenus rosmarus divergens"
+usgs_walrus$commonName <- "Walrus"
 
 # Add a new column to specify data source so you can backtrack later if needed
 walrus_sp$source <- "USGS Sex and Age Comp of Walrus Haulouts 2013-2015"
 
-# May also want to add other columns that help add information about the data source (e.g., vessel based, plane based, etc.)
-## This is why I saved the GroupSizingMethod column - does not need to be included in the saved output this time but is there
-## for easy backtracking through the script to include it if needed. SW10Jan2023
+# May also want to add other columns that help add information about the data source
+# (e.g., vessel based, plane based, etc.)
 
 # Add a new column to specify the method of data collection used
-walrus_sp$methodObservation <- "Research cruise visual observation survey"
+walrus_sp$methodObservation <- "Research vessel visual observation"
 
 # Separate DateTimeStart into month and day cols by using substr()
 walrus_sp$month <- substr(walrus_sp$DateTimeStart, 6, 7)
@@ -112,30 +107,32 @@ walrus_sp2 <- walrus_sp %>% dplyr::select(scientificName,
          decimalLat = Latitude,
          decimalLon = Longitude)
 
-# quantifying number of occurrences before eliminating repeats
+
+# Eliminate repeats -------------------------------------------------------
+
+# number of occurrences before eliminating repeats
 # nrow(walrus_sp2)
 
 # Eliminate repeat occurrences
-# https://statisticsglobe.com/unique-rows-of-data-frame-based-on-selected-columns-in-r
 unique_walrus <- distinct(walrus_sp2)
 
-# quantifying number of occurrences after eliminating repeats
+# number of occurrences after eliminating repeats
 # nrow(unique_walrus)
 
-# Remove Nas
+# Remove NAs
 unique_walrus_omit <- na.omit(unique_walrus)
 
-# Add to metadata datafame for summaries on the occurrence data at various steps of tidying
+# Add to metadata dataframe for summaries on the occurrence data at various steps of tidying
 OccurrenceSummaries$uniqueOccurrences <- length(unique_walrus_omit$groupSize)
 
 View(OccurrenceSummaries)
 
 ## Tada now you have a clean and tidy dataset to work with and merge
 
-View(unique_walrus_omit)
+View(unique_walrus_omit) # save this
 
 # Can save this data as an output as both shp and csv
-# st_write(unique_walrus_omit, "../Data_Processed/9_usgs_walrus_sex_age_comp_2013_2015/9_usgs_walrus_sex_age_comp_2013_2015.shp")
+# st_write(unique_walrus_omit, "../Data_Processed/9_usgs_walrus_sex_age_comp_2013_2015/9_usgs_walrus_sex_age_comp_2013_2015.csv")
 
 # Save metadata dataframe
 # write.csv(OccurrenceSummaries, "../Data_Processed/Metadata/Metadata_9_usgs_walrus_sex_age_comp_2013_2015.csv")
