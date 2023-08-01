@@ -162,7 +162,7 @@ unique2010 <- unique_wal_omit[unique_wal_omit$year > 2009, ]
 # Save to csv
 write.csv(st_drop_geometry(unique2010), "../Data_Processed/Odobenus_DataIntegration_20230116/odobenus2010_integrated20230210.csv")
 
-# Plotting points after 2010Odobenus_DataIntegration_20230116
+# Plotting points after 2010
 ggplot() + geom_sf(data = base_crop) + 
   geom_sf(data = unique2010, mapping = aes(color = year), size = 1.5) +
   labs(
