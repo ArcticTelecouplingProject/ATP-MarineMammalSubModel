@@ -122,6 +122,17 @@ unique_beard_omit <- na.omit(unique_beard)
 nrow(unique_beard_omit)
 
 
+# Check groupSize column --------------------------------------------------
+
+unique(unique_beard_omit$groupSz)
+
+# Convert groupSz column to numeric
+unique_beard_omit$groupSz <- as.numeric(unique_beard_omit$groupSz)
+
+# Remove rows with values in the groupSz column = 1
+unique_beard_omit <- unique_beard_omit %>% filter(groupSz != -1)
+
+
 # Save variables ----------------------------------------------------------
 
 # Save this to a csv in a folder called barbatus_integrations
@@ -133,6 +144,7 @@ st_write(unique_beard_omit, "../Data_Processed/barbatus_integrations/barbatus_in
 ### SKIP TO THIS LINE TO AVOID HAVING TO RUN THE ABOVE CODE TO IMPORT THE
 ### INTEGRATED DATASET INTO THE ENVIRONMENT
 ugruk <- st_read("../Data_Processed/barbatus_integrations/barbatus_integrated20230802.shp")
+# subset 
 # Inupiaq word for bearded seal
 
 # Plotting ----------------------------------------------------------------
@@ -235,5 +247,5 @@ for (i in 1:n.years) {
 }
 
 # save summary to a csv
-write.csv(sum_since, "../Output/prelim_models/summer/barbatus_summer20230802.csv")
+write.csv(sum_since, "../Output/prelim_models/yearRound/barbatus_yearRound20230802.csv")
 
