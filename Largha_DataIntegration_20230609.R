@@ -17,7 +17,7 @@
 # 1-2-1_gbif_spot
 
 
-# Last edited: 03Jul2023
+# Last edited: 02Aug2023
 
 
 # Libraries and Packages --------------------------------------------------
@@ -88,28 +88,52 @@ all_spot_df <- rbind(spotted_gbif_sp, spot_seismic_2013, spot_ambon_2015, spot_m
 
 View(all_spot_df) # check to make sure all cols match
 
-# Eliminate repeat occurrences
-# https://statisticsglobe.com/unique-rows-of-data-frame-based-on-selected-columns-in-r
-unique_spot <- distinct(all_spot_df)
 
-# Eliminate repeat occurrences and for identifing overlaps between datasets
-# unique_wal <- all_wal_df %>% dplyr::select(-source) %>% distinct
+# Eliminate other subspecies and outlier occurrences ----------------------
 
-# quantifying number of occurrences after eliminating repeats
-# nrow(unique_wal)
+# can see the min/max values for the lat/lon cols using min() and max() to
+# determine the bounding box
+lat_min = 45
+lat_max = 90
+lon_min = -170
+lon_max = -140
 
-# Remove Nas
+# Convert lat/lon columns to numeric
+all_spot_df$decmlLt <- as.numeric(all_spot_df$decmlLt)
+all_spot_df$decmlLn <- as.numeric(all_spot_df$decmlLn)
+
+spot_filter <- all_spot_df %>%
+  filter(scntfcN %in% c("Phoca largha") &
+           decmlLt >= lat_min & decmlLt <= lat_max,
+         decmlLn >= lon_min & decmlLn <= lon_max)
+
+
+# Eliminate repeats -------------------------------------------------------
+
+# Eliminate repeat occurrences to ensure they were handled properly in each individual script
+unique_spot <- distinct(spot_filter)
+
+# Number of occurrences after eliminating repeats
+# nrow(unique_spot)
+
+# Remove NAs
 unique_spot_omit <- na.omit(unique_spot)
 
-nrow(unique_spot_omit)
+# nrow(unique_spot_omit)
 
-View(unique_spot_omit)
+
+# Save variables ----------------------------------------------------------
 
 # Save this to a csv
-write.csv(st_drop_geometry(unique_spot_omit), "../Data_Processed/largha_integrations/largha_integrated20230703.csv")
+write.csv(st_drop_geometry(unique_spot_omit), "../Data_Processed/largha_integrations/largha_integrated20230802.csv")
 
 # Save to shp
-st_write(unique_spot_omit, "../Data_Processed/largha_integrations/largha_integrated20230703.shp")
+st_write(unique_spot_omit, "../Data_Processed/largha_integrations/largha_integrated20230802.shp")
+
+### SKIP TO THIS LINE TO AVOID HAVING TO RUN THE ABOVE CODE TO IMPORT THE
+### INTEGRATED DATASET INTO THE ENVIRONMENT
+qasigiaq <- st_read("../Data_Processed/largha_integrations/largha_integrated20230802.shp")
+# Inupiaq word for spotted seal
 
 # Plotting ----------------------------------------------------------------
 
@@ -138,17 +162,17 @@ base_crop <- st_crop(base_map, c(xmin = -2173499, ymin = 159766, xmax = 1661246,
 
 # Plot all spotted seal occurrence points against uncropped base map
 ggplot() + geom_sf(data = base_crop) + 
-  geom_sf(data = unique_spot_omit, mapping = aes(color = year)) +
+  geom_sf(data = qasigiaq, mapping = aes(color = year)) +
   labs(
     title = "Spotted seal occurrences in the Bering Strait Region")
 
 
 # Isolate number of rows after 2010
-all_spot_2010 <- unique_spot_omit[unique_spot_omit$year > 2009, ]
+qasigiaq2010 <- qasigiaq[qasigiaq$year > 2009, ]
 
 # Plotting points after 2010
 ggplot() + geom_sf(data = base_crop) + 
-  geom_sf(data = all_spot_2010, mapping = aes(color = year), size = 1.5) +
+  geom_sf(data = qasigiaq2010, mapping = aes(color = year), size = 1.5) +
   labs(
     title = "Spotted seal occurrences from 2010-2019 \n
     in the Bering Strait Region")
@@ -158,7 +182,7 @@ ggplot() + geom_sf(data = base_crop) +
 
 
 # create new df with occurrence points and no geometry attached
-all_df_drop <- unique_spot_omit %>%
+all_df_drop <- qasigiaq %>%
   st_drop_geometry() %>%
   group_by(year, month, day) %>%
   dplyr::summarize(n=n()) %>%
@@ -186,8 +210,8 @@ n.years <- n_distinct(my.years)
 my.sums <- rep(NA, n.years)
 
 ## choose one of the time windows for the loop
-# month_selected <- seq(1,12);
-# time_window = 'year round' ## year round
+month_selected <- seq(1,12);
+time_window = 'year round' ## year round
 
 month_selected <- seq(6,8);
 time_window = 'june-aug' ## time window 1 - june through august
@@ -212,8 +236,7 @@ for (i in 1:n.years) {
 }
 
 # save summary to a csv
-write.csv(sum_since, "../Output/prelim_models/fall/largha_fall_20230419.csv")
-
+write.csv(sum_since, "../Output/prelim_models/fall/largha_fall20230802.csv")
 
 
 # Graveyard ---------------------------------------------------------------
