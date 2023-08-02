@@ -121,6 +121,9 @@ unique_beard_omit <- na.omit(unique_beard)
 
 nrow(unique_beard_omit)
 
+
+# Save variables ----------------------------------------------------------
+
 # Save this to a csv in a folder called barbatus_integrations
 write.csv(st_drop_geometry(unique_beard_omit), "../Data_Processed/barbatus_integrations/barbatus_integrated20230801.csv")
 
