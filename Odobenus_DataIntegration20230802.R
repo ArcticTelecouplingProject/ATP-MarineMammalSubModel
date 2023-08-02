@@ -101,13 +101,31 @@ asamm_walrus <- subset(asamm, commnNm == "Walrus")
 all_wal_df <- rbind(walrus_gbif_sp, wal_seismic_2013, wal_ambon_2015, wal_mmwatch16, wal_mmwatch17,
                     wal_laurier19, wal_laurier18, wal_healy, wal_nmml, wal_comp, wal_behavior,
                     gbif_walrus, asamm_walrus)
-# Check to make sure all columns match
+
+
+# Eliminate other subspecies and outlier occurrences ----------------------
+
+lat_min = 45
+lat_max = 90
+lon_min = -170
+lon_max = -140
+
+# Convert lat/lon columns to numeric
+all_wal_df$decmlLt <- as.numeric(all_wal_df$decmlLt)
+all_wal_df$decmlLn <- as.numeric(all_wal_df$decmlLn)
+
+pacific_walrus <- all_wal_df %>%
+  filter(scntfcN %in% c("Odobenus rosmarus divergens", "Odobenus rosmarus") &
+           # latitude should be greater than or equal to lat_min and less than or equal to lat_max
+           decmlLt >= lat_min & decmlLt <= lat_max,
+         # longitude should be greater than or equal to lon_min and less than or equal to lon_max
+         decmlLn >= lon_min & decmlLn <= lon_max)
 
 # Number of occurrences before eliminating repeats
 # nrow(all_wal_df)
 
 # Eliminate repeat occurrences
-unique_wal <- distinct(all_wal_df)
+unique_wal <- distinct(pacific_walrus)
 
 # Remove NAs
 unique_wal_omit <- na.omit(unique_wal)
@@ -115,14 +133,14 @@ unique_wal_omit <- na.omit(unique_wal)
 nrow(unique_wal_omit)
 
 # Save this to a csv
-# write.csv(st_drop_geometry(unique_wal_omit), "../Data_Processed/odobenus_integrations/odobenus_integrated20230801.csv")
+write.csv(st_drop_geometry(unique_wal_omit), "../Data_Processed/odobenus_integrations/odobenus_integrated20230802.csv")
 
 # Save to shp
-# st_write(unique_wal_omit, "../Data_Processed/odobenus_integrations/odobenus_integrated20230801.shp")
+st_write(unique_wal_omit, "../Data_Processed/odobenus_integrations/odobenus_integrated20230802.shp")
 
 ### SKIP TO THIS LINE TO AVOID HAVING TO RUN THE ABOVE CODE TO IMPORT THE
 ### INTEGRATED DATASET INTO THE ENVIRONMENT
-all_walrus <- st_read("../Data_Processed/odobenus_integrations/odobenus_integrated20230801.shp")
+all_walrus <- st_read("../Data_Processed/odobenus_integrations/odobenus_integrated20230802.shp")
 
 
 # Plotting ----------------------------------------------------------------
@@ -151,20 +169,17 @@ base_crop <- st_crop(base_map, c(xmin = -2173499, ymin = 159766, xmax = 1661246,
 
 # Plot all Walrus occurrence points against uncropped base map
 ggplot() + geom_sf(data = base_crop) + 
-  geom_sf(data = unique_wal_omit, mapping = aes(color = year)) +
+  geom_sf(data = all_walrus, mapping = aes(color = year)) +
   labs(
     title = "Walrus occurrences in the Bering Strait Region")
 
 
 # Isolate number of rows after 2010
-unique2010 <- unique_wal_omit[unique_wal_omit$year > 2009, ]
-
-# Save to csv
-write.csv(st_drop_geometry(unique2010), "../Data_Processed/Odobenus_DataIntegration_20230116/odobenus2010_integrated20230210.csv")
+walrus2010 <- all_walrus[all_walrus$year > 2009, ]
 
 # Plotting points after 2010
 ggplot() + geom_sf(data = base_crop) + 
-  geom_sf(data = unique2010, mapping = aes(color = year), size = 1.5) +
+  geom_sf(data = walrus2010, mapping = aes(color = year), size = 1.5) +
   labs(
     title = "Walrus occurrences from 2010-2019 \n
     in the Bering Strait Region")
@@ -228,7 +243,7 @@ for (i in 1:n.years) {
 }
 
 # save summary to a csv
-write.csv(sum_since, "../Output/prelim_models/summer/odobenus_summer20230801.csv")
+write.csv(sum_since, "../Output/prelim_models/fall/odobenus_fall20230802.csv")
 
 
 ## For Natalia's Mapping ---------------------------------------------------------------------------------------------
