@@ -17,7 +17,7 @@
 # 8 nmml aerial 1979-2010
 # 1-3-1_gbif_beard
 
-# Last edited: 01Aug2023
+# Last edited: 02Aug2023
 
 
 # Libraries and Packages --------------------------------------------------
@@ -125,14 +125,14 @@ nrow(unique_beard_omit)
 # Save variables ----------------------------------------------------------
 
 # Save this to a csv in a folder called barbatus_integrations
-write.csv(st_drop_geometry(unique_beard_omit), "../Data_Processed/barbatus_integrations/barbatus_integrated20230801.csv")
+write.csv(st_drop_geometry(unique_beard_omit), "../Data_Processed/barbatus_integrations/barbatus_integrated20230802.csv")
 
 # Save to shp
-st_write(unique_beard_omit, "../Data_Processed/barbatus_integrations/barbatus_integrated20230801.shp")
+st_write(unique_beard_omit, "../Data_Processed/barbatus_integrations/barbatus_integrated20230802.shp")
 
 ### SKIP TO THIS LINE TO AVOID HAVING TO RUN THE ABOVE CODE TO IMPORT THE
 ### INTEGRATED DATASET INTO THE ENVIRONMENT
-ugruk <- st_read("../Data_Processed/barbatus_integrations/barbatus_integrated20230801.shp")
+ugruk <- st_read("../Data_Processed/barbatus_integrations/barbatus_integrated20230802.shp")
 # Inupiaq word for bearded seal
 
 # Plotting ----------------------------------------------------------------
@@ -235,5 +235,5 @@ for (i in 1:n.years) {
 }
 
 # save summary to a csv
-write.csv(sum_since, "../Output/prelim_models/fall/barbatus_fall20230801.csv")
+write.csv(sum_since, "../Output/prelim_models/summer/barbatus_summer20230802.csv")
 
