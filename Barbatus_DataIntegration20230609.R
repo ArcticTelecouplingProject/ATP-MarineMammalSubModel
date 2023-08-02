@@ -92,12 +92,10 @@ all_beard_df <- rbind(bearded_gbif_sp, beard_seismic, beard_ambon, beard_mmwatch
 
 # Eliminate other subspecies and outlier occurrences ----------------------
 
-# can see the min/max values for the lat/lon cols using min() and max() to
-# determine the bounding box
 lat_min = 45
 lat_max = 90
 lon_min = -170
-lon_max = 185
+lon_max = -140
 
 # Convert lat/lon columns to numeric
 all_beard_df$decmlLt <- as.numeric(all_beard_df$decmlLt)
@@ -105,7 +103,9 @@ all_beard_df$decmlLn <- as.numeric(all_beard_df$decmlLn)
 
 pacific_beard <- all_beard_df %>%
   filter(scntfcN %in% c("Erignathus barbatus", "Erignathus barbatus nauticus") &
+        # latitude should be greater than or equal to lat_min and less than or equal to lat_max
         decmlLt >= lat_min & decmlLt <= lat_max,
+        # longitude should be greater than or equal to lon_min and less than or equal to lon_max
         decmlLn >= lon_min & decmlLn <= lon_max)
 
 # Eliminate repeats -------------------------------------------------------
@@ -158,17 +158,17 @@ base_crop <- st_crop(base_map, c(xmin = -2173499, ymin = 159766, xmax = 1661246,
 
 # Plot all bearded seal occurrence points against cropped base map
 ggplot() + geom_sf(data = base_crop) + 
-  geom_sf(data = unique_beard_omit, mapping = aes(color = year)) +
+  geom_sf(data = pacific_beard, mapping = aes(color = year)) +
   labs(
     title = "Bearded seal occurrences in the Bering Strait Region")
 
 
 # Isolate number of rows after 2010
-all_beard_2010 <- unique_beard_omit[unique_beard_omit$year > 2009, ]
+ugruk2010 <- ugruk[ugruk$year > 2009, ]
 
 # Plotting points after 2010
 ggplot() + geom_sf(data = base_crop) + 
-  geom_sf(data = all_beard_2010, mapping = aes(color = year), size = 1.5) +
+  geom_sf(data = ugruk2010, mapping = aes(color = year), size = 1.5) +
   labs(
     title = "Bearded seal occurrences from 2010-2019 \n
     in the Bering Strait Region")
