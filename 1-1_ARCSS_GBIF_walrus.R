@@ -79,8 +79,7 @@ wal_gbif_new$source <- "ARCSS GBIF Pacific Walrus"
 # How is R classifying each column of data?
 lapply(wal_gbif_new, class)
 
-# Convert numeric columns to numeric
-# Smooth way figured out on 02Aug2023
+# Convert columns to numeric
 char_cols <- c("decimalLat", "decimalLon", "year", "month", "day")
 
 # Convert the character columns to numeric with dplyr
@@ -145,6 +144,9 @@ walrus_gbif_merge <- walrus_gbif_merge %>% dplyr::select(scientificName,
 
 # Cast geometry to another type with st_cast()
 walrus_gbif_sp <- walrus_gbif_merge %>% st_cast("POINT")
+
+
+# Eliminate repeats -------------------------------------------------------
 
 # Number of occurrences before eliminating repeats
 # nrow(walrus_gbif_sp)
