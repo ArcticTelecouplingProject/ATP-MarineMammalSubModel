@@ -32,9 +32,6 @@ walrus_gbif <- st_read(paste0(datadir, "1-1_gbif_queries/gbif_odobenus_20230522.
 # Look at column names
 colnames(walrus_gbif)
 
-# Get rid of unnecessary NA values (if any) in the latitude column
-walrus_gbif <- walrus_gbif[!is.na(walrus_gbif$decimalLatitude), ]
-
 # Remove extraneous columns - use select function to choose which columns to keep in new df
 walrus_new <- walrus_gbif %>% dplyr::select(verbatimScientificName,
                                             decimalLatitude,
@@ -43,6 +40,10 @@ walrus_new <- walrus_gbif %>% dplyr::select(verbatimScientificName,
                                             month,
                                             day,
                                             basisOfRecord)
+
+# Get rid of unnecessary NA values (if any) in the latitude column
+walrus_gbif <- walrus_gbif[!is.na(walrus_gbif$decimalLatitude), ]
+
 
 # Set CRS -----------------------------------------------------------------
 
@@ -55,21 +56,17 @@ walrus_3338 <- walrus_new %>% st_transform(crs = 3338)
 # Check to see if it's properly projected (NAD83 / Alaska Albers)
 st_crs(walrus_3338)
 
-## Geometry column will automatically be included too because of the spatial structure
-## Can get rid of with st_drop_geometry()
+
+# Modify columns ----------------------------------------------------------
 
 # How is R classifying each column of data?
 lapply(walrus_3338, class)
 
-# Convert numeric columns to numeric - probably a more succinct way to do this but that's okay
-walrus_3338$decimalLatitude <- as.numeric(walrus_3338$decimalLatitude)
-walrus_3338$decimalLongitude <- as.numeric(walrus_3338$decimalLongitude)
-walrus_3338$year <- as.numeric(walrus_gbif$year)
-walrus_3338$month <- as.numeric(walrus_gbif$month)
-walrus_3338$day <- as.numeric(walrus_3338$day)
+# Convert columns to numeric
+char_cols <- c("decimalLatitude", "decimalLongitude", "year", "month", "day")
 
-
-# Modify columns ----------------------------------------------------------
+# Convert the character columns to numeric with dplyr
+walrus_3338 <- walrus_3338 %>% mutate(across(all_of(char_cols), as.numeric))
 
 # Add a new column to specify data source to backtrack later
 walrus_3338$source <- "GBIF Query"
@@ -85,15 +82,14 @@ unique(walrus_3338$methodObservation)
 # Rename values of method column for consistency with other datasets
 walrus_3338$methodObservation[walrus_3338$methodObservation == "HUMAN_OBSERVATION"] <- 'Human observation'
 
-# Add groupSize column based on whether there are no NAs in the year, month, day cols
-## Reference for code:
-## https://www.geeksforgeeks.org/how-to-add-a-column-based-on-other-columns-in-r-dataframe/
-walrus_3338 <- transform(walrus_3338, groupSize = ifelse
-                               (is.na(year) & is.na(month) & is.na(day), 0, 1))
-# This checks whether all three columns (year, month, and day) contain missing values (NA)
-# using the is.na() function. If all three columns have missing values, the condition
-# evaluates to TRUE and fills with 0, otherwise, it evaluates to FALSE and fills with 1.
-# Decide whether to mark records with an NA in any part of the YMD as 0?
+# Add groupSize column to walrus_3338 df based on whether there are no NAs in the year, month, day cols
+walrus_3338 <- walrus_3338 %>% mutate(
+  groupSize = ifelse(is.na(year) & is.na(month) & is.na(day), 0, 1)) %>% 
+  # remove rows that have their groupSize column = 0 
+  filter(groupSize != 0)
+# when any of the YMD columns has an actual value (not NA), groupSize will be set
+# to 1, even if one or both of the other columns are NA. It will only be set to 0
+# if all columns are NA
 
 # Rearrange column names to match other dfs
 walrus_merge <- walrus_3338 %>% dplyr::select(verbatimScientificName,
@@ -119,7 +115,6 @@ walrus_merge <- walrus_3338 %>% dplyr::select(verbatimScientificName,
 # nrow(walrus_merge)
 
 # Eliminate repeat occurrences
-# https://statisticsglobe.com/unique-rows-of-data-frame-based-on-selected-columns-in-r
 unique_walrus <- distinct(walrus_merge)
 
 # Quantify number of occurrences after eliminating repeats
@@ -133,7 +128,9 @@ unique_walrus_omit <- na.omit(unique_walrus)
 View(unique_walrus_omit)
 
 # Save this df as a csv for importing - need to use st_write because of spatial geometry
-# st_write(unique_walrus_omit, "../Data_Processed/1-1-1_gbif_walrus/1-1-1_gbif_walrus.csv")
+st_write(unique_walrus_omit, "../Data_Processed/1-1-1_gbif_walrus/1-1-1_gbif_walrus.csv", append=FALSE)
+
+st_write(unique_walrus_omit, "../Data_Processed/1-1-1_gbif_walrus/1-1-1_gbif_walrus.shp", append=FALSE)
 
 
 # Graveyard ---------------------------------------------------------------
@@ -155,3 +152,11 @@ View(unique_walrus_omit)
 #
 # Save metadata dataframe
 # write.csv(OccurrenceSummaries, "../Data_Processed/Metadata/Metadata_1-1_walrus_gbif.csv")
+
+
+# Convert numeric columns to numeric
+# walrus_3338$decimalLatitude <- as.numeric(walrus_3338$decimalLatitude)
+# walrus_3338$decimalLongitude <- as.numeric(walrus_3338$decimalLongitude)
+# walrus_3338$year <- as.numeric(walrus_gbif$year)
+# walrus_3338$month <- as.numeric(walrus_gbif$month)
+# walrus_3338$day <- as.numeric(walrus_3338$day)
