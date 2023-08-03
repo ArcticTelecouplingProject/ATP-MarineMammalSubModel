@@ -34,31 +34,27 @@ head(walrus_gbif)
 colnames(walrus_gbif)
 
 # Create a dataframe to generate metadata summaries on the occurrence data at various steps of tidying
-OccurrenceSummaries <- data.frame(name = "walrus_gbif") 
-OccurrenceSummaries$before <- length(walrus_gbif$specificEp)
+# OccurrenceSummaries <- data.frame(name = "walrus_gbif") 
+# OccurrenceSummaries$before <- length(walrus_gbif$specificEp)
 
 # Add to metadata dataframe for summaries on the occurrence data at various steps of tidying
-OccurrenceSummaries$isolatedSpecies <- length(walrus_gbif$specificEp)
+# OccurrenceSummaries$isolatedSpecies <- length(walrus_gbif$specificEp)
+
+
+# Set CRS -----------------------------------------------------------------
 
 # Transform to Alaska Albers projection
 walrus_gbif_3338 <- walrus_gbif %>% st_transform(crs = 3338)
-
 
 # Check to see if it's properly projected (NAD83 / Alaska Albers)
 st_crs(walrus_gbif_3338)
 
 
-# Clean up this dataset further
-
-## Get rid of unneeded columns 
-walrus_gbif_new <- walrus_gbif_3338[ , 12:50]
-
-## Get rid of unnecessary NA values (if any)
-walrus_gbif_new <- walrus_gbif_new[!is.na(walrus_gbif_new$decimalLat), ]
+# Modify columns ----------------------------------------------------------
 
 # Remove extraneous columns - use select function to choose which columns to keep in new df
-colnames(walrus_gbif_new)
-wal_gbif_new <- walrus_gbif_new %>% dplyr::select(genericNam,
+colnames(walrus_gbif_3338)
+wal_gbif_new <- walrus_gbif_3338 %>% dplyr::select(genericNam,
                                                   specificEp,
                                                   infraspeci,
                                                   decimalLat,
@@ -68,8 +64,11 @@ wal_gbif_new <- walrus_gbif_new %>% dplyr::select(genericNam,
                                                   day,
                                                   basisOfRec)
 
+# Get rid of unnecessary NA values (if any)
+wal_gbif_new <- wal_gbif_new[!is.na(wal_gbif_new$decimalLat), ]
+
 # Add to metadata dataframe for summaries on the occurrence data at various steps of tidying
-OccurrenceSummaries$columnsofInterest <- length(wal_gbif_new$specificEp)
+# OccurrenceSummaries$columnsofInterest <- length(wal_gbif_new$specificEp)
 
 ## Geometry column will automatically be included too because of the spatial structure
 ## Can get rid of with st_drop_geometry()
@@ -80,12 +79,12 @@ wal_gbif_new$source <- "ARCSS GBIF Pacific Walrus"
 # How is R classifying each column of data?
 lapply(wal_gbif_new, class)
 
-# Convert numeric columns to numeric - probably a more succinct way to do this but that's okay
-wal_gbif_new$decimalLat <- as.numeric(wal_gbif_new$decimalLat)
-wal_gbif_new$decimalLon <- as.numeric(wal_gbif_new$decimalLon)
-wal_gbif_new$year <- as.numeric(walrus_gbif_new$year)
-wal_gbif_new$month <- as.numeric(walrus_gbif_new$month)
-wal_gbif_new$day <- as.numeric(wal_gbif_new$day)
+# Convert numeric columns to numeric
+# Smooth way figured out on 02Aug2023
+char_cols <- c("decimalLat", "decimalLon", "year", "month", "day")
+
+# Convert the character columns to numeric with dplyr
+wal_gbif_new <- wal_gbif_new %>% mutate(across(all_of(char_cols), as.numeric))
 
 # Combine species and subspecies columns into one col and make one character string
 wal_gbif_new$genericNam <- gsub("\"", "", wal_gbif_new$genericNam)
@@ -118,16 +117,16 @@ walrus_gbif_clean <- walrus_gbif_clean %>% rename("methodObservation" = "basisOf
 walrus_gbif_clean$methodObservation[walrus_gbif_clean$methodObservation == '"HUMAN_OBSERVATION"'] <- 'Human observation'
 walrus_gbif_clean$methodObservation[walrus_gbif_clean$methodObservation == '"PRESERVED_SPECIMEN"'] <- 'Preserved specimen'
 
-# Missing a groupSize column in the walrus_gbif_merge df??
 # Add groupSize column to walrus_gbif_merge df based on whether there are no NAs in the year, month, day cols
-## Reference for code:
-## https://www.geeksforgeeks.org/how-to-add-a-column-based-on-other-columns-in-r-dataframe/
-walrus_gbif_merge <- transform(walrus_gbif_clean, groupSize = ifelse
-                               (is.na(year) & is.na(month) & is.na(day), 0, 1))
-# Right now this is marking records with no YMD as 0
-# Decide whether to mark records with an NA in any part of the YMD as 0?
+walrus_gbif_merge <- walrus_gbif_clean %>% mutate(
+  groupSize = ifelse(is.na(year) & is.na(month) & is.na(day), 0, 1)) %>% 
+  # remove rows that have their groupSize column = 0 
+  filter(groupSize != 0)
+# when any of the YMD columns has an actual value (not NA), groupSize will be set
+# to 1, even if one or both of the other columns are NA. It will only be set to 0
+# if all columns are NA
 
-# Rearrange column names to match dfs - or I think this can be solved with whatever merge function ends up used
+# Rearrange column names to match dfs
 walrus_gbif_merge <- walrus_gbif_merge %>% dplyr::select(scientificName,
                                                          commonName,
                                                          year,
@@ -147,31 +146,47 @@ walrus_gbif_merge <- walrus_gbif_merge %>% dplyr::select(scientificName,
 # Cast geometry to another type with st_cast()
 walrus_gbif_sp <- walrus_gbif_merge %>% st_cast("POINT")
 
-
-# quantifying number of occurrences before eliminating repeats
+# Number of occurrences before eliminating repeats
 # nrow(walrus_gbif_sp)
 
 # Eliminate repeat occurrences
-# https://statisticsglobe.com/unique-rows-of-data-frame-based-on-selected-columns-in-r
 unique_walrus <- distinct(walrus_gbif_sp)
 
-# quantifying number of occurrences after eliminating repeats
+# Number occurrences after eliminating repeats
 # nrow(unique_walrus)
 
-# Remove Nas
+# Remove NAs
 unique_walrus_omit <- na.omit(unique_walrus)
 
 # Add to metadata dataframe for summaries on the occurrence data at various steps of tidying
-OccurrenceSummaries$uniqueOccurrences <- length(unique_walrus_omit$scientificName)
-
-View(OccurrenceSummaries)
+# OccurrenceSummaries$uniqueOccurrences <- length(unique_walrus_omit$scientificName)
 
 ## Tada now you have a clean and tidy dataset to work with and merge
 
 View(unique_walrus_omit)
 
-# Save this df as a csv for importing - need to use st_write because of spatial geometry
-# st_write(unique_walrus_omit, "../Data_Processed/1-1_ARCSS_GBIF_walrus/1-1_walrus_gbif_sp.shp")
+# Save this df as a csv and shp for importing - need to use st_write because of spatial geometry
+st_write(unique_walrus_omit, "../Data_Processed/1-1_ARCSS_GBIF_walrus/1-1_walrus_gbif_sp.csv", append=FALSE)
+
+st_write(unique_walrus_omit, "../Data_Processed/1-1_ARCSS_GBIF_walrus/1-1_walrus_gbif_sp.shp", append=FALSE)
+# append=FALSE overwrites existing file
 
 # Save metadata dataframe
-# write.csv(OccurrenceSummaries, "../Data_Processed/Metadata/Metadata_1-1_walrus_gbif.csv")
+write.csv(OccurrenceSummaries, "../Data_Processed/Metadata/Metadata_1-1_walrus_gbif.csv")
+
+
+
+# Graveyard ---------------------------------------------------------------
+
+## Brute force way to convert character columns to numeric
+# wal_gbif_new$decimalLat <- as.numeric(wal_gbif_new$decimalLat)
+# wal_gbif_new$decimalLon <- as.numeric(wal_gbif_new$decimalLon)
+# wal_gbif_new$year <- as.numeric(walrus_gbif_new$year)
+# wal_gbif_new$month <- as.numeric(walrus_gbif_new$month)
+# wal_gbif_new$day <- as.numeric(wal_gbif_new$day)
+
+
+## Reference for code:
+## https://www.geeksforgeeks.org/how-to-add-a-column-based-on-other-columns-in-r-dataframe/
+# walrus_gbif_merge <- transform(walrus_gbif_clean, groupSize = ifelse
+#                                (is.na(year) & is.na(month) & is.na(day), 0, 1)) # Base R
