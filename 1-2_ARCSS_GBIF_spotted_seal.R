@@ -33,6 +33,9 @@ spotted_gbif <- st_read(paste0(datadir, "1_arcss_gbif/phoca_largha"))
 
 head(spotted_gbif)
 
+
+# Set CRS -----------------------------------------------------------------
+
 # Transform to Alaska Albers projection
 spotted_gbif_3338 <- spotted_gbif %>% st_transform(crs = 3338)
 
@@ -40,17 +43,11 @@ spotted_gbif_3338 <- spotted_gbif %>% st_transform(crs = 3338)
 st_crs(spotted_gbif_3338)
 
 
-# Clean up this dataset further
-
-## Get rid of unneeded columns 
-spotted_gbif_new <- spotted_gbif_3338[ , 12:50]
-
-## Get rid of unnecessary NA values (if any)
-spotted_gbif_new <- spotted_gbif_new[!is.na(spotted_gbif_new$decimalLat), ]
+# Modify columns ----------------------------------------------------------
 
 # Remove extraneous columns - use select function to choose which columns to keep in new df
-colnames(spotted_gbif_new)
-spot_gbif_new <- spotted_gbif_new %>% dplyr::select(genericNam,
+colnames(spotted_gbif_3338)
+spot_gbif_new <- spotted_gbif_3338 %>% dplyr::select(genericNam,
                                                   specificEp,
                                                   decimalLat,
                                                   decimalLon,
@@ -58,8 +55,9 @@ spot_gbif_new <- spotted_gbif_new %>% dplyr::select(genericNam,
                                                   month,
                                                   day,
                                                   basisOfRec)
-## Geometry column will automatically be included too because of the spatial structure
-## Can get rid of with st_drop_geometry()
+
+# Get rid of unnecessary NA values (if any)
+spot_gbif_new <- spot_gbif_new[!is.na(spot_gbif_new$decimalLat), ]
 
 # Add a new column to specify data source to backtrack later
 spot_gbif_new$source <- "ARCSS GBIF Spotted Seal"
@@ -67,21 +65,17 @@ spot_gbif_new$source <- "ARCSS GBIF Spotted Seal"
 # How is R classifying each column of data?
 lapply(spot_gbif_new, class)
 
-# Convert numeric columns to numeric - probably a more succinct way to do this but that's okay
-spot_gbif_new$decimalLat <- as.numeric(spot_gbif_new$decimalLat)
-spot_gbif_new$decimalLon <- as.numeric(spot_gbif_new$decimalLon)
-spot_gbif_new$year <- as.numeric(spotted_gbif_new$year)
-spot_gbif_new$month <- as.numeric(spotted_gbif_new$month)
-spot_gbif_new$day <- as.numeric(spot_gbif_new$day)
+# Convert columns to numeric
+char_cols <- c("decimalLat", "decimalLon", "year", "month", "day")
+
+# Convert the character columns to numeric with dplyr
+spot_gbif_new <- spot_gbif_new %>% mutate(across(all_of(char_cols), as.numeric))
 
 # Combine species and subspecies columns into one col and make one character string
 spot_gbif_new$genericNam <- gsub("\"", "", spot_gbif_new$genericNam)
 spot_gbif_new$specificEp <- gsub("\"", "", spot_gbif_new$specificEp)
 # Add that character string to a new column
 spot_gbif_new$scientificName <- paste(spot_gbif_new$genericNam, spot_gbif_new$specificEp)
-
-# Move scientificName column to first column
-spotted_gbif_clean <- spot_gbif_new %>% dplyr::select(scientificName, everything())
 
 # Remove old columns of genus and species
 spotted_gbif_clean <- spotted_gbif_clean %>% dplyr::select(scientificName,
@@ -99,6 +93,9 @@ spotted_gbif_clean$commonName <- "Spotted Seal"
 
 # Rename basisOfRec column to methodObservation column
 spotted_gbif_clean <- spotted_gbif_clean %>% rename("methodObservation" = "basisOfRec")
+
+# Check for unique values in methods column
+unique(spotted_gbif_clean$methodObservation)
 
 # Rename values of method column
 spotted_gbif_clean$methodObservation[spotted_gbif_clean$methodObservation == '"HUMAN_OBSERVATION"'] <- 'Human observation'
@@ -142,3 +139,12 @@ View(spotted_gbif_sp) # this is an sf dataframe
 # Save as shp and csv
 # st_write(spotted_gbif_sp, "../Data_Processed/1-2_ARCSS_GBIF_spotted_seal/1-2_spotted_gbif_sp.csv")
 
+
+# Graveyard ---------------------------------------------------------------
+
+# Convert numeric columns to numeric - probably a more succinct way to do this but that's okay
+# spot_gbif_new$decimalLat <- as.numeric(spot_gbif_new$decimalLat)
+# spot_gbif_new$decimalLon <- as.numeric(spot_gbif_new$decimalLon)
+# spot_gbif_new$year <- as.numeric(spotted_gbif_new$year)
+# spot_gbif_new$month <- as.numeric(spotted_gbif_new$month)
+# spot_gbif_new$day <- as.numeric(spot_gbif_new$day)
