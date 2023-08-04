@@ -78,7 +78,7 @@ spot_gbif_new$specificEp <- gsub("\"", "", spot_gbif_new$specificEp)
 spot_gbif_new$scientificName <- paste(spot_gbif_new$genericNam, spot_gbif_new$specificEp)
 
 # Remove old columns of genus and species
-spotted_gbif_clean <- spotted_gbif_clean %>% dplyr::select(scientificName,
+spotted_gbif_clean <- spot_gbif_new %>% dplyr::select(scientificName,
                                                          year,
                                                          month,
                                                          day,
@@ -100,6 +100,8 @@ unique(spotted_gbif_clean$methodObservation)
 # Rename values of method column
 spotted_gbif_clean$methodObservation[spotted_gbif_clean$methodObservation == '"HUMAN_OBSERVATION"'] <- 'Human observation'
 spotted_gbif_clean$methodObservation[spotted_gbif_clean$methodObservation == '"PRESERVED_SPECIMEN"'] <- 'Preserved specimen'
+# look up tidyverse way
+
 
 # Missing a groupSize column in the spotted_gbif_clean df??
 # Add groupSize column to spotted_gbif_clean df based on if there are NO NAs in the year, month, day cols
