@@ -11,7 +11,7 @@
 # Species isolated in this dataset: 
 
 # This dataset was tidied and ready for data integration on 03Jul2023
-# Last edited: 03Jul2023
+# Last edited: 21Aug2023
 
 
 # Libraries and Packages --------------------------------------------------
@@ -109,20 +109,21 @@ v0_sp <- st_as_sf(v0_mams, coords = c("ArcLong", "ArcLat"), crs = 4326, remove=F
 
 # Remove extraneous cols, rearrange, and rename
 v0_sp <- v0_sp %>% dplyr::select(scientificName,
-                                      Species,
-                                      year,
-                                      month,
-                                      day,
-                                      Totalno,
-                                      ArcLat,
-                                      ArcLong,
-                                      methodObservation,
-                                      source) %>% 
-  rename(commonName = Species,
-         groupSize = Totalno,
-         decimalLat = ArcLat,
-         decimalLon = ArcLong,
-         )
+                                   Species,
+                                   year,
+                                   month,
+                                   day,
+                                   Totalno,
+                                   ArcLat,
+                                   ArcLong,
+                                   methodObservation,
+                                   source) %>% 
+  dplyr::rename(commonName = Species,
+                groupSize = Totalno,
+                decimalLat = ArcLat,
+                decimalLon = ArcLong,
+  )
+
 
 # 2015-2017 Data ----------------------------------------------------------
 
@@ -186,11 +187,12 @@ v24_sp <- v24_sp %>% dplyr::select(scientificName,
                                  ArcLong,
                                  methodObservation,
                                  source) %>% 
-  rename(commonName = Species,
+  dplyr::rename(commonName = Species,
          groupSize = Totalno,
          decimalLat = ArcLat,
          decimalLon = ArcLong,
   )
+
 
 # 2018-2021 Data ----------------------------------------------------------
 
@@ -254,7 +256,7 @@ v2_sp <- v2_sp %>% dplyr::select(scientificName,
                                    ArcLong,
                                    methodObservation,
                                    source) %>% 
-  rename(commonName = Species,
+  dplyr::rename(commonName = Species,
          groupSize = Totalno,
          decimalLat = ArcLat,
          decimalLon = ArcLong,
@@ -273,7 +275,8 @@ unique_asamm <- distinct(all_asamm)
 unique_omit <- na.omit(unique_asamm)
 
 # Save to csv and shp
-st_write(unique_omit, "../Data_Processed/13_aerial_surveys_asamm/13_aerial_surveys_asamm.shp")
+st_write(unique_omit, "../Data_Processed/13_aerial_surveys_asamm/13_aerial_surveys_asamm.shp", append=FALSE)
+st_write(unique_omit, "../Data_Processed/13_aerial_surveys_asamm/13_aerial_surveys_asamm.csv", append=FALSE)
 
 
 
