@@ -60,7 +60,7 @@ all_walrus$season <- ifelse(all_walrus$month %in% c(6, 7, 8), "summer",
 occurrence_n <- all_walrus %>%
   dplyr::count(year, season, source) %>%
   filter(!is.na(season)) %>%
-  arrange(year, season) %>%
+  arrange(year, season, source) %>%
   st_cast("POINT") # Why is this grouping points into multipoints?
 
 
