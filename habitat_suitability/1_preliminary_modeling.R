@@ -3,9 +3,15 @@
 # This script was adapted from my final project for IBIO870 Spatial Ecology.
 # The purpose of this script is to create preliminary habitat suitability models
 # using the MaxEnt code from the final project script as a starting point.
+# This script was updated based on my final project for IBIO890 Statistical Models
+# which focused solely on the Pacific walrus.
 # This script includes distinct sections for the spotted seal, bearded seal, and
 # Pacific walrus.
-
+# This script was separated into individual scripts for each species on 20Aug2023.
+# See scripts:
+# 1_prelim_model_walrus
+# 1_prelim_model_largha
+# 1_prelim_model_ugruk
 
 
 # Part 1 ------------------------------------------------------------------
