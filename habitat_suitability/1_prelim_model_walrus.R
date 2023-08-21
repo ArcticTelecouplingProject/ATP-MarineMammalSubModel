@@ -46,6 +46,9 @@ all_walrus <- all_walrus %>% mutate(across(all_of(char_cols)))
 # Check column classes
 lapply(all_walrus, class)
 
+
+# Separate occurrences by season ------------------------------------------
+
 # Add new column to all_walrus that says which season the occurrence was in
 # If the month column contains values 6, 7, 8 then the season col fills with "summer"
 all_walrus$season <- ifelse(all_walrus$month %in% c(6, 7, 8), "summer",
@@ -54,8 +57,11 @@ all_walrus$season <- ifelse(all_walrus$month %in% c(6, 7, 8), "summer",
                             # If it falls outside both of these set ranges then it fills with true NA.
                             ifelse(all_walrus$month %in% c(9, 10, 11), "fall", NA))
 
+# Summer occurrences from 2015-2022
+summer <- all_walrus %>% dplyr::filter(season == "summer", year > 2014)
+# Fall occurrences from 2015-2022
+fall <- all_walrus %>% dplyr::filter(season == "fall", year > 2014)
 
-# Separate occurrences by season ------------------------------------------
 
 occurrence_n <- all_walrus %>%
   dplyr::count(year, season, source) %>%
