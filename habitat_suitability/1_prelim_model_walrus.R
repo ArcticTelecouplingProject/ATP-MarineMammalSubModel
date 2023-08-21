@@ -26,7 +26,7 @@ rm(list = ls())
 datadir <- "../Data_Processed/"
 
 # Import integrated walrus data
-all_walrus <- st_read(paste0(datadir, "odobenus_integrations/odobenus_integrated20230802.shp"))
+all_walrus <- st_read(paste0(datadir, "odobenus_integrations/odobenus_integrated20230821.shp"))
 
 # Rename columns
 all_walrus <- all_walrus %>% dplyr::rename(
@@ -60,8 +60,8 @@ all_walrus$season <- ifelse(all_walrus$month %in% c(6, 7, 8), "summer",
 occurrence_n <- all_walrus %>%
   dplyr::count(year, season, source) %>%
   filter(!is.na(season)) %>%
-  arrange(year, season) %>% 
-  st_cast("POINT")
+  arrange(year, season) %>%
+  st_cast("POINT") # Why is this grouping points into multipoints?
 
 
 # Environmental Data ------------------------------------------------------
