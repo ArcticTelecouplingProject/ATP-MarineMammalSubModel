@@ -133,10 +133,10 @@ unique_wal_omit <- na.omit(unique_wal)
 nrow(unique_wal_omit)
 
 # Save this to a csv
-write.csv(st_drop_geometry(unique_wal_omit), "../Data_Processed/odobenus_integrations/odobenus_integrated20230802.csv")
+write.csv(st_drop_geometry(unique_wal_omit), "../Data_Processed/odobenus_integrations/odobenus_integrated20230821.csv")
 
 # Save to shp
-st_write(unique_wal_omit, "../Data_Processed/odobenus_integrations/odobenus_integrated20230802.shp")
+st_write(unique_wal_omit, "../Data_Processed/odobenus_integrations/odobenus_integrated20230821.shp")
 
 ### SKIP TO THIS LINE TO AVOID HAVING TO RUN THE ABOVE CODE TO IMPORT THE
 ### INTEGRATED DATASET INTO THE ENVIRONMENT
