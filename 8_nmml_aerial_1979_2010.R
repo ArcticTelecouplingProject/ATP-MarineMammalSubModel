@@ -9,7 +9,7 @@
 # Species isolated in this dataset: walrus, bearded seal, spotted seal
 
 # This dataset was tidied and ready for data integration on 09Jan2023
-# Last edited: 6Apr2023
+# Last edited: 21Aug2023
 
 
 
@@ -34,16 +34,16 @@ datadir <- "../../ATP-MarineMammal-DataRaw/"
 nmml_aerial <- read.csv(paste0(datadir,"8_nmml_aerial_1979_2010/8_nmml_aerial_1979_2010.csv"))
 head(nmml_aerial)
 
-# Create a datafame to generate metadata summaries on the occurrence data at various steps of tidying
-OccurrenceSummaries <- data.frame(name = "gbif_nmml_aerial") 
-OccurrenceSummaries$before <- length(nmml_aerial$verbatimScientificName)
+# Create a dataframe to generate metadata summaries on the occurrence data at various steps of tidying
+# OccurrenceSummaries <- data.frame(name = "gbif_nmml_aerial") 
+# OccurrenceSummaries$before <- length(nmml_aerial$verbatimScientificName)
 
 # Isolate out species of interest
 unique(nmml_aerial$verbatimScientificName)
 mmwatch_mams <- nmml_aerial[nmml_aerial$verbatimScientificName %in% c("Odobenus rosmarus", "Phoca largha", "Erignathus barbatus"), ]
 
-# Add to metadata datafame for summaries on the occurrence data at various steps of tidying
-OccurrenceSummaries$isolatedSpecies <- length(mmwatch_mams$verbatimScientificName[which(mmwatch_mams$verbatimScientificName == "Odobenus rosmarus")])
+# Add to metadata dataframe for summaries on the occurrence data at various steps of tidying
+# OccurrenceSummaries$isolatedSpecies <- length(mmwatch_mams$verbatimScientificName[which(mmwatch_mams$verbatimScientificName == "Odobenus rosmarus")])
 
 # Remove extraneous columns of info 
 colnames(mmwatch_mams)
@@ -55,18 +55,11 @@ mams_new <- mmwatch_mams %>% dplyr::select(verbatimScientificName,
                                            decimalLatitude,
                                            decimalLongitude)
 
-# Add to metadata datafame for summaries on the occurrence data at various steps of tidying
-OccurrenceSummaries$columnsofInterest <- length(mams_new$verbatimScientificName[which(mams_new$verbatimScientificName == "Odobenus rosmarus")])
+# Add to metadata dataframe for summaries on the occurrence data at various steps of tidying
+# OccurrenceSummaries$columnsofInterest <- length(mams_new$verbatimScientificName[which(mams_new$verbatimScientificName == "Odobenus rosmarus")])
 
 
 # Convert to spatial df ---------------------------------------------------
-
-# Save lat/lon columns info into their own df to add in again later on
-# or else they will disappear when converting to spatial object with st_as_sf
-# mmwatch_latlon <- mams_new %>% dplyr::select(verbatimScientificName,
-                                            # decimalLatitude,
-                                             # decimalLongitude,
-                                             # eventDate)
 
 # Check the CRS
 st_crs(mams_new) # this is non-spatial so the CRS is NA
@@ -77,8 +70,14 @@ mams_new_sp <- st_as_sf(mams_new, coords = c("decimalLongitude", "decimalLatitud
 # Project the data to Alaska Albers 3338
 mams_sp <- mams_new_sp %>% st_transform(crs = 3338)
 
-# Add back in lat/lon cols using left join to merge lat/lon data onto spatial data rather than spatial data onto lat/lon data
-# mams_sp <- mams_new_sp %>% left_join(mmwatch_latlon, by = "eventDate")
+
+# Convert to SpatialPointsDataFrame ---------------------------------------
+
+# Cast geometry to another type with st_cast()
+mams_sp <- mams_sp %>% st_cast("POINT")
+
+
+# Modify columns ----------------------------------------------------------
 
 # Add a new column to specify data source so you can backtrack later if needed
 mams_sp$source <- "NMML Marine Mammal Aerial Surveys 1979-2010"
@@ -105,25 +104,20 @@ mams_sp2 <- mams_sp %>% dplyr::select(verbatimScientificName,
                                      decimalLongitude,
                                      methodObservation,
                                      source) %>% 
-  rename(scientificName = verbatimScientificName,
+  dplyr::rename(scientificName = verbatimScientificName,
          decimalLat = decimalLatitude,
          decimalLon = decimalLongitude)
 
-# quantifying number of occurrences before eliminating repeats
-# nrow(mams_sp2)
 
-# Eliminate repeat occurrences
-# https://statisticsglobe.com/unique-rows-of-data-frame-based-on-selected-columns-in-r
+# Eliminate repeats -------------------------------------------------------
+
 unique_mams <- distinct(mams_sp2)
 
-# quantifying number of occurrences after eliminating repeats
-# nrow(unique_mams)
-
-# Remove Nas
+# Remove NAs
 unique_mams_omit <- na.omit(unique_mams)
 
-# Add to metadata datafame for summaries on the occurrence data at various steps of tidying
-OccurrenceSummaries$uniqueOccurrences <- length(unique_mams_omit$scientificName[which(unique_mams_omit$scientificName == "Odobenus rosmarus")])
+# Add to metadata dataframe for summaries on the occurrence data at various steps of tidying
+# OccurrenceSummaries$uniqueOccurrences <- length(unique_mams_omit$scientificName[which(unique_mams_omit$scientificName == "Odobenus rosmarus")])
 
 # View(OccurrenceSummaries)
 
@@ -131,8 +125,13 @@ OccurrenceSummaries$uniqueOccurrences <- length(unique_mams_omit$scientificName[
 
 View(unique_mams_omit)
 
+
+# Save data ---------------------------------------------------------------
+
 # Can save this data as an output as both shp and csv
-# st_write(unique_mams_omit, "../Data_Processed/8_nmml_aerial_1979_2010/8_nmml_aerial_1979_2010.shp")
+st_write(unique_mams_omit, "../Data_Processed/8_nmml_aerial_1979_2010/8_nmml_aerial_1979_2010.shp", append = FALSE)
+st_write(unique_mams_omit, "../Data_Processed/8_nmml_aerial_1979_2010/8_nmml_aerial_1979_2010.csv", append = FALSE)
+
 
 # Save metadata dataframe
 # write.csv(OccurrenceSummaries, "../Data_Processed/Metadata/Metadata_8_nmml_aerial_1979_2010.csv")
