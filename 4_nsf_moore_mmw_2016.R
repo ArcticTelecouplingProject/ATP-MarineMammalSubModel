@@ -77,10 +77,6 @@ mams_new$degfrac_lon <- as.numeric(substr(mams_new$LONG_W, 4, 6))/60
 mams_new$decimalLat <- mams_new$deg_lat + mams_new$degfrac_lat
 mams_new$decimalLon <- mams_new$deg_lon + mams_new$degfrac_lon
 
-# Replace space between deg and min with a decimal point
-# mams_new$decimalLat <- gsub("[[:blank:]]", ".", mams_new$decimalLat)
-# mams_new$decimalLon <- gsub("[[:blank:]]", ".", mams_new$decimalLon)
-
 # Figure out how R is classifying each column of data
 lapply(mams_new, class)
 
@@ -103,14 +99,10 @@ mmwatch_latlon <- mams_new %>% dplyr::select(SPP,
 st_crs(mams_new) # this is non-spatial so the CRS is NA
 
 # Convert data to a spatial object with CRS 4326 (since that is regular lat/lon) - this is still unprojected
-mams_new_sp <- st_as_sf(mams_new, coords = c("decimalLon", "decimalLat"), crs = 4326, remove=FALSE) 
+mams_new_sp <- st_as_sf(mams_new, coords = c("decimalLon", "decimalLat"), crs = 4326, remove = FALSE) 
 
 # Project the data to Alaska Albers 3338
 mams_sp <- mams_new_sp %>% st_transform(crs = 3338)
-
-# Add back in lat/lon cols using left join to merge lat/lon data onto spatial data rather than spatial data onto lat/lon data
-#######PROBLEM LINE!!!!##########Creates duplicates
-# mams_sp <- mams_new_sp %>% left_join(mmwatch_latlon, by = "Date")
 
 # Add a new column to specify data source so you can backtrack later if needed
 mams_sp$source <- "Marine Mammal Watch July 2016"
