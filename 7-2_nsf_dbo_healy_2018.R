@@ -12,17 +12,14 @@
 # Last edited: 6Apr2023
 
 
-
 # Libraries and Packages --------------------------------------------------
 
 library(terra)
 library(sf)
 library(tidyverse)
 
-
 # Clear history 
 rm(list=ls())
-
 
 
 # Marine Mammal Watch Healy 2018 ------------------------------------------
@@ -34,7 +31,7 @@ datadir <- "../../ATP-MarineMammal-DataRaw/"
 dbo_healy_2018 <- read.csv(paste0(datadir,"7_nsf_stafford_mmw_2018/data/Healy_DBONCIS_Aug2018_byDBOregion.csv"))
 head(dbo_healy_2018)
 
-# Create a datafame to generate metadata summaries on the occurrence data at various steps of tidying
+# Create a dataframe to generate metadata summaries on the occurrence data at various steps of tidying
 OccurrenceSummaries <- data.frame(name = "nsf_dbo_healy_2018") 
 OccurrenceSummaries$before <- length(dbo_healy_2018$SPP)
 
@@ -45,7 +42,7 @@ OccurrenceSummaries$before <- length(dbo_healy_2018$SPP)
 # 14 = spotted seal
 mmwatch_mams <- dbo_healy_2018[dbo_healy_2018$SPP %in% c(11, 12, 14), ]
 
-# Add to metadata datafame for summaries on the occurrence data at various steps of tidying
+# Add to metadata dataframe for summaries on the occurrence data at various steps of tidying
 OccurrenceSummaries$isolatedSpecies <- length(mmwatch_mams$SPP[which(mmwatch_mams$SPP == "11")])
 
 # Remove extraneous columns of info 
@@ -56,7 +53,7 @@ mams_new <- mmwatch_mams %>% dplyr::select(SPP,
                                            LONG,
                                            NO)
 
-# Add to metadata datafame for summaries on the occurrence data at various steps of tidying
+# Add to metadata dataframe for summaries on the occurrence data at various steps of tidying
 OccurrenceSummaries$columnsofInterest <- length(mams_new$SPP[which(mams_new$SPP == "11")])
 
 
@@ -145,7 +142,7 @@ unique_mams <- distinct(mams_sp2)
 # Remove Nas
 unique_mams_omit <- na.omit(unique_mams)
 
-# Add to metadata datafame for summaries on the occurrence data at various steps of tidying
+# Add to metadata dataframe for summaries on the occurrence data at various steps of tidying
 OccurrenceSummaries$uniqueOccurrences <- length(unique_mams_omit$commonName[which(unique_mams_omit$commonName == "Walrus")])
 
 View(OccurrenceSummaries)
