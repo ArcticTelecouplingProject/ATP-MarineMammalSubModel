@@ -1,7 +1,7 @@
 # Title: Marine Mammal Data Paper Tidying 
 # Author: Natalia Portales and Sydney Waloven
 # Date: 2024-01-15
-# Description: Dataset comes from the Arctic Data Center and was obtained from Marine Mammal aerial surveys in the Bering, Chukchi, and Beaufort Seas 1979-2010. https://www.gbif.org/dataset/e80fa6fc-5468-4ee7-8a74-e6dea5ccfaf9#description
+# Description:  Source: USGS. This dataset was obtained from Sex and Age Composition of Walrus Groups Hauled Out on Ice Floes in the Bering and Chukchi Seas 2013-2015. https://alaska.usgs.gov/products/data.php?dataid=354
 
 # This script follows standardized methods of tidying for the marine mammal data sets we have collected contributing to a data paper.
 
@@ -21,7 +21,7 @@ rm(list=ls())
 datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney - ATP-MarineMammal-DataRaw/"
 datadir <- "../../ATP-MarineMammal-DataRaw/"
 
-# This script will use the nmml aerial surveys from 1979-2010 as example 1.
+# This script will use the USGS visual surveys from 2013-2015.
 usgs <- read_csv(paste0(datadir, "9_usgs_walrus_sex_age_comp_2013_2015/walrus_hauloutGroupComp_battaile_2013_2015.csv"))
 
 # data tidying ------------------------------------------------------------
