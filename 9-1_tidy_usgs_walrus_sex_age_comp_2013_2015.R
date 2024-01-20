@@ -21,15 +21,15 @@ rm(list=ls())
 datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney - ATP-MarineMammal-DataRaw/"
 datadir <- "../../ATP-MarineMammal-DataRaw/"
 
-# This script will use the USGS visual surveys from 2013-2015.
-usgs <- read_csv(paste0(datadir, "9_usgs_walrus_sex_age_comp_2013_2015/walrus_hauloutGroupComp_battaile_2013_2015.csv"))
+# This script will tidy USGS visual surveys from 2013-2015.
+usgs_walrus_comp <- read_csv(paste0(datadir, "9_usgs_walrus_sex_age_comp_2013_2015/walrus_hauloutGroupComp_battaile_2013_2015.csv"))
 
 # data tidying ------------------------------------------------------------
 
 # Check out column names
-names(usgs)
+names(usgs_walrus_comp)
 
-marine_mams <- usgs %>%
+usgs_walrus <- usgs_walrus_comp %>%
   
   # Drop NAs in coordinates
   drop_na(Latitude, Longitude) %>% 
@@ -40,7 +40,6 @@ marine_mams <- usgs %>%
          
          # Add columns for scientificName and commonName
          scientificName = "Odobenus rosmarus divergens",
-         commonName = "Walrus",
          
          # Add method of observation and source columns
          methodObs = "Research vessel visual observation",
@@ -71,7 +70,7 @@ marine_mams <- usgs %>%
   arrange(year, month, day)
 
 # Save as csv into respective folder - add tidy to the end of file names so we can differentiate easily
-write_csv(marine_mams, "../Data_Processed/9_usgs_walrus_sex_age_comp_2013_2015/9_usgs_walrus_tidy.csv")
+write_csv(usgs_walrus, "../Data_Processed/9_usgs_walrus_sex_age_comp_2013_2015/9_usgs_walrus_tidy.csv")
 
 # Read in tidied data
-# marine_mams <- read_csv("../Data_Processed/9_usgs_walrus_tidy.csv")
+# usgs_walrus <- read_csv("../Data_Processed/9_usgs_walrus_tidy.csv")
