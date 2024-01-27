@@ -76,4 +76,4 @@ gbif_mams_1 <- gbif_mams %>%
 write_csv(gbif_mams_1, "../Data_Processed/12-1_gbif_moudry/12-1-1_gbif_moudry_tidy.csv")
 
 # Read in tidied data
-# mgbif_mams_1 <- read_csv("../Data_Processed/8_nmml_aerial_tidy.csv")
+# gbif_mams_1 <- read_csv("../Data_Processed/12-1_gbif_moudry/12-1-1_gbif_moudry_tidy")
