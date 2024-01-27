@@ -36,11 +36,15 @@ gbif_mams_1 <- gbif_mams %>%
   
   # Add method of observation and source columns
   mutate(source = "Moudry GBIF Marine Mammal Walrus Data",
-         basisOfRecord[basisOfRecord == "HUMAN_OBSERVATION"] <- 'Human observation',
-         basisOfRecord[basisOfRecord == "PRESERVED_SPECIMEN"] <- 'Preserved specimen',
-         basisOfRecord[basisOfRecord == "MACHINE_OBSERVATION"] <- 'Machine observation',
-         basisOfRecord[basisOfRecord == "OBSERVATION"] <- 'Observation',
-         basisOfRecord[basisOfRecord == "UNKNOWN"] <- 'NA') %>% 
+
+# Rename values of method column
+        methodobs =
+           case_when(basisOfRecord == HUMAN_OBSERVATION ~ "Human observation",
+                     basisOfRecord == PRESERVED_SPECIMEN ~ "Preserved specimen", 
+                     basisOfRecord == MACHINE_OBSERVATION ~ "Machine observation",
+                     basisOfRecord == OBSERVATION ~ "Observation",
+                     basisOfRecord == UNKNOWN ~ "NA",
+                     TRUE ~ NA)) %>% 
   
   # Remove unneeded columns and rename
   # Order of columns here determines order of columns in df. Can also rename columns in this function (new name on left, old name on right).
