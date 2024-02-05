@@ -29,7 +29,7 @@ gbif_mams <- read_csv(paste0(datadir,"12_gbif_moudry/2-0003097-150811131857512.c
 # Check out column names
 names(gbif_mams)
 
-gbif_mams_1 <- gbif_mams %>%
+gbif_mams_2 <- gbif_mams %>%
   
   # Drop NAs in coordinates
   drop_na(decimallatitude, decimallongitude) %>% 
@@ -38,12 +38,12 @@ gbif_mams_1 <- gbif_mams %>%
   mutate(source = "Moudry GBIF Marine Mammal Walrus Data",
          
          # Rename values of method column
-         methodobs =
-           case_when(basisofrecord == HUMAN_OBSERVATION ~ "Human observation",
-                     basisofrecord == PRESERVED_SPECIMEN ~ "Preserved specimen", 
-                     basisofrecord == MACHINE_OBSERVATION ~ "Machine observation",
-                     basisofrecord == OBSERVATION ~ "Observation",
-                     basisofrecord == UNKNOWN ~ "NA",
+         methodObs =
+           case_when(basisofrecord == "HUMAN_OBSERVATION" ~ "Human observation",
+                     basisofrecord == "PRESERVED_SPECIMEN" ~ "Preserved specimen", 
+                     basisofrecord == "MACHINE_OBSERVATION" ~ "Machine observation",
+                     basisofrecord == "OBSERVATION" ~ "Observation",
+                     basisofrecord == "UNKNOWN" ~ "NA",
                      TRUE ~ NA)) %>% 
   
   # Remove unneeded columns and rename
@@ -57,11 +57,13 @@ gbif_mams_1 <- gbif_mams %>%
          methodObs) %>% 
   
   #Add count column
-  transform(gbif_mams_1, count = ifelse
+  transform(count = ifelse
               (is.na(year) & is.na(month) & is.na(day), 0, 1)) %>%
   
-  # Subset to species of interest or comment out to see data for all species
-  # filter(scientificName == c("Erignathus barbatus", "Phoca largha", "Odobenus rosmarus")) %>%
+  # Filter to select species of interest by scientific name and spacial location within the study area bounds.
+  filter(scientificName == c("Odobenus rosmarus divergens", "Odobenus rosmarus"),
+         decimalLat >= 62 & decimalLat <= 66.5, 
+         decimalLon >= -175 & decimalLon <= -164) %>%
   
   # Convert to sf and transform to Alaska Albers
   st_as_sf(coords = c("decimalLon", "decimalLat"),
@@ -76,7 +78,7 @@ gbif_mams_1 <- gbif_mams %>%
   arrange(year, month, day)
 
 # Save as csv into respective folder - add tidy to the end of file names so we can differentiate easily
-write_csv(gbif_mams_1, "../Data_Processed/12-2_gbif_moudry/12-2-1_gbif_moudry_tidy.csv")
+write_csv(gbif_mams_2, "../Data_Processed/12-2_gbif_moudry/12-2-1_gbif_moudry_tidy.csv")
 
 # Read in tidied data
 # gbif_mams_1 <- read_csv("../Data_Processed/12-2_gbif_moudry/12-2-1_gbif_moudry_tidy.csv")
