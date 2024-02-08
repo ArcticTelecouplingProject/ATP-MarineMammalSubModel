@@ -13,7 +13,6 @@
 
 # Libraries and Packages --------------------------------------------------
 
-library(terra)
 library(sf)
 library(tidyverse)
 
