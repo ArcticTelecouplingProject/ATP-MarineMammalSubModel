@@ -15,7 +15,6 @@
 
 # Libraries and Packages --------------------------------------------------
 
-library(terra)
 library(sf)
 library(tidyverse)
 
@@ -175,7 +174,7 @@ View(OccurrenceSummaries)
 View(unique_mams_omit)
 
 # Can save this data as an output as both shp and csv
-# st_write(unique_mams_omit, "../Data_Processed/4_nsf_moore_mmw_2016/4_nsf_moore_mmw_2016.csv")
+st_write(unique_mams_omit, "../Data_Processed/4_nsf_moore_mmw_2016/4_nsf_moore_mmw_2016.shp", append = FALSE)
 
 # Save metadata dataframe
 # write.csv(OccurrenceSummaries, "../Data_Processed/Metadata/Metadata_4_nsf_moore_mmw_2016.csv")
