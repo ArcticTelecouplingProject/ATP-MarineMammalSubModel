@@ -103,7 +103,7 @@ nrow(unique_beard_omit)
 View(unique_beard_omit)
 
 # Save this to a csv in a folder called barbatus_integrations
-# write.csv(st_drop_geometry(unique_beard_omit), "../Data_Processed/barbatus_integrations/barbatus_integrated20230417.csv")
+write.csv(st_drop_geometry(unique_beard_omit), "../Data_Processed/barbatus_integrations/barbatus_integrated20240207.csv")
 
 
 # Plotting ----------------------------------------------------------------
