@@ -15,7 +15,7 @@
 # 7-2_nsf_dbo_healy_2018
 # 8 nmml aerial 1979-2010
 
-# Last edited on: 17Apr2023
+# Last edited on: 07Feb2024
 
 
 
@@ -64,6 +64,7 @@ beard_laurier19 <- subset(dbo_laurier19, commnNm == "Bearded Seal")
 # 7-1 nsf dbo laurier 2018
 dbo_laurier18 <- st_read("../Data_Processed/7-1_nsf_dbo_laurier_2018/7-1_nsf_dbo_laurier_2018.shp")
 beard_laurier18 <- subset(dbo_laurier18, commnNm == "Bearded Seal")
+# There are no occurrences of bearded seal in this data set.
 
 # 7-2 nsf dbo healy 2018
 dbo_healy <- st_read("../Data_Processed/7-2_nsf_dbo_healy_2018/7-2_nsf_dbo_healy_2018.shp")
