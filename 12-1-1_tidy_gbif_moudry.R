@@ -34,7 +34,7 @@ gbif_mams_1 <- gbif_mams %>%
   # Drop NAs in coordinates, scientific name, and year
   drop_na(decimalLatitude, decimalLongitude, verbatimScientificName, year) %>% 
   
-  # Filter to select species of interest by scientific name and spacial location within the study area bounds.
+  # Filter to select species of interest by scientific name and spatial location within the study area bounds.
   filter(verbatimScientificName %in% c("Odobenus rosmarus divergens", "Odobenus rosmarus"),
          decimalLatitude >= 62 & decimalLatitude <= 66.5, 
          decimalLongitude >= -175 & decimalLongitude <= -164) %>%
