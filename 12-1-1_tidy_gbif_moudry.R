@@ -31,8 +31,13 @@ names(gbif_mams)
 
 gbif_mams_1 <- gbif_mams %>%
   
-  # Drop NAs in coordinates
-  drop_na(decimalLatitude, decimalLongitude) %>% 
+  # Drop NAs in coordinates, scientific name, and year
+  drop_na(decimalLatitude, decimalLongitude, verbatimScientificName, year) %>% 
+  
+  # Filter to select species of interest by scientific name and spacial location within the study area bounds.
+  filter(verbatimScientificName %in% c("Odobenus rosmarus divergens", "Odobenus rosmarus"),
+         decimalLatitude >= 62 & decimalLatitude <= 66.5, 
+         decimalLongitude >= -175 & decimalLongitude <= -164) %>%
   
   # Add method of observation and source columns
   mutate(source = "Moudry GBIF Marine Mammal Walrus Data",
@@ -44,11 +49,15 @@ gbif_mams_1 <- gbif_mams %>%
                      basisOfRecord == "MACHINE_OBSERVATION" ~ "Machine observation",
                      basisOfRecord == "OBSERVATION" ~ "Observation",
                      basisOfRecord == "UNKNOWN" ~ "NA",
-                     TRUE ~ NA)) %>% 
-  
+                     TRUE ~ NA),
+        # rename values in scientific name column
+        scientificName =
+          case_when(verbatimScientificName == "Odobenus rosmarus divergens" ~ "Odobenus rosmarus",
+                    verbatimScientificName == "Odobenus rosmarus" ~ "Odobenus rosmarus")) %>%
+            
   # Remove unneeded columns and rename
   # Order of columns here determines order of columns in df. Can also rename columns in this function (new name on left, old name on right).
-  select(scientificName = verbatimScientificName,
+  select(scientificName,
          year,
          month,
          day,
@@ -56,11 +65,6 @@ gbif_mams_1 <- gbif_mams %>%
          decimalLon = decimalLongitude,
          count = individualCount,
          methodObs) %>% 
-  
-  # Filter to select species of interest by scientific name and spacial location within the study area bounds.
-  filter(scientificName == c("Odobenus rosmarus divergens", "Odobenus rosmarus"),
-          decimalLat >= 62 & decimalLat <= 66.5, 
-          decimalLon >= -175 & decimalLon <= -164) %>%
 
   # Convert to sf and transform to Alaska Albers
   st_as_sf(coords = c("decimalLon", "decimalLat"),
