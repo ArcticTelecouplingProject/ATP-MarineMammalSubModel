@@ -36,8 +36,8 @@ gbif_mams_1 <- gbif_mams %>%
   
   # Filter to select species of interest by scientific name and spatial location within the study area bounds.
   filter(verbatimScientificName %in% c("Odobenus rosmarus divergens", "Odobenus rosmarus"),
-         decimalLatitude >= 62 & decimalLatitude <= 66.5, 
-         decimalLongitude >= -175 & decimalLongitude <= -164) %>%
+         decimalLatitude >= 46.08836 & decimalLatitude <= 73.92759, 
+         decimalLongitude >= -146.30217 & decimalLongitude <= 172.18938) %>%
   
   # Add method of observation and source columns
   mutate(source = "Moudry GBIF Marine Mammal Walrus Data",
