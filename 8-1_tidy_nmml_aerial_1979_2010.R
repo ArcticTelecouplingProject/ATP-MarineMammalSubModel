@@ -34,7 +34,15 @@ names(nmml)
 marine_mams <- nmml %>%
   
   # Drop NAs in coordinates
-  drop_na(decimalLatitude, decimalLongitude) %>% 
+  drop_na(decimalLatitude, decimalLongitude, species, year) %>% 
+  
+  # Filter to select occurrences by spatial location within the study area bounds.
+  filter(decimalLatitude >= 46.08836 & decimalLatitude <= 73.92759, 
+         decimalLongitude >= -146.30217 & decimalLongitude <= 172.18938) %>%
+ 
+   # Add method of observation and source columns
+  mutate(methodObs = "Aerial survey",
+         source = "NMML Marine Mammal Aerial Surveys 1979-2010") %>% 
   
   # Remove unneeded columns and rename
   # Order of columns here determines order of columns in df. Can also rename columns in this function (new name on left, old name on right).
@@ -45,13 +53,6 @@ marine_mams <- nmml %>%
          decimalLat = decimalLatitude,
          decimalLon = decimalLongitude,
          count = individualCount) %>% 
-  
-  # Subset to species of interest or comment out to see data for all species
-  # filter(scientificName == c("Erignathus barbatus", "Phoca largha", "Odobenus rosmarus")) %>%
-  
-  # Add method of observation and source columns
-  mutate(methodObs = "Aerial survey",
-         source = "NMML Marine Mammal Aerial Surveys 1979-2010") %>% 
   
   # Convert to sf and transform to Alaska Albers
   st_as_sf(coords = c("decimalLon", "decimalLat"),
