@@ -36,6 +36,10 @@ usgs_walrus <- usgs_walrus_uas %>%
   # Drop NAs in coordinates
   drop_na(Latitude, Longitude) %>%
   
+  # Filter to select occurrences by spatial location within the study area bounds.
+  filter(Latitude >= 46.08836 & Latitude <= 73.92759, 
+         Longitude >= -146.30217 & Longitude <= 172.18938) %>%
+  
   # Separate DateTimeStart into month and day cols by using substr()
   mutate(year = 2015,
          month = substr(Flight, 5, 6),

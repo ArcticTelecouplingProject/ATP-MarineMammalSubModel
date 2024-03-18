@@ -32,13 +32,17 @@ names(usgs_walrus_comp)
 usgs_walrus <- usgs_walrus_comp %>%
   
   # Drop NAs in coordinates
-  drop_na(Latitude, Longitude) %>% 
+  drop_na(Latitude, Longitude, Year) %>% 
+  
+  # Filter to select occurrences by spatial location within the study area bounds.
+  filter(Latitude >= 46.08836 & Latitude <= 73.92759, 
+         Longitude >= -146.30217 & Longitude <= 172.18938) %>%
   
   # Separate DateTimeStart into month and day cols by using substr()
   mutate(month = substr(DateTimeStart, 6, 7),
          day = substr(DateTimeStart, 9, 10),
          
-         # Add columns for scientificName and commonName
+         # Add columns for scientificName
          scientificName = "Odobenus rosmarus divergens",
          
          # Add method of observation and source columns
