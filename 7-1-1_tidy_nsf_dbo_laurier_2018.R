@@ -33,7 +33,7 @@ names(mmwatch_mams)
 mams_new <- mmwatch_mams %>%
   
   # Drop NAs in coordinates and scientific name
-  drop_na(LAT..N., LONG..W., SPP) %>% 
+  drop_na(LAT..N., LONG..W., SPP, Date) %>% 
   
   # Add method of observation and source columns
   mutate(methodObs = "Research cruise visual observation survey",
@@ -89,6 +89,4 @@ mams_new <- mmwatch_mams %>%
 # Save as csv into respective folder - add tidy to the end of file names so we can differentiate easily
 write_csv(mams_new, "../Data_Processed/12-1_gbif_moudry/12-1-1_gbif_moudry_tidy.csv")
 
-# Read in tidied data
-# gbif_mams_1 <- read_csv("../Data_Processed/12-1_gbif_moudry/12-1-1_gbif_moudry_tidy")
   
