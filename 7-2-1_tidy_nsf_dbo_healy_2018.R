@@ -22,7 +22,7 @@ rm(list=ls())
 datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney - ATP-MarineMammal-DataRaw/"
 datadir <- "../../ATP-MarineMammal-DataRaw/"
 
-# This script will use the nmml aerial surveys from 1979-2010 as example 1.
+# This script will tidy the second data set of mmw survey data from 2018.
 mmwatch_mams <- read.csv(paste0(datadir,"7_nsf_stafford_mmw_2018/data/Healy_DBONCIS_Aug2018_byDBOregion.csv"))
 
 # data tidying ------------------------------------------------------------
@@ -39,17 +39,22 @@ mams_new <- mmwatch_mams %>%
   mutate(methodObs = "Research cruise visual observation survey",
          source = "Marine Mammal Watch Cruises (Healy) 2018", 
          
+         # format date column
+         date_mdy = mdy(DATE),
+         date_time = as.POSIXct(date_mdy,
+                                format = "%m-%d-%y"),
+         
          # Add columns for year, month, day
          year = 2018,
          month = 8,
-         day = as.numeric(substr(DATE, 3, 4)),
+         day = as.numeric(substr(date_time, 3, 4)),
          
          # Change values in scientificName to reflect species names instead of species code
          scientificName = 
            case_when(SPP == 1 ~ "Balaena mysticetus",
-                     SPP == 2 ~ "Esrichtius robustus",
+                     SPP == 2 ~ "Eschrichtius robustus",
                      SPP == 4 ~ "Balaenoptera physalus",
-                     SPP == 5 ~ "Megaptera novaengliae",
+                     SPP == 5 ~ "Megaptera novaeangliae",
                      SPP == 6 ~ "Balaenoptera acutorostrata",
                      SPP == 10 ~ "Ursus maritimus",
                      SPP == 11 ~ "Odobenus rosmarus",
