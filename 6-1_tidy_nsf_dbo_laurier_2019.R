@@ -38,15 +38,13 @@ mams_new <- mmwatch_mams %>%
   mutate(methodObs = "Research cruise visual observation survey",
          source ="Marine Mammal Watch Laurier 2019", 
          
-         #format date column
-         date_mdy = mdy(Date),
-         date_time = as.POSIXct(date_mdy,
-                                format = "%m-%d-%Y"),
+         # format date column
+         date_mdy = mdy(Date), # this date column is now of class "Date" like "POSIXct"
          
          # Add columns for year, month, day
          year = 2019,
          month = 7,
-         day = as.numeric(substr(date_time, 3, 4)),
+         day = day(date_mdy), # you can extract the year, month, or day from Date objects like this
          
          # Change values in scientificName to reflect species names instead of species code
          scientificName = 

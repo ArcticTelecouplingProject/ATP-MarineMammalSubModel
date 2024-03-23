@@ -42,16 +42,13 @@ mams_new <- mmwatch_mams %>%
         # Make longitude column negative to reflect proper hemisphere
         LONG..W. = LONG..W.*(-1), 
          
-       #format date column
-        date_mdy = mdy(Date),
-        date_time = as.POSIXct(date_mdy,
-                              format = "%Y-%m-%d"),
+        # format date column
+        date_mdy = mdy(Date), # this date column is now of class "Date" like "POSIXct"
 
         # Add columns for year, month, day
         year = 2018,
         month = 7,
-        day = as.numeric(substr(date_mdy, 3, 4)),
-       
+        day = day(date_mdy), # you can extract the year, month, or day from Date objects like this
        # Change values in scientificName to reflect species names instead of species code
        scientificName = 
          case_when(SPP == 2 ~ "Eschrichtius robustus",
@@ -92,6 +89,6 @@ mams_new <- mmwatch_mams %>%
   arrange(year, month, day)
 
 # Save as csv into respective folder - add tidy to the end of file names so we can differentiate easily
-write_csv(mams_new, "../Data_Processed/12-1_gbif_moudry/12-1-1_gbif_moudry_tidy.csv")
+write_csv(mams_new, "../Data_Processed/7-1_nsf_dbo_laurier_2018/7-1-1_nsf_dbo_laurier_2018_tidy.csv")
 
   

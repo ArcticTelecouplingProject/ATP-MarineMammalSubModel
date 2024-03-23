@@ -92,5 +92,5 @@ mams_new <- mmwatch_mams %>%
   arrange(year, month, day)
 
 # Save as csv into respective folder - add tidy to the end of file names so we can differentiate easily
-write_csv(mams_new, "../Data_Processed/7-2_nsf_dbo_healy_2018/7-2_nsf_dbo_healy_2018_tidy.csv")
+write_csv(mams_new, "../Data_Processed/7-2_nsf_dbo_healy_2018/7-2-1_nsf_dbo_healy_2018_tidy.csv")
 
