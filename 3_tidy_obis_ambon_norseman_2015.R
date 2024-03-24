@@ -1,0 +1,91 @@
+# Title: Marine Mammal Data Paper Tidying 
+# Author: Natalia Portales and Sydney Waloven
+# Date: 2024-03-23
+# Description: Source: OBIS. This dataset was obtained from: AMBON Chukchi Sea research cruse on the Norseman II. https://www.sciencebase.gov/catalog/item/5e0e24b3e4b0b207aa13782b
+# Corresponds with Data_Raw folder: obis_ambon_norseman_2015
+
+# This script follows standardized methods of tidying for the marine mammal data sets we have collected contributing to a data paper.
+
+# setup -------------------------------------------------------------------
+
+# Load libraries
+library(sf)
+library(tidyverse)
+
+# Clear environment history 
+rm(list=ls())
+
+# Import data
+# data_set <- read_csv("pathway/to/data/set.csv")
+
+# This example will use the datadir method that we used as a workaround for the file path issue of the raw data.
+datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney - ATP-MarineMammal-DataRaw/"
+datadir <- "../../ATP-MarineMammal-DataRaw/"
+
+# This script will tidy mmw survey data from 2017. Two data sets need to be combined for the full data variables. 
+# Occurrence data
+birdocc <- read.csv(paste0(datadir, "3_obis_ambon_norseman_2015/dlog_2015_dwc_occurrence.csv"))
+# Locations data - this data set has lat and long connected to birdocc via eventID column
+birdevent <- read.csv(paste0(datadir,"3_obis_ambon_norseman_2015/dlog_2015_dwc_event.csv"))
+
+# Merge via the shared "eventID" column
+bird <- left_join(birdocc, birdevent, by=c("eventID"))
+head(bird) # Now we've picked the matching lines from the birdevent and moved them over to the bird occ
+
+# data tidying ------------------------------------------------------------
+
+# Check out column names
+names(bird)
+
+bird_new <- bird %>%
+  
+  # Drop NAs in coordinates and scientific name
+  drop_na(decimalLatitude, decimalLongitude, scientificName, eventDate) %>% 
+  
+  # Filter to select for marine mammals in data set
+  filter(scientificName %in% c("Erignathus barbatus", "Phoca largha", "Odobenus rosmarus",
+                               "Balaena mysticetus", "Cetacea", "Pusa hispida", "Phocidae",
+                               "Eschrichtius robustus" )) %>%
+  
+  # Add method of observation and source columns
+  mutate(methodObs = "Research cruise visual observation survey",
+         source = "AMBON Norseman II Cruise 2015",
+         
+         # format date column to a standard format
+         date_POSIXct = as.POSIXct(eventDate), 
+         
+         # Add columns for year, month, day
+         year = as.numeric(substr(date_POSIXct, 1, 4)),
+         month = as.numeric(substr(date_POSIXct, 6, 7)),
+         day = as.numeric(substr(date_POSIXct, 9, 10))) %>%
+  
+  # Remove unneeded columns and rename
+  select(scientificName,
+         year,
+         month,
+         day,
+         decimalLat = decimalLatitude,
+         decimalLon = decimalLongitude,
+         count = individualCount,
+         methodObs,
+         source) %>% 
+  
+  # Convert to sf and transform to Alaska Albers
+  st_as_sf(coords = c("decimalLon", "decimalLat"),
+           crs = 4326,
+           remove = FALSE) %>% 
+  st_transform(3338) %>% 
+  
+  # Filter to select occurrences with spatial location within the study area bounds.
+  filter(decimalLat >= 46.08836 & decimalLat <= 73.92759, 
+         decimalLon >= -146.30217 & decimalLon <= 172.18938) %>%
+  
+  # Eliminate repeat occurrences
+  distinct() %>% 
+  
+  # Rearrange - this will order the data by the earliest date and then follow chronologically
+  arrange(year, month, day)
+
+# Save as csv into respective folder - add tidy to the end of file names so we can differentiate easily
+write_csv(bird_new, "../Data_Processed/3_obis_ambon_norseman_2015/3-1_obis_ambon_norseman_2015_tidy.csv")
+
