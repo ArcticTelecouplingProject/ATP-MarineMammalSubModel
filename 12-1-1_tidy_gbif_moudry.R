@@ -53,7 +53,8 @@ gbif_mams_1 <- gbif_mams %>%
         # rename values in scientific name column
         scientificName =
           case_when(verbatimScientificName == "Odobenus rosmarus divergens" ~ "Odobenus rosmarus",
-                    verbatimScientificName == "Odobenus rosmarus" ~ "Odobenus rosmarus")) %>%
+                    verbatimScientificName == "Odobenus rosmarus" ~ "Odobenus rosmarus",
+                    TRUE ~ NA)) %>%
             
   # Remove unneeded columns and rename
   # Order of columns here determines order of columns in df. Can also rename columns in this function (new name on left, old name on right).
