@@ -83,7 +83,7 @@ mams_new <- mmwatch_mams %>%
   
   # Filter to select species of interest by scientific name and spatial location within the study area bounds.
   filter(decimalLat >= 46.08836 & decimalLat <= 73.92759, 
-         decimalLon >= -146.30217 & decimalLon <= 172.18938) %>%
+         decimalLon >= 172.18938 | decimalLon <= -146.30217) %>%
   
   # Eliminate repeat occurrences
   distinct() %>% 
