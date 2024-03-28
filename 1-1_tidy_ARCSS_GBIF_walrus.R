@@ -78,7 +78,7 @@ gbif_new <- walrus_gbif %>%
   
   # Filter to select occurrences with spatial location within the study area bounds.
   filter(decimalLat >= 46.08836 & decimalLat <= 73.92759, 
-         decimalLon >= -146.30217 & decimalLon <= 172.18938) %>%
+         decimalLon >= 172.18938 | decimalLon <= -146.30217) %>%
   
   # Eliminate repeat occurrences
   distinct() %>% 
@@ -87,4 +87,4 @@ gbif_new <- walrus_gbif %>%
   arrange(year, month, day)
 
 # Save as csv into respective folder - add tidy to the end of file names so we can differentiate easily
-write_csv(gbif_new, "../Data_Processed/2_obis_tgs_seismic_2013/2-1_obis_tgs_seismic_2013_tidy.csv")
+write_csv(gbif_new, "../Data_Processed/1-1_ARCSS_GBIF_walrus/1-1_ARCSS_GBIF_walrus_tidy.csv")
