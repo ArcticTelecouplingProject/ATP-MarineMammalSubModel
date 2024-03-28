@@ -3,10 +3,9 @@
 # Date: 2024-03-27
 # Description: # Source: NSF ARCSS Google Drive. Occurrence data of the three species to be evaluated in the project: Pacific walrus (Odobenus rosmarus divergens), bearded seal (Erignathus barbatus), and spotted seal (Phoca largha).
 
-# These datasets were obtained from the Global Biodiversity Information Facility (GBIF):
-# https://www.gbif.org/
+# These datasets were obtained from the Global Biodiversity Information Facility (GBIF): https://www.gbif.org/
 
-# Only species featured in this script is Pacific walrus.
+# Only species featured in this script is the spotted seal.
 
 # This script follows standardized methods of tidying for the marine mammal data sets we have collected contributing to a data paper.
 
@@ -26,7 +25,7 @@ rm(list=ls())
 datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney - ATP-MarineMammal-DataRaw/"
 datadir <- "../../ATP-MarineMammal-DataRaw/"
 
-# This script will tidy gbif walrus data.
+# This script will tidy gbif spotted seal data.
 spotted_gbif <- st_read(paste0(datadir, "1_arcss_gbif/phoca_largha"))
 
 # data tidying ------------------------------------------------------------
@@ -36,7 +35,7 @@ names(spotted_gbif)
 
 gbif_new <- spotted_gbif %>%
   
-  # Drop NAs in coordinates and scientific name
+  # Drop NAs in coordinates and scientific name, and year
   drop_na(decimalLat, decimalLon, species, year) %>% 
   
   # Add method of observation and source columns
@@ -80,7 +79,7 @@ gbif_new <- spotted_gbif %>%
            remove = FALSE) %>% 
   st_transform(3338) %>% 
   
-  # Filter to select occurrences with spatial location within the study area bounds.
+  # Filter to select occurrences with spatial location within the study area bounds
   filter(decimalLat >= 46.08836 & decimalLat <= 73.92759, 
          decimalLon >= 172.18938 | decimalLon <= -146.30217) %>%
   

@@ -2,7 +2,10 @@
 # Author: Natalia Portales and Sydney Waloven
 # Date: 2024-03-24
 # Description: Source: NSF ARCSS Google Drive. Occurrence data of the three species to be evaluated in the project: Pacific walrus (Odobenus rosmarus divergens), bearded seal (Erignathus barbatus), and spotted seal (Phoca largha).
+
 # These datasets were obtained from the Global Biodiversity Information Facility (GBIF): https://www.gbif.org/ 
+
+# Only species featured in this script is Pacific walrus.
 
 # This script follows standardized methods of tidying for the marine mammal data sets we have collected contributing to a data paper.
 
@@ -32,10 +35,11 @@ names(walrus_gbif)
 
 gbif_new <- walrus_gbif %>%
   
-  # Drop NAs in coordinates and scientific name
+  # Drop NAs in coordinates, scientific name, and year
   drop_na(decimalLat, decimalLon, species, year) %>% 
   
-  # Add method of observation and source columns
+  # Modify and create new columns using mutate() function 
+  # Add method of observation columns
   mutate(source = "ARCSS GBIF Pacific Walrus",
          
          # Convert columns to numeric
@@ -50,8 +54,8 @@ gbif_new <- walrus_gbif %>%
          
          # Rename values of method column
          methodObs =
-           case_when(basisOfRec == "HUMAN_OBSERVATION" ~ "Human observation",
-                     basisOfRec == "PRESERVED_SPECIMEN" ~ "Preserved specimen",
+           case_when(basisOfRec == '"HUMAN_OBSERVATION"' ~ "Human observation",
+                     basisOfRec == '"PRESERVED_SPECIMEN"' ~ "Preserved specimen",
                      TRUE ~ NA),
          
          # rename values in scientific name column
@@ -76,7 +80,7 @@ gbif_new <- walrus_gbif %>%
            remove = FALSE) %>% 
   st_transform(3338) %>% 
   
-  # Filter to select occurrences with spatial location within the study area bounds.
+  # Filter to select occurrences with spatial location within the study area bounds
   filter(decimalLat >= 46.08836 & decimalLat <= 73.92759, 
          decimalLon >= 172.18938 | decimalLon <= -146.30217) %>%
   
