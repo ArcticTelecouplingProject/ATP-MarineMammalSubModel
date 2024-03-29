@@ -35,11 +35,11 @@ names(bearded_gbif)
 
 gbif_new <- bearded_gbif %>%
   
-  # Drop NAs in coordinates, scientific name, and year
+  # Drop NAs in coordinate, scientific name, and year columns
   drop_na(decimalLat, decimalLon, species, year) %>% 
   
   # Modify and create new columns using mutate() function 
-  # Add method of observation columns
+  # Add source column
   mutate(source = "ARCSS GBIF Bearded Seal",
          
          # Convert columns to numeric
@@ -52,7 +52,7 @@ gbif_new <- bearded_gbif %>%
          # Add count column
          count = 1,
          
-         # Rename values of method column
+         # Rename values in method of observation column
          methodObs =
            case_when(basisOfRec == '"HUMAN_OBSERVATION"' ~ "Human observation",
                      basisOfRec == '"PRESERVED_SPECIMEN"' ~ "Preserved specimen",
@@ -74,15 +74,15 @@ gbif_new <- bearded_gbif %>%
          methodObs,
          source) %>% 
   
+  # Filter to select occurrences with spatial location within the study area bounds
+  filter(decimalLat >= 46.08836 & decimalLat <= 73.92759, 
+         decimalLon >= 172.18938 | decimalLon <= -146.30217) %>%
+  
   # Convert to sf and transform to Alaska Albers
   st_as_sf(coords = c("decimalLon", "decimalLat"),
            crs = 4326,
            remove = FALSE) %>% 
   st_transform(3338) %>% 
-  
-  # Filter to select occurrences with spatial location within the study area bounds
-  filter(decimalLat >= 46.08836 & decimalLat <= 73.92759, 
-         decimalLon >= 172.18938 | decimalLon <= -146.30217) %>%
   
   # Eliminate repeat occurrences
   distinct() %>% 
@@ -92,3 +92,7 @@ gbif_new <- bearded_gbif %>%
 
 # Save as csv into respective folder - add tidy to the end of file names so we can differentiate easily
 write_csv(gbif_new, "../Data_Processed/1-3_ARCSS_GBIF_bearded_seal/1-3_ARCSS_GBIF_bearded_seal_tidy.csv")
+
+# Read in tidied data
+# marine_mams <- read_csv("../Data_Processed/1-3_ARCSS_GBIF_bearded_seal_tidy.csv")
+

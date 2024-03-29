@@ -31,15 +31,17 @@ names(obis_mams)
 
 obis_new <- obis_mams %>%
   
-  # Drop NAs in coordinates and scientific name
+  # Drop NAs in coordinates, scientific name, and date columns
   drop_na(latitude, longitude, scientific_name, date_time) %>% 
   
-  # Filter to select for marine mammals in data set
+  # Filter to select species of interest by scientific name and spatial location within the study area bounds.
   filter(scientific_name %in% c("Erignathus barbatus", "Phoca largha", "Odobenus rosmarus",
                                "Balaena mysticetus", "Cetacea", "Pusa hispida", 
                                "Eschrichtius robustus", "Phocoena phocoena", 
                                "Megaptera novaeangliae", "Mysticeti", 
-                               "Balaenoptera acutorostrata", "Histriophoca fasciata")) %>%
+                               "Balaenoptera acutorostrata", "Histriophoca fasciata"),
+         decimallatitude >= 46.08836 & decimallatitude <= 73.92759, 
+         decimalLon >= 172.18938 | decimalLon <= -146.30217) %>%
   
   # Add method of observation and source columns
   mutate(methodObs = "Seismic vessel visual observations",
@@ -48,7 +50,7 @@ obis_new <- obis_mams %>%
          # format date column to a standard format
          date_POSIXct = as.POSIXct(date_time), 
          
-         # Add columns for year, month, day
+         # Add year, month, day columns
          year = as.numeric(substr(date_POSIXct, 1, 4)),
          month = as.numeric(substr(date_POSIXct, 6, 7)),
          day = as.numeric(substr(date_POSIXct, 9, 10))) %>%
@@ -70,10 +72,6 @@ obis_new <- obis_mams %>%
            remove = FALSE) %>% 
   st_transform(3338) %>% 
   
-  # Filter to select occurrences with spatial location within the study area bounds.
-  filter(decimalLat >= 46.08836 & decimalLat <= 73.92759, 
-         decimalLon >= -146.30217 & decimalLon <= 172.18938) %>%
-  
   # Eliminate repeat occurrences
   distinct() %>% 
   
@@ -82,3 +80,7 @@ obis_new <- obis_mams %>%
 
 # Save as csv into respective folder - add tidy to the end of file names so we can differentiate easily
 write_csv(obis_new, "../Data_Processed/2_obis_tgs_seismic_2013/2-1_obis_tgs_seismic_2013_tidy.csv")
+
+# Read in tidied data
+# marine_mams <- read_csv("../Data_Processed/2-1_obis_tgs_seismic_2013_tidy.csv")
+

@@ -21,7 +21,7 @@ rm(list=ls())
 datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney - ATP-MarineMammal-DataRaw/"
 datadir <- "../../ATP-MarineMammal-DataRaw/"
 
-# This script will tidy mmw survey data from 2017.
+# This script will tidy mmw survey data from 2016.
 mmwatch_mams <- read.csv(paste0(datadir,"4_nsf_moore_mmw_2016/data/DBO_MMWatch_SWL2016_MooreGrebmeierVagle.csv"))
 
 # data tidying ------------------------------------------------------------
@@ -31,9 +31,10 @@ names(mmwatch_mams)
 
 mams_new <- mmwatch_mams %>%
   
-  # Drop NAs in coordinates and scientific name
+  # Drop NAs in coordinate, scientific name, and date column
   drop_na(LAT_N, LONG_W, SPP, Date) %>% 
   
+  # Modify and create new columns using mutate() function
   # Add method of observation and source columns
   mutate(methodObs = "Research cruise visual observation survey",
          source = "Marine Mammal Watch (Laurier) July 2016", 
@@ -55,7 +56,7 @@ mams_new <- mmwatch_mams %>%
          # Make longitude column negative to reflect proper hemisphere
          decimalLon = decimalLon*(-1), 
          
-         # Add columns for year, month, day
+         # Add year, month, day columns
          year = 2016,
          month = 7,
          day = as.numeric(substr(Date, 1, 2)), 
@@ -87,15 +88,15 @@ mams_new <- mmwatch_mams %>%
          methodObs,
          source) %>% 
   
+  # Filter to select species of interest by scientific name and spatial location within the study area bounds.
+  filter(decimalLat >= 46.08836 & decimalLat <= 73.92759, 
+         decimalLon >= 172.18938 | decimalLon <= -146.30217) %>%
+  
   # Convert to sf and transform to Alaska Albers
   st_as_sf(coords = c("decimalLon", "decimalLat"),
            crs = 4326,
            remove = FALSE) %>% 
   st_transform(3338) %>% 
-  
-  # Filter to select species of interest by scientific name and spatial location within the study area bounds.
-  filter(decimalLat >= 46.08836 & decimalLat <= 73.92759, 
-         decimalLon >= -146.30217 & decimalLon <= 172.18938) %>%
   
   # Eliminate repeat occurrences
   distinct() %>% 
@@ -105,4 +106,7 @@ mams_new <- mmwatch_mams %>%
 
 # Save as csv into respective folder - add tidy to the end of file names so we can differentiate easily
 write_csv(mams_new, "../Data_Processed/4_nsf_moore_mmw_2016/4-1_nsf_moore_mmw_2016_tidy.csv")
+
+# Read in tidied data
+# marine_mams <- read_csv("../Data_Processed/4-1_nsf_moore_mmw_2016_tidy.csv")
 

@@ -22,9 +22,11 @@ rm(list=ls())
 datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney - ATP-MarineMammal-DataRaw/"
 datadir <- "../../ATP-MarineMammal-DataRaw/"
 
-# This script will tidy mmw survey data from 2017. Two data sets need to be combined for the full data variables. 
+# This script will tidy obis survey data from 2015. Two data sets need to be combined to include all data variables.
+
 # Occurrence data
 birdocc <- read.csv(paste0(datadir, "3_obis_ambon_norseman_2015/dlog_2015_dwc_occurrence.csv"))
+
 # Locations data - this data set has lat and long connected to birdocc via eventID column
 birdevent <- read.csv(paste0(datadir,"3_obis_ambon_norseman_2015/dlog_2015_dwc_event.csv"))
 
@@ -39,7 +41,7 @@ names(bird)
 
 bird_new <- bird %>%
   
-  # Drop NAs in coordinates and scientific name
+  # Drop NAs in coordinate, scientific name, and date columns
   drop_na(decimalLatitude, decimalLongitude, scientificName, eventDate) %>% 
   
   # Filter to select for marine mammals in data set
@@ -47,6 +49,7 @@ bird_new <- bird %>%
                                "Balaena mysticetus", "Cetacea", "Pusa hispida", "Phocidae",
                                "Eschrichtius robustus" )) %>%
   
+  # Modify and create new columns using mutate() function
   # Add method of observation and source columns
   mutate(methodObs = "Research cruise visual observation survey",
          source = "AMBON Norseman II Cruise 2015",
@@ -54,7 +57,7 @@ bird_new <- bird %>%
          # format date column to a standard format
          date_POSIXct = as.POSIXct(eventDate), 
          
-         # Add columns for year, month, day
+         # Add year, month, day columns
          year = as.numeric(substr(date_POSIXct, 1, 4)),
          month = as.numeric(substr(date_POSIXct, 6, 7)),
          day = as.numeric(substr(date_POSIXct, 9, 10))) %>%
@@ -70,15 +73,15 @@ bird_new <- bird %>%
          methodObs,
          source) %>% 
   
+  # Filter to select occurrences with spatial location within the study area bounds.
+  filter(decimalLat >= 46.08836 & decimalLat <= 73.92759, 
+         decimalLon >= 172.18938 | decimalLon <= -146.30217) %>%
+  
   # Convert to sf and transform to Alaska Albers
   st_as_sf(coords = c("decimalLon", "decimalLat"),
            crs = 4326,
            remove = FALSE) %>% 
   st_transform(3338) %>% 
-  
-  # Filter to select occurrences with spatial location within the study area bounds.
-  filter(decimalLat >= 46.08836 & decimalLat <= 73.92759, 
-         decimalLon >= -146.30217 & decimalLon <= 172.18938) %>%
   
   # Eliminate repeat occurrences
   distinct() %>% 
@@ -88,4 +91,7 @@ bird_new <- bird %>%
 
 # Save as csv into respective folder - add tidy to the end of file names so we can differentiate easily
 write_csv(bird_new, "../Data_Processed/3_obis_ambon_norseman_2015/3-1_obis_ambon_norseman_2015_tidy.csv")
+
+# Read in tidied data
+# marine_mams <- read_csv("../Data_Processed/3-1_obis_ambon_norseman_2015_tidy.csv")
 
