@@ -1,8 +1,7 @@
 # Title: Marine Mammal Data Paper Tidying 
 # Author: Natalia Portales and Sydney Waloven
 # Date: 2024-01-20
-# Description: Source: USGS. This dataset was obtained from Behavior of Pacific Walruses Hauled Out on Sea Ice during UAS Overflights, Eastern Chukchi Sea 2015
-# https://alaska.usgs.gov/products/data.php?dataid=74
+# Description: Source: USGS. This dataset was obtained from Behavior of Pacific Walruses Hauled Out on Sea Ice during UAS Overflights, Eastern Chukchi Sea 2015. https://alaska.usgs.gov/products/data.php?dataid=74
 
 # This script follows standardized methods of tidying for the marine mammal data sets we have collected contributing to a data paper.
 
@@ -25,7 +24,6 @@ datadir <- "../../ATP-MarineMammal-DataRaw/"
 # This script will tidy USDA UAS overflight surveys from 2015.
 usgs_walrus_uas <- read.csv(paste0(datadir,"10_usgs_walrus_behavior_uas_2015/walrus_environConditionsUAS_chukchi_battaile_2015.csv"))
 
-
 # data tidying ------------------------------------------------------------
 
 # Check out column names
@@ -33,27 +31,23 @@ names(usgs_walrus_uas)
 
 usgs_walrus <- usgs_walrus_uas %>%
   
-  # Drop NAs in coordinates
+  # Drop NAs in coordinate columns
   drop_na(Latitude, Longitude) %>%
   
-  # Filter to select occurrences by spatial location within the study area bounds.
-  filter(Latitude >= 46.08836 & Latitude <= 73.92759, 
-         Longitude >= -146.30217 & Longitude <= 172.18938) %>%
-  
+  # Modify and create new columns using mutate() function
   # Separate DateTimeStart into month and day cols by using substr()
   mutate(year = 2015,
          month = substr(Flight, 5, 6),
          day = substr(Flight, 7, 8),
          
-         # Add columns for scientificName and commonName
-         scientificName = "Odobenus rosmarus divergens",
+         # Add scientific name column
+         scientificName = "Odobenus rosmarus",
          
          # Add method of observation and source columns
          methodObs = "Research vessel visual observation",
          source = "USGS Walrus Behavior UAS 2015") %>% 
   
   # Remove unneeded columns and rename
-  # Order of columns here determines order of columns in df. Can also rename columns in this function (new name on left, old name on right).
   select(scientificName,
          year,
          month,
@@ -63,6 +57,10 @@ usgs_walrus <- usgs_walrus_uas %>%
          count = Group_Size,
          methodObs,
          source) %>% 
+  
+  # Filter to select occurrences by spatial location within the study area bounds.
+  filter(decimalLat >= 46.08836 & decimalLat <= 73.92759, 
+         decimalLon >= 172.18938 | decimalLon <= -146.30217) %>%
   
   # Convert to sf and transform to Alaska Albers
   st_as_sf(coords = c("decimalLon", "decimalLat"),
@@ -77,7 +75,8 @@ usgs_walrus <- usgs_walrus_uas %>%
   arrange(year, month, day)
 
 # Save as csv into respective folder - add tidy to the end of file names so we can differentiate easily
-write_csv(usgs_walrus, "../Data_Processed/10_usgs_walrus_behavior_uas_2015/10_usgs_walrus_behavior_uas_tidy.csv")
+write_csv(usgs_walrus, "../Data_Processed/10_usgs_walrus_behavior_uas_2015/10-1_usgs_walrus_behavior_uas_tidy.csv")
 
 # Read in tidied data
-# usgs_walrus <- read_csv("../Data_Processed/10_tidy_usgs_walrus_behavior_uas_2015.csv")
+# marine_mams <- read_csv("../Data_Processed/10-1_usgs_walrus_behavior_uas_tidy.csv")
+

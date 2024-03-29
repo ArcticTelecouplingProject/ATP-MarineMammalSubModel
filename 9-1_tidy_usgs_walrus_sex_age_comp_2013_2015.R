@@ -31,26 +31,22 @@ names(usgs_walrus_comp)
 
 usgs_walrus <- usgs_walrus_comp %>%
   
-  # Drop NAs in coordinates
+  # Drop NAs in coordinate and year columns
   drop_na(Latitude, Longitude, Year) %>% 
   
-  # Filter to select occurrences by spatial location within the study area bounds.
-  filter(Latitude >= 46.08836 & Latitude <= 73.92759, 
-         Longitude >= -146.30217 & Longitude <= 172.18938) %>%
-  
+  # Modify and create new columns using mutate() function 
   # Separate DateTimeStart into month and day cols by using substr()
   mutate(month = substr(DateTimeStart, 6, 7),
          day = substr(DateTimeStart, 9, 10),
          
-         # Add columns for scientificName
-         scientificName = "Odobenus rosmarus divergens",
+         # Add scientific name column
+         scientificName = "Odobenus rosmarus",
          
          # Add method of observation and source columns
          methodObs = "Research vessel visual observation",
          source = "USGS Sex and Age Comp of Walrus Haulouts 2013-2015") %>% 
   
   # Remove unneeded columns and rename
-  # Order of columns here determines order of columns in df. Can also rename columns in this function (new name on left, old name on right).
   select(scientificName,
          year = Year,
          month,
@@ -60,6 +56,10 @@ usgs_walrus <- usgs_walrus_comp %>%
          count = GroupSize,
          methodObs,
          source) %>% 
+  
+  # Filter to select occurrences by spatial location within the study area bounds.
+  filter(decimalLat >= 46.08836 & decimalLat <= 73.92759, 
+         decimalLon >= 172.18938 | decimalLon <= -146.30217) %>%
   
   # Convert to sf and transform to Alaska Albers
   st_as_sf(coords = c("decimalLon", "decimalLat"),

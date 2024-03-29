@@ -32,9 +32,10 @@ names(mmwatch_mams)
 
 mams_new <- mmwatch_mams %>%
   
-  # Drop NAs in coordinates and scientific name
+  # Drop NAs in coordinates, scientific name, and date columns
   drop_na(LAT..N., LONG..W., SPP, Date) %>% 
   
+  # Modify and create new columns using mutate() function
   # Add method of observation and source columns
   mutate(methodObs = "Research cruise visual observation survey",
          source = "Marine Mammal Watch Cruises (SWL) 2018",
@@ -49,6 +50,7 @@ mams_new <- mmwatch_mams %>%
         year = 2018,
         month = 7,
         day = day(date_mdy), # you can extract the year, month, or day from Date objects like this
+        
        # Change values in scientificName to reflect species names instead of species code
        scientificName = 
          case_when(SPP == 2 ~ "Eschrichtius robustus",
@@ -70,17 +72,17 @@ mams_new <- mmwatch_mams %>%
          decimalLon = LONG..W.,
          count = NO,
          methodObs,
-         source) %>% 
+         source) %>%
+  
+  # Filter to select species of interest by scientific name and spatial location within the study area bounds.
+  filter(decimalLat >= 46.08836 & decimalLat <= 73.92759, 
+         decimalLon >= 172.18938 | decimalLon <= -146.30217) %>%
   
   # Convert to sf and transform to Alaska Albers
   st_as_sf(coords = c("decimalLon", "decimalLat"),
            crs = 4326,
            remove = FALSE) %>% 
   st_transform(3338) %>% 
-  
-  # Filter to select species of interest by scientific name and spatial location within the study area            bounds.
-  filter(decimalLat >= 46.08836 & decimalLat <= 73.92759, 
-         decimalLon >= -146.30217 & decimalLon <= 172.18938) %>%
   
   # Eliminate repeat occurrences
   distinct() %>% 
@@ -90,5 +92,8 @@ mams_new <- mmwatch_mams %>%
 
 # Save as csv into respective folder - add tidy to the end of file names so we can differentiate easily
 write_csv(mams_new, "../Data_Processed/7-1_nsf_dbo_laurier_2018/7-1-1_nsf_dbo_laurier_2018_tidy.csv")
+
+# Read in tidied data
+# marine_mams <- read_csv("../Data_Processed/7-1-1_nsf_dbo_laurier_2018_tidy.csv")
 
   
