@@ -87,5 +87,9 @@ walrus <- asti %>%
   arrange(year)
 
 
-         
+# Save as csv
+write_csv(walrus, "../Data_Processed/15_asti_marine_walrus.csv")
+
+# Save as rds
+saveRDS(walrus, "../Data_Processed/15_asti_marine_walrus.rds")
   
