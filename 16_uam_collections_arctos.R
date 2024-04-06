@@ -6,7 +6,6 @@
 # Data number 10. Tidy script number 16
 
 
-
 # setup -------------------------------------------------------------------
 
 # Load libraries
@@ -51,17 +50,14 @@ marine_mams <- arctos %>%
   
   # Standardize what's in the methodObs column and add source column
   mutate(methodObs = "Preserved specimen",
-         source = "UAM Mammal Collections (ARCTOS)")
-
-# Create function to extract numbers before a specific character
-extract_num <- function(string, separator) {
-  parts <- unlist(strsplit(string, separator))
-  as.numeric(parts[1])
-}
-
-# Apply function across date column
-sapply(marine_mams$date, extract_num, separator = "/")
-        
+         source = "UAM Mammal Collections (ARCTOS)",
+         count = 1,
+         
+         # Convert to POSIX format and create year, month, day columns
+         date_posix = as.POSIXct(date, format = "%m/%d/%Y"),
+         year = year(date_posix),
+         month = month(date_posix),
+         day = day(date_posix)) %>% # use / instead of - respectively
   
   # Remove old date column
   select(scientificName,
@@ -83,6 +79,12 @@ sapply(marine_mams$date, extract_num, separator = "/")
   distinct() %>% 
   
   # Rearrange - this will order the data by the earliest date and then follow chronologically
-  arrange(year)
+  arrange(year, month, day)
 
+
+# Save as csv
+write_csv(marine_mams, "../Data_Processed/16_uam_collections_arctos.csv")
+
+# Save as rds
+saveRDS(marine_mams, "../Data_Processed/16_uam_collections_arctos.rds")
 
