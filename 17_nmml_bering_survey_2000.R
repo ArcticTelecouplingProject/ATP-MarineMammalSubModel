@@ -67,6 +67,10 @@ walrus <- nmml %>%
          count,
          methodObs) %>% 
   
+  # Remove occurrences outside of the study bounds
+  filter(decimalLat >= 46.08836 & decimalLat <= 73.92759, 
+         decimalLon >= 172.18938 | decimalLon <= -146.30217) %>% 
+  
   # Convert to sf and transform to Alaska Albers
   st_as_sf(coords = c("decimalLon", "decimalLat"),
            crs = 4326,
