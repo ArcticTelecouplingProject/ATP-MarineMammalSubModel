@@ -66,8 +66,8 @@ marine_mams <- nmml %>%
   arrange(year, month, day)
 
 # Save as csv into respective folder - add tidy to the end of file names so we can differentiate easily
-write_csv(marine_mams, "../Data_Processed/8_nmml_aerial_1979_2010/8_nmml_aerial_tidy.csv")
+write_csv(marine_mams, "../Data_Processed/8_nmml_aerial_1979_2010/8-1_tidy_nmml_aerial_1979_2010.csv")
 
 # Read in tidied data
-# marine_mams <- read_csv("../Data_Processed/8_nmml_aerial_tidy.csv")
+# marine_mams <- read_csv("../Data_Processed/8-1_tidy_nmml_aerial_1979_2010.csv")
 

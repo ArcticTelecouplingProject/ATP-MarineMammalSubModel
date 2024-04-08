@@ -90,8 +90,8 @@ bird_new <- bird %>%
   arrange(year, month, day)
 
 # Save as csv into respective folder - add tidy to the end of file names so we can differentiate easily
-write_csv(bird_new, "../Data_Processed/3_obis_ambon_norseman_2015/3-1_obis_ambon_norseman_2015_tidy.csv")
+write_csv(bird_new, "../Data_Processed/3_obis_ambon_norseman_2015/3-1_tidy_obis_ambon_norseman_2015.csv")
 
 # Read in tidied data
-# marine_mams <- read_csv("../Data_Processed/3-1_obis_ambon_norseman_2015_tidy.csv")
+# marine_mams <- read_csv("../Data_Processed/3-1_tidy_obis_ambon_norseman_2015.csv")
 

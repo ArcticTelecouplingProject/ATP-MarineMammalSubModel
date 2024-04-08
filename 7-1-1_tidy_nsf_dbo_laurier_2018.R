@@ -91,9 +91,9 @@ mams_new <- mmwatch_mams %>%
   arrange(year, month, day)
 
 # Save as csv into respective folder - add tidy to the end of file names so we can differentiate easily
-write_csv(mams_new, "../Data_Processed/7-1_nsf_dbo_laurier_2018/7-1-1_nsf_dbo_laurier_2018_tidy.csv")
+write_csv(mams_new, "../Data_Processed/7-1_nsf_dbo_laurier_2018/7-1-1_tidy_nsf_dbo_laurier_2018.csv")
 
 # Read in tidied data
-# marine_mams <- read_csv("../Data_Processed/7-1-1_nsf_dbo_laurier_2018_tidy.csv")
+# marine_mams <- read_csv("../Data_Processed/7-1-1_tidy_nsf_dbo_laurier_2018.csv")
 
   

@@ -84,8 +84,8 @@ gbif_mams_2 <- gbif_mams %>%
   arrange(year, month, day)
 
 # Save as csv into respective folder - add tidy to the end of file names so we can differentiate easily
-write_csv(gbif_mams_2, "../Data_Processed/12-2_gbif_moudry/12-2-1_gbif_moudry_tidy.csv")
+write_csv(gbif_mams_2, "../Data_Processed/12-2_gbif_moudry/12-2-1_tidy_gbif_moudry.csv")
 
 # Read in tidied data
-# marine_mams <- read_csv("../Data_Processed/12-2-1_gbif_moudry_tidy.csv")
+# marine_mams <- read_csv("../Data_Processed/12-2-1_tidy_gbif_moudry.csv")
 

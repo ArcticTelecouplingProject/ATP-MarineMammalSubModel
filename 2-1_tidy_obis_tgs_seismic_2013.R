@@ -79,8 +79,8 @@ obis_new <- obis_mams %>%
   arrange(year, month, day)
 
 # Save as csv into respective folder - add tidy to the end of file names so we can differentiate easily
-write_csv(obis_new, "../Data_Processed/2_obis_tgs_seismic_2013/2-1_obis_tgs_seismic_2013_tidy.csv")
+write_csv(obis_new, "../Data_Processed/2_obis_tgs_seismic_2013/2-1_tidy_obis_tgs_seismic_2013.csv")
 
 # Read in tidied data
-# marine_mams <- read_csv("../Data_Processed/2-1_obis_tgs_seismic_2013_tidy.csv")
+# marine_mams <- read_csv("../Data_Processed/2-1_tidy_obis_tgs_seismic_2013.csv")
 

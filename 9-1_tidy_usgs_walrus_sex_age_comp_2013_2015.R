@@ -74,7 +74,7 @@ usgs_walrus <- usgs_walrus_comp %>%
   arrange(year, month, day)
 
 # Save as csv into respective folder - add tidy to the end of file names so we can differentiate easily
-write_csv(usgs_walrus, "../Data_Processed/9_usgs_walrus_sex_age_comp_2013_2015/9_usgs_walrus_tidy.csv")
+write_csv(usgs_walrus, "../Data_Processed/9_usgs_walrus_sex_age_comp_2013_2015/9-1_tidy_usgs_walrus_sex_age_comp_2013_2015.csv")
 
 # Read in tidied data
-# usgs_walrus <- read_csv("../Data_Processed/9_usgs_walrus_tidy.csv")
+# usgs_walrus <- read_csv("../Data_Processed/9-1_tidy_usgs_walrus_sex_age_comp_2013_2015.csv")
