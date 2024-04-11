@@ -77,22 +77,34 @@ asamm <- st_read("../Data_Processed/13_aerial_surveys_asamm/13-1_tidy_aerial_sur
 # Merge data sets ---------------------------------------------------------
 
 # Merge to create all_df
-all_df <- rbind(gbif, obis_tgs, obis_ambon, mmwatch_2016, mmwatch_2017, dbo_laurier_2019, dbo_laurier_2018, dbo_healy_2018, nmml_aerial, usgs_comp, usgs_behavior, gbif_moudry_1, gbif_moudry_2, asamm)
+all_df <- rbind(gbif, 
+                obis_tgs, 
+                obis_ambon,
+                mmwatch_2016, 
+                mmwatch_2017, 
+                dbo_laurier_2019,
+                dbo_laurier_2018, 
+                dbo_healy_2018, 
+                nmml_aerial, 
+                usgs_comp, 
+                usgs_behavior, 
+                gbif_moudry_1, 
+                gbif_moudry_2, 
+                asamm)
 
-# Isolate occurences of focal species
+# Isolate occurrences of focal species
 all_df_focal <- all_df %>% 
   filter(scientificName %in% c("Odobenus rosmarus", "Phoca largha", "Erignathus barbatus")) %>% 
+  
+  # Eliminate repeat occurrences
+  distinct(all_df_focal) %>% 
+  
+  # Remove NAs
+  na.omit(unique_focal)
 
-# Eliminate repeat occurrences
-unique_focal <- distinct(all_df_focal) %>% 
+# Save this to a csv and shp
+st_write(all_df_focal, "../Data_Processed/marine_mammal_integration/marine_mammal_integration_focal_species.csv")
 
-# Remove NAs
-unique_focal_omit <- na.omit(unique_focal) %>% 
-
-# Save this to a csv
-write.csv(st_drop_geometry(unique_focal_omit), "../Data_Processed/marine_mammal_integration/marine_mammal_integration_focal_species.csv")
-
-# Save to shp
-st_write(unique_focal_omit, "../Data_Processed/marine_mammal_integration/marine_mammal_integration_focal_species.shp")
+st_write(all_df_focal, "../Data_Processed/marine_mammal_integration/marine_mammal_integration_focal_species.shp")
 
 
