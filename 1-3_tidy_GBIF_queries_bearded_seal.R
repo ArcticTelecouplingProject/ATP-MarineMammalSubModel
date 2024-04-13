@@ -1,11 +1,9 @@
 # Title: Marine Mammal Data Paper Tidying 
 # Author: Natalia Portales and Sydney Waloven
-# Date: 2024-03-28
-# Description: Source: NSF ARCSS Google Drive Occurrence data of the three species to be evaluated in the project: Pacific walrus (Odobenus rosmarus divergens), bearded seal (Erignathus barbatus), and spotted seal (Phoca largha).
+# Date: 2024-04-12
+# Description:  Source: GBIF. This data set was obtained from a query on Global Biodiversity Information Facilit (GBIF): https://www.gbif.org/
 
-# These datasets were obtained from the Global Biodiversity Information Facility (GBIF): https://www.gbif.org/
-
-# Only species featured in this script is bearded seal.
+# Only species featured in this script is bearded seal (Erignathus barbatus).
 
 # This script follows standardized methods of tidying for the marine mammal data sets we have collected contributing to a data paper.
 
@@ -26,7 +24,7 @@ datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney 
 datadir <- "../../ATP-MarineMammal-DataRaw/"
 
 # This script will tidy gbif bearded seal data.
-bearded_gbif <- st_read(paste0(datadir, "1_arcss_gbif/erignathus_barbatus"))
+bearded_gbif <- st_read(paste0(datadir, "1-3_gbif_queries/gbif_barbatus_20240329.csv"))
 
 # data tidying ------------------------------------------------------------
 
@@ -91,8 +89,8 @@ gbif_new <- bearded_gbif %>%
   arrange(year, month, day)
 
 # Save as csv into respective folder - add tidy to the end of file names so we can differentiate easily
-write_csv(gbif_new, "../Data_Processed/1-3_ARCSS_GBIF_bearded_seal/1-3_ARCSS_GBIF_bearded_seal_tidy.csv")
+write_csv(gbif_new, "../Data_Processed/1-3_tidy_GBIF_queries_bearded_seal/1-3_tidy_GBIF_queries_bearded_seal.csv")
 
 # Read in tidied data
-# marine_mams <- read_csv("../Data_Processed/1-3_ARCSS_GBIF_bearded_seal_tidy.csv")
+# marine_mams <- read_csv("../Data_Processed/1-3_tidy_GBIF_queries_bearded_seal.csv")
 

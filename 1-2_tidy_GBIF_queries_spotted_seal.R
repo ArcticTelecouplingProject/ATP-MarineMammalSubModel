@@ -1,11 +1,9 @@
 # Title: Marine Mammal Data Paper Tidying 
 # Author: Natalia Portales and Sydney Waloven
-# Date: 2024-03-27
-# Description: # Source: NSF ARCSS Google Drive. Occurrence data of the three species to be evaluated in the project: Pacific walrus (Odobenus rosmarus divergens), bearded seal (Erignathus barbatus), and spotted seal (Phoca largha).
+# Date: 2024-04-12
+# Description: Source: GBIF. This data set was obtained from a query on Global Biodiversity Information Facilit (GBIF): https://www.gbif.org/
 
-# These datasets were obtained from the Global Biodiversity Information Facility (GBIF): https://www.gbif.org/
-
-# Only species featured in this script is the spotted seal.
+# Only species featured in this script is the spotted seal (Phoca largha).
 
 # This script follows standardized methods of tidying for the marine mammal data sets we have collected contributing to a data paper.
 
@@ -26,7 +24,7 @@ datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney 
 datadir <- "../../ATP-MarineMammal-DataRaw/"
 
 # This script will tidy gbif spotted seal data.
-spotted_gbif <- st_read(paste0(datadir, "1_arcss_gbif/phoca_largha"))
+spotted_gbif <- st_read(paste0(datadir, "1-2_gbif_queries/gbif_largha_20240329.csv"))
 
 # data tidying ------------------------------------------------------------
 
@@ -36,15 +34,15 @@ names(spotted_gbif)
 gbif_new <- spotted_gbif %>%
   
   # Drop NAs in coordinate, scientific name, and year columns
-  drop_na(decimalLat, decimalLon, species, year) %>% 
+  drop_na(decimalLatitude, decimalLongitude, verbatimScientificName, year) %>% 
   
   # Modify and create new columns using mutate() function
   # Add source column
-  mutate(source = "ARCSS GBIF Spotted Seal",
+  mutate(source = "GBIF Spotted Seal",
          
          # Convert columns to numeric
-         decimalLat = as.numeric(decimalLat),
-         decimalLon = as.numeric(decimalLon),
+         decimalLat = as.numeric(decimalLatitude),
+         decimalLon = as.numeric(decimalLongitude),
          year = as.numeric(year),
          month = as.numeric(month),
          day = as.numeric(day),
@@ -91,8 +89,8 @@ gbif_new <- spotted_gbif %>%
   arrange(year, month, day)
 
 # Save as csv into respective folder - add tidy to the end of file names so we can differentiate easily
-write_csv(gbif_new, "../Data_Processed/1-2_ARCSS_GBIF_spotted_seal/1-2_ARCSS_GBIF_spotted_seal_tidy.csv")
+write_csv(gbif_new, "../Data_Processed/1-2_tidy_GBIF_queries_spotted_seal/1-2_tidy_GBIF_queries_spotted_seal.csv")
 
 # Read in tidied data
-# marine_mams <- read_csv("../Data_Processed/1-2_ARCSS_GBIF_spotted_seal_tidy.csv")
+# marine_mams <- read_csv("../Data_Processed/1-2_tidy_GBIF_queries_spotted_seal.csv")
 
