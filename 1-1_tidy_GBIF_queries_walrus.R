@@ -34,7 +34,7 @@ names(walrus_gbif)
 gbif_new <- walrus_gbif %>%
   
   # Drop NAs in coordinate, scientific name, and year columns
-  drop_na(decimalLatitude, decimalLongitude, verbatimScientificName, year) %>% 
+  drop_na(decimalLatitude, decimalLongitude, species, year) %>% 
   
   # Modify and create new columns using mutate() function 
   # Add source column
@@ -52,17 +52,12 @@ gbif_new <- walrus_gbif %>%
          
          # Rename values in method of observation column
          methodObs =
-           case_when(basisOfRec == '"HUMAN_OBSERVATION"' ~ "Human observation",
-                     basisOfRec == '"PRESERVED_SPECIMEN"' ~ "Preserved specimen",
-                     TRUE ~ NA),
-         
-         # rename values in scientific name column
-         scientificName =
-           case_when(species == '"Odobenus rosmarus"' ~ "Odobenus rosmarus",
-                     TRUE ~ NA)) %>%
+           case_when(basisOfRecord == "HUMAN_OBSERVATION" ~ "Human observation",
+                     basisOfRecord == "PRESERVED_SPECIMEN" ~ "Preserved specimen",
+                     TRUE ~ NA)) %>% 
   
   # Remove unneeded columns and rename
-  select(scientificName,
+  select(scientificName = species,
          year,
          month,
          day,

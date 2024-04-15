@@ -24,17 +24,17 @@ datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney 
 datadir <- "../../ATP-MarineMammal-DataRaw/"
 
 # This script will tidy gbif spotted seal data.
-spotted_gbif <- st_read(paste0(datadir, "1-2_gbif_queries/gbif_largha_20240329.csv"))
+spotted_gbif <- st_read(paste0(datadir, "1-1_gbif_queries/gbif_largha_20240329.csv"))
 
 # data tidying ------------------------------------------------------------
 
 # Check out column names
 names(spotted_gbif)
 
-gbif_new <- spotted_gbif %>%
+gbif_new_spotted <- spotted_gbif %>%
   
   # Drop NAs in coordinate, scientific name, and year columns
-  drop_na(decimalLatitude, decimalLongitude, verbatimScientificName, year) %>% 
+  drop_na(decimalLatitude, decimalLongitude, species, year) %>% 
   
   # Modify and create new columns using mutate() function
   # Add source column
@@ -52,17 +52,12 @@ gbif_new <- spotted_gbif %>%
          
          # Rename values in method of observation column
          methodObs =
-           case_when(basisOfRec == "HUMAN_OBSERVATION" ~ "Human observation",
-                     basisOfRec == "PRESERVED_SPECIMEN" ~ "Preserved specimen",
-                     TRUE ~ NA),
+           case_when(basisOfRecord == "HUMAN_OBSERVATION" ~ "Human observation",
+                     basisOfRecord == "PRESERVED_SPECIMEN" ~ "Preserved specimen",
+                     TRUE ~ NA)) %>% 
          
-         # rename values in scientific name column
-         scientificName =
-           case_when(species == '"Phoca largha"' ~ "Phoca largha",
-                     TRUE ~ NA)) %>%
-  
   # Remove unneeded columns and rename
-  select(scientificName,
+  select(scientificName = species,
          year,
          month,
          day,

@@ -24,25 +24,25 @@ datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney 
 datadir <- "../../ATP-MarineMammal-DataRaw/"
 
 # This script will tidy gbif bearded seal data.
-bearded_gbif <- st_read(paste0(datadir, "1-3_gbif_queries/gbif_barbatus_20240329.csv"))
+bearded_gbif <- st_read(paste0(datadir, "1-1_gbif_queries/gbif_barbatus_20240329.csv"))
 
 # data tidying ------------------------------------------------------------
 
 # Check out column names
 names(bearded_gbif)
 
-gbif_new <- bearded_gbif %>%
+gbif_new_bearded <- bearded_gbif %>%
   
   # Drop NAs in coordinate, scientific name, and year columns
-  drop_na(decimalLat, decimalLon, species, year) %>% 
+  drop_na(decimalLatitude, decimalLongitude, species, year) %>% 
   
   # Modify and create new columns using mutate() function 
   # Add source column
   mutate(source = "ARCSS GBIF Bearded Seal",
          
          # Convert columns to numeric
-         decimalLat = as.numeric(decimalLat),
-         decimalLon = as.numeric(decimalLon),
+         decimalLat = as.numeric(decimalLatitude),
+         decimalLon = as.numeric(decimalLongitude),
          year = as.numeric(year),
          month = as.numeric(month),
          day = as.numeric(day),
@@ -52,17 +52,12 @@ gbif_new <- bearded_gbif %>%
          
          # Rename values in method of observation column
          methodObs =
-           case_when(basisOfRec == '"HUMAN_OBSERVATION"' ~ "Human observation",
-                     basisOfRec == '"PRESERVED_SPECIMEN"' ~ "Preserved specimen",
-                     TRUE ~ NA),
-         
-         # rename values in scientific name column
-         scientificName =
-           case_when(species == '"Erignathus barbatus"' ~ "Erignathus barbatus",
-                     TRUE ~ NA)) %>%
+           case_when(basisOfRecord == "HUMAN_OBSERVATION" ~ "Human observation",
+                     basisOfRecord == "PRESERVED_SPECIMEN" ~ "Preserved specimen",
+                     TRUE ~ NA)) %>% 
   
   # Remove unneeded columns and rename
-  select(scientificName,
+  select(scientificName = species,
          year,
          month,
          day,
