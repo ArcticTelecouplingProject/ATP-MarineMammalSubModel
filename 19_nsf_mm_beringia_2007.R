@@ -84,7 +84,7 @@ walrus$year[196] <- 2007
 
 
 # Save as csv
-write_csv(walrus, "../Data_Processed/19_nsf_mm_beringia_2007.csv")
+write_csv(walrus, "../Data_Processed/TidyScripts/19_nsf_mm_beringia_2007.csv")
 
 # Save as rds
 saveRDS(walrus, "../Data_Processed/19_nsf_mm_beringia_2007.rds")
