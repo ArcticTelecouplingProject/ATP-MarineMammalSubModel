@@ -84,8 +84,8 @@ gbif_new_spotted <- spotted_gbif %>%
   arrange(year, month, day)
 
 # Save as csv into respective folder - add tidy to the end of file names so we can differentiate easily
-write_csv(gbif_new, "../Data_Processed/1-2_tidy_GBIF_queries_spotted_seal/1-2_tidy_GBIF_queries_spotted_seal.csv")
+write_csv(gbif_new_spotted, "../Data_Processed/TidyScripts/1-2_tidy_GBIF_queries_spotted_seal.csv")
 
 # Read in tidied data
-# marine_mams <- read_csv("../Data_Processed/1-2_tidy_GBIF_queries_spotted_seal.csv")
+# marine_mams <- read_csv("../Data_Processed/TidyScripts/1-2_tidy_GBIF_queries_spotted_seal.csv")
 

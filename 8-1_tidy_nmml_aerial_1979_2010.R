@@ -50,7 +50,7 @@ marine_mams <- nmml %>%
          count = individualCount) %>% 
   
   # Filter to select occurrences by spatial location within the study area bounds.
-  filter(decimalLatitude >= 46.08836 & decimalLatitude <= 73.92759, 
+  filter(decimalLat >= 46.08836 & decimalLat <= 73.92759, 
          decimalLon >= 172.18938 | decimalLon <= -146.30217) %>%
   
   # Convert to sf and transform to Alaska Albers
@@ -66,8 +66,8 @@ marine_mams <- nmml %>%
   arrange(year, month, day)
 
 # Save as csv into respective folder - add tidy to the end of file names so we can differentiate easily
-write_csv(marine_mams, "../Data_Processed/8_nmml_aerial_1979_2010/8-1_tidy_nmml_aerial_1979_2010.csv")
+write_csv(marine_mams, "../Data_Processed/TidyScripts/8-1_tidy_nmml_aerial_1979_2010.csv")
 
 # Read in tidied data
-# marine_mams <- read_csv("../Data_Processed/8-1_tidy_nmml_aerial_1979_2010.csv")
+# marine_mams <- read_csv("../Data_Processed/TidyScripts/8-1_tidy_nmml_aerial_1979_2010.csv")
 

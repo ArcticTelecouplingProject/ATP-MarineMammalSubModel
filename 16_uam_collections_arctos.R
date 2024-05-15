@@ -87,7 +87,7 @@ marine_mams <- arctos %>%
 
 
 # Save as csv
-write_csv(marine_mams, "../Data_Processed/16_uam_collections_arctos.csv")
+write_csv(marine_mams, "../Data_Processed/TidyScripts/16_uam_collections_arctos.csv")
 
 # Save as rds
 saveRDS(marine_mams, "../Data_Processed/16_uam_collections_arctos.rds")

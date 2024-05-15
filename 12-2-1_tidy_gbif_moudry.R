@@ -37,7 +37,7 @@ gbif_mams_2 <- gbif_mams %>%
   # Filter to select species of interest by scientific name and spatial location within the study area bounds.
   filter(species %in% c("Odobenus rosmarus divergens", "Odobenus rosmarus"),
          decimallatitude >= 46.08836 & decimallatitude <= 73.92759, 
-         decimalLon >= 172.18938 | decimalLon <= -146.30217) %>%
+         decimallongitude >= 172.18938 | decimallongitude <= -146.30217) %>%
   
   # Modify and create new columns using mutate() function
   # Add source column
@@ -84,8 +84,8 @@ gbif_mams_2 <- gbif_mams %>%
   arrange(year, month, day)
 
 # Save as csv into respective folder - add tidy to the end of file names so we can differentiate easily
-write_csv(gbif_mams_2, "../Data_Processed/12-2_gbif_moudry/12-2-1_tidy_gbif_moudry.csv")
+write_csv(gbif_mams_2, "../Data_Processed/TidyScripts/12-2-1_tidy_gbif_moudry.csv")
 
 # Read in tidied data
-# marine_mams <- read_csv("../Data_Processed/12-2-1_tidy_gbif_moudry.csv")
+# marine_mams <- read_csv("../Data_Processed/TidyScripts/12-2-1_tidy_gbif_moudry.csv")
 

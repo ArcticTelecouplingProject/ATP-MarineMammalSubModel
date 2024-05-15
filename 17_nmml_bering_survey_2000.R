@@ -85,7 +85,7 @@ walrus <- nmml %>%
 
 
 # Save as csv
-write_csv(walrus, "../Data_Processed/17_nmml_bering_survey_2000.csv")
+write_csv(walrus, "../Data_Processed/TidyScripts/17_nmml_bering_survey_2000.csv")
 
 # Save as rds
 saveRDS(walrus, "../Data_Processed/17_nmml_bering_survey_2000.rds")

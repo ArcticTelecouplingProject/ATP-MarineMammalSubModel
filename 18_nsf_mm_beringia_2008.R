@@ -79,7 +79,7 @@ walrus <- nsf_2008 %>%
 
 
 # Save as csv
-write_csv(walrus, "../Data_Processed/18_nsf_mm_beringia_2008.csv")
+write_csv(walrus, "../Data_Processed/TidyScripts/18_nsf_mm_beringia_2008.csv")
 
 # Save as rds
 saveRDS(walrus, "../Data_Processed/18_nsf_mm_beringia_2008.rds")

@@ -84,7 +84,7 @@ gbif_new_bearded <- bearded_gbif %>%
   arrange(year, month, day)
 
 # Save as csv into respective folder - add tidy to the end of file names so we can differentiate easily
-write_csv(gbif_new, "../Data_Processed/1-3_tidy_GBIF_queries_bearded_seal/1-3_tidy_GBIF_queries_bearded_seal.csv")
+write_csv(gbif_new_bearded, "../Data_Processed/TidyScripts/1-3_tidy_GBIF_queries_bearded_seal.csv")
 
 # Read in tidied data
 # marine_mams <- read_csv("../Data_Processed/1-3_tidy_GBIF_queries_bearded_seal.csv")
