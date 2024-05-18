@@ -78,7 +78,7 @@ years_mams <- master_years %>%
     
     # Add observation and source columns
     methodObs = "Aerial survey",
-    source = "ASAMM 1979-2019",
+    source = "ASAMM 1979-2021",
     
     # Add year, month, day columns
     date = mdy_hms(GMT_Minus8_DateTime),
@@ -139,7 +139,7 @@ v0_mams <- master_v0 %>%
     
     # Add observation and source columns
     methodObs = "Aerial survey",
-    source = "ASAMM 1979-2019",
+    source = "ASAMM 1979-2021",
     
     # Add year, month, day columns
     date = mdy_hms(GMT_Minus8_DateTime),
@@ -197,7 +197,7 @@ v24_mams <- master_v24 %>%
     
     # Add observation and source columns
     methodObs = "Aerial survey",
-    source = "ASAMM 1979-2019",
+    source = "ASAMM 1979-2021",
     
     # Add year, month, day columns
     date = mdy_hms(GMT_Minus8_DateTime),
@@ -258,7 +258,7 @@ v2_mams <- master_v2 %>%
     
     # Add observation and source columns
     methodObs = "Aerial survey",
-    source = "ASAMM 1979-2019",
+    source = "ASAMM 1979-2021",
     
     # Add year, month, day columns
     date = mdy_hms(GMT_Minus8_DateTime),
