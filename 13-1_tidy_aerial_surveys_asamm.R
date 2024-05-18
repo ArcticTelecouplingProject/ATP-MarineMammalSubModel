@@ -33,59 +33,70 @@ asamm <- "13_aerial_surveys_asamm/0039614/11.11/data/0-data/"
 
 # Specify file path to Output files for relevant years
 
-# 2012-2014
-master_v0 <- st_read(paste0(datadir, asamm, "Aerial_Master_2012_2014_v0_32_Output.csv"))
-# 2015-2017
-master_v24 <- st_read(paste0(datadir, asamm, "Aerial_Master_2015_2017_v24_Output.csv"))
-# 2018-2021
-master_v2 <- st_read(paste0(datadir, asamm, "Aerial_Master_2018_2021_v2_Output.csv"))
+# 1979-2011
+master_years <- st_read(paste0(datadir, asamm,
+                               "Aerial_Master_1979_2011_v3_37_Output.csv"))
 
-# 2012-2014 Data ----------------------------------------------------------
+# 2012-2014
+master_v0 <- st_read(paste0(datadir, asamm, 
+                            "Aerial_Master_2012_2014_v0_32_Output.csv"))
+
+# 2015-2017
+master_v24 <- st_read(paste0(datadir, asamm,
+                             "Aerial_Master_2015_2017_v24_Output.csv"))
+
+# 2018-2021
+master_v2 <- st_read(paste0(datadir, asamm, 
+                            "Aerial_Master_2018_2021_v2_Output.csv"))
+
+
+# 1979-2011 ---------------------------------------------------------------
 
 # Check out column names
-names(master_v0)
+names(master_years)
 
-v0_mams <- master_v0 %>%
+years_mams <- master_years %>%
   
   # Drop NAs in coordinates
   drop_na(ArcLat, ArcLong) %>%
   
-  # Filter to select species of interest by scientific name and spatial location within the study area bounds.
-  filter(species %in% c("bowhead whale", "gray whale", "beluga", "fin whale", "humpback whale", "minke whale", "killer whale", "walrus", "bearded seal", "ringed seal"),
-         decimallatitude >= 62 & decimallatitude <= 66.5, 
-         decimallongitude >= -175 & decimallongitude <= -164,
+  # Filter to select species of interest by scientific name and spatial location within the study area bounds
+  filter(Species %in% c("walrus", "bearded seal"), # no spotted seal
+         ArcLat >= 46.08836 & ArcLat <= 73.92759, 
+         ArcLong >= 172.18938 | ArcLong <= -146.30217,
          # Keep rows where the Sightcue column == body to only keep observations where the animal was ID'd by its full body
          Sightcue == "body") %>%
   
+  # Add new columns
   mutate(
-         
-# Change values in scientificName to reflect species scientific names instead of common names
-         scientificName = 
-           case_when(Species == "bowhead whale" ~ "Balaena mysticetus",
-                     Species == "gray whale" ~ "Eschrichtius robustus",
-                     Species == "beluga" ~ "Delphinapterus leucas",
-                     Species == "fin whale" ~ "Balaenoptera physalus",
-                     Species == "humpback whale" ~ "Megaptera novaeangliae",
-                     Species == "minke whale" ~ "Balaenoptera acutorostrata",
-                     Species == "killer whale" ~ "Orcinus orca",
-                     Species == "walrus" ~ "Odobenus rosmarus",
-                     Species == "bearded seal" ~ "Erignathus barbatus",
-                     Species == "ringed seal" ~ "Pusa hispida",
-                     TRUE ~ NA),
-         
-         # Add columns for method of observation and source
-         methodObs = "Aerial survey",
-         source = "ASAMM 1979-2019") %>% 
+    
+    # Change common name to scientific name
+    scientificName = 
+      case_when(Species == "walrus" ~ "Odobenus rosmarus",
+                Species == "bearded seal" ~ "Erignathus barbatus",
+                TRUE ~ NA_character_),
+    
+    # Add observation and source columns
+    methodObs = "Aerial survey",
+    source = "ASAMM 1979-2019",
+    
+    # Add year, month, day columns
+    date = mdy_hms(GMT_Minus8_DateTime),
+    year = year(date),
+    month = month(date),
+    day = day(date)) %>% 
   
   # Subset 2012-2014 dataframe to get rid of extraneous columns
   dplyr::select(
-    GMT_Minus8_DateTime,
-    ArcLat,
-    ArcLong,
-    Species,
-    Sightcue,
-    Totalno,
-  ) %>%
+    scientificName,
+    year,
+    month,
+    day,
+    decimalLat = ArcLat,
+    decimalLon = ArcLong,
+    count = Totalno,
+    methodObs,
+    source) %>%
   
   # Convert to sf and transform to Alaska Albers
   st_as_sf(coords = c("decimalLon", "decimalLat"),
@@ -100,3 +111,189 @@ v0_mams <- master_v0 %>%
   arrange(year, month, day)
 
 
+# 2012-2014 Data ----------------------------------------------------------
+
+# Check out column names
+names(master_v0)
+
+v0_mams <- master_v0 %>%
+  
+  # Drop NAs in coordinates
+  drop_na(ArcLat, ArcLong) %>%
+  
+  # Filter to select species of interest by scientific name and spatial location within the study area bounds
+  filter(Species %in% c("walrus", "bearded seal"), # no spotted seal
+         ArcLat >= 46.08836 & ArcLat <= 73.92759, 
+         ArcLong >= 172.18938 | ArcLong <= -146.30217,
+         # Keep rows where the Sightcue column == body to only keep observations where the animal was ID'd by its full body
+         Sightcue == "body") %>%
+  
+  # Add new columns
+  mutate(
+    
+    # Change common name to scientific name
+    scientificName = 
+      case_when(Species == "walrus" ~ "Odobenus rosmarus",
+                Species == "bearded seal" ~ "Erignathus barbatus",
+                TRUE ~ NA_character_),
+    
+    # Add observation and source columns
+    methodObs = "Aerial survey",
+    source = "ASAMM 1979-2019",
+    
+    # Add year, month, day columns
+    date = mdy_hms(GMT_Minus8_DateTime),
+    year = year(date),
+    month = month(date),
+    day = day(date)) %>% 
+  
+  # Subset 2012-2014 dataframe to get rid of extraneous columns
+  dplyr::select(
+    scientificName,
+    year,
+    month,
+    day,
+    decimalLat = ArcLat,
+    decimalLon = ArcLong,
+    count = Totalno,
+    methodObs,
+    source) %>%
+  
+  # Convert to sf and transform to Alaska Albers
+  st_as_sf(coords = c("decimalLon", "decimalLat"),
+           crs = 4326,
+           remove = FALSE) %>% 
+  st_transform(3338) %>% 
+  
+  # Eliminate repeat occurrences
+  distinct() %>% 
+  
+  # Rearrange - this will order the data by the earliest date and then follow chronologically
+  arrange(year, month, day)
+
+
+# 2015-2017 Data ----------------------------------------------------------
+
+v24_mams <- master_v24 %>%
+  
+  # Drop NAs in coordinates
+  drop_na(ArcLat, ArcLong) %>%
+  
+  # Filter to select species of interest by scientific name and spatial location within the study area bounds
+  filter(Species %in% c("walrus", "bearded seal"), # no spotted seal
+         ArcLat >= 46.08836 & ArcLat <= 73.92759, 
+         ArcLong >= 172.18938 | ArcLong <= -146.30217,
+         # Keep rows where the Sightcue column == body to only keep observations where the animal was ID'd by its full body
+         Sightcue == "body") %>%
+  
+  # Add new columns
+  mutate(
+    
+    # Change common name to scientific name
+    scientificName = 
+      case_when(Species == "walrus" ~ "Odobenus rosmarus",
+                Species == "bearded seal" ~ "Erignathus barbatus",
+                TRUE ~ NA_character_),
+    
+    # Add observation and source columns
+    methodObs = "Aerial survey",
+    source = "ASAMM 1979-2019",
+    
+    # Add year, month, day columns
+    date = mdy_hms(GMT_Minus8_DateTime),
+    year = year(date),
+    month = month(date),
+    day = day(date)) %>% 
+  
+  # Subset 2012-2014 dataframe to get rid of extraneous columns
+  dplyr::select(
+    scientificName,
+    year,
+    month,
+    day,
+    decimalLat = ArcLat,
+    decimalLon = ArcLong,
+    count = Totalno,
+    methodObs,
+    source) %>%
+  
+  # Convert to sf and transform to Alaska Albers
+  st_as_sf(coords = c("decimalLon", "decimalLat"),
+           crs = 4326,
+           remove = FALSE) %>% 
+  st_transform(3338) %>% 
+  
+  # Eliminate repeat occurrences
+  distinct() %>% 
+  
+  # Rearrange - this will order the data by the earliest date and then follow chronologically
+  arrange(year, month, day)
+
+
+# 2018-2021 ---------------------------------------------------------------
+
+# Check out column names
+names(master_v2)
+
+v2_mams <- master_v2 %>%
+  
+  # Drop NAs in coordinates
+  drop_na(ArcLat, ArcLong) %>%
+  
+  # Filter to select species of interest by scientific name and spatial location within the study area bounds
+  filter(Species %in% c("walrus", "bearded seal"), # no spotted seal
+         ArcLat >= 46.08836 & ArcLat <= 73.92759, 
+         ArcLong >= 172.18938 | ArcLong <= -146.30217,
+         # Keep rows where the Sightcue column == body to only keep observations where the animal was ID'd by its full body
+         Sightcue == "body") %>%
+  
+  # Add new columns
+  mutate(
+    
+    # Change common name to scientific name
+    scientificName = 
+      case_when(Species == "walrus" ~ "Odobenus rosmarus",
+                Species == "bearded seal" ~ "Erignathus barbatus",
+                TRUE ~ NA_character_),
+    
+    # Add observation and source columns
+    methodObs = "Aerial survey",
+    source = "ASAMM 1979-2019",
+    
+    # Add year, month, day columns
+    date = mdy_hms(GMT_Minus8_DateTime),
+    year = year(date),
+    month = month(date),
+    day = day(date)) %>% 
+  
+  # Subset 2012-2014 dataframe to get rid of extraneous columns
+  dplyr::select(
+    scientificName,
+    year,
+    month,
+    day,
+    decimalLat = ArcLat,
+    decimalLon = ArcLong,
+    count = Totalno,
+    methodObs,
+    source) %>%
+  
+  # Convert to sf and transform to Alaska Albers
+  st_as_sf(coords = c("decimalLon", "decimalLat"),
+           crs = 4326,
+           remove = FALSE) %>% 
+  st_transform(3338) %>% 
+  
+  # Eliminate repeat occurrences
+  distinct() %>% 
+  
+  # Rearrange - this will order the data by the earliest date and then follow chronologically
+  arrange(year, month, day)
+
+
+# Merge all years together
+all_mams <- rbind(years_mams, v0_mams, v2_mams, v24_mams)
+
+# Save output
+st_write(all_mams, "../Data_Processed/13_1_tidy_aerial_surveys_asamm.shp")
+saveRDS(all_mams, "../Data_Processed/13_1_tidy_aerial_surveys_asamm.rds")
