@@ -31,32 +31,47 @@ spotted_gbif <- st_read(paste0(datadir, "1-1_gbif_queries/gbif_largha_20240329.c
 # Check out column names
 names(spotted_gbif)
 
-gbif_new_spotted <- spotted_gbif %>%
+# Replace empty strings and missing cell values with true NAs
+na_gbif <- spotted_gbif %>% 
+  mutate(
+    across(
+      everything(),
+      ~na_if(., "")),
+    across(
+      everything(),
+      ~na_if(., "missing"))) %>% 
+  mutate(year = ifelse(year == 0, NA, year)) 
+
+gbif_new_spotted <- na_gbif %>%
   
   # Drop NAs in coordinate, scientific name, and year columns
   drop_na(decimalLatitude, decimalLongitude, species, year) %>% 
   
   # Modify and create new columns using mutate() function
-  # Add source column
-  mutate(source = "GBIF Spotted Seal",
-         
-         # Convert columns to numeric
-         decimalLat = as.numeric(decimalLatitude),
-         decimalLon = as.numeric(decimalLongitude),
-         year = as.numeric(year),
-         month = as.numeric(month),
-         day = as.numeric(day),
-         
-         # Add count column
-         count = 1,
-         
-         # Rename values in method of observation column
-         methodObs =
-           case_when(basisOfRecord == "HUMAN_OBSERVATION" ~ "Human observation",
-                     basisOfRecord == "MACHINE_OBSERVATION" ~ "Machine observation",
-                     basisOfRecord == "PRESERVED_SPECIMEN" ~ "Preserved specimen",
-                     TRUE ~ NA_character_)) %>% 
-         
+  mutate(
+    # Convert columns to numeric
+    decimalLat = as.numeric(decimalLatitude),
+    decimalLon = as.numeric(decimalLongitude),
+    year = as.numeric(year),
+    month = as.numeric(month),
+    day = as.numeric(day),
+    
+    # Add count column
+    count = 1,
+    
+    # Rename values in method of observation column
+    methodObs =
+      case_when(basisOfRecord == "HUMAN_OBSERVATION" ~ "Human observation",
+                basisOfRecord == "MACHINE_OBSERVATION" ~ "Machine observation",
+                basisOfRecord == "PRESERVED_SPECIMEN" ~ "Preserved specimen",
+                TRUE ~ NA_character_),
+    
+    # Add GBIF source column
+    source_gbif = "GBIF Query |",
+    
+    # Merge collector source and data source contents together
+    source = paste(source_gbif, recordedBy, sep = " ")) %>% 
+  
   # Remove unneeded columns and rename
   select(scientificName = species,
          year,
@@ -85,11 +100,11 @@ gbif_new_spotted <- spotted_gbif %>%
   arrange(year, month, day)
 
 # Save as csv into respective folder - add tidy to the end of file names so we can differentiate easily
-write_csv(gbif_new_spotted, "../Data_Processed/TidyScripts/1-2_tidy_GBIF_queries_spotted_seal.csv")
+write_csv(gbif_new_spotted, "../Data_Processed/TidyScripts/1-2_tidy_GBIF_queries_spotted_seal.csv", append = FALSE)
 
 # Save as rds and shp
-saveRDS(gbif_new_spotted, "../Data_Processed/rds_and_shps_new_tidy/1-2_tidy_GBIF_queries_spotted_seal.rds")
-st_write(gbif_new_spotted, "../Data_Processed/rds_and_shps_new_tidy/1-2_tidy_GBIF_queries_spotted_seal.shp")
+saveRDS(gbif_new_spotted, "../Data_Processed/rds_and_shps_new_tidy/1-2_tidy_GBIF_queries_spotted_seal.rds", append = FALSE)
+st_write(gbif_new_spotted, "../Data_Processed/rds_and_shps_new_tidy/1-2_tidy_GBIF_queries_spotted_seal.shp", append = FALSE)
 
 # Read in tidied data
 # marine_mams <- read_csv("../Data_Processed/TidyScripts/1-2_tidy_GBIF_queries_spotted_seal.csv")
