@@ -53,8 +53,9 @@ gbif_new_spotted <- spotted_gbif %>%
          # Rename values in method of observation column
          methodObs =
            case_when(basisOfRecord == "HUMAN_OBSERVATION" ~ "Human observation",
+                     basisOfRecord == "MACHINE_OBSERVATION" ~ "Machine observation",
                      basisOfRecord == "PRESERVED_SPECIMEN" ~ "Preserved specimen",
-                     TRUE ~ NA)) %>% 
+                     TRUE ~ NA_character_)) %>% 
          
   # Remove unneeded columns and rename
   select(scientificName = species,
@@ -85,6 +86,10 @@ gbif_new_spotted <- spotted_gbif %>%
 
 # Save as csv into respective folder - add tidy to the end of file names so we can differentiate easily
 write_csv(gbif_new_spotted, "../Data_Processed/TidyScripts/1-2_tidy_GBIF_queries_spotted_seal.csv")
+
+# Save as rds and shp
+saveRDS(gbif_new_spotted, "../Data_Processed/rds_and_shps_new_tidy/1-2_tidy_GBIF_queries_spotted_seal.rds")
+st_write(gbif_new_spotted, "../Data_Processed/rds_and_shps_new_tidy/1-2_tidy_GBIF_queries_spotted_seal.shp")
 
 # Read in tidied data
 # marine_mams <- read_csv("../Data_Processed/TidyScripts/1-2_tidy_GBIF_queries_spotted_seal.csv")
