@@ -31,30 +31,42 @@ bearded_gbif <- st_read(paste0(datadir, "1-1_gbif_queries/gbif_barbatus_20240329
 # Check out column names
 names(bearded_gbif)
 
-gbif_new_bearded <- bearded_gbif %>%
-  
-  # Drop NAs in coordinate, scientific name, and year columns
-  drop_na(decimalLatitude, decimalLongitude, species, year) %>% 
-  
+# Replace empty strings and missing cell values with true NAs
+na_gbif <- bearded_gbif %>% 
+  mutate(
+    across(
+      everything(),
+      ~na_if(., "")),
+    across(
+      everything(),
+      ~na_if(., "missing"))) %>% 
+  mutate(year = ifelse(year == 0, NA, year)) 
+
+gbif_new_bearded <- na_gbif %>% 
   # Modify and create new columns using mutate() function 
-  # Add source column
-  mutate(source = "ARCSS GBIF Bearded Seal",
-         
-         # Convert columns to numeric
-         decimalLat = as.numeric(decimalLatitude),
-         decimalLon = as.numeric(decimalLongitude),
-         year = as.numeric(year),
-         month = as.numeric(month),
-         day = as.numeric(day),
-         
-         # Add count column
-         count = 1,
-         
-         # Rename values in method of observation column
-         methodObs =
-           case_when(basisOfRecord == "HUMAN_OBSERVATION" ~ "Human observation",
-                     basisOfRecord == "PRESERVED_SPECIMEN" ~ "Preserved specimen",
-                     TRUE ~ NA)) %>% 
+  mutate(
+    # Convert columns to numeric
+    decimalLat = as.numeric(decimalLatitude),
+    decimalLon = as.numeric(decimalLongitude),
+    year = as.numeric(year),
+    month = as.numeric(month),
+    day = as.numeric(day),
+    
+    # Add count column
+    count = 1,
+    
+    # Rename values in method of observation column
+    methodObs =
+      case_when(basisOfRecord == "HUMAN_OBSERVATION" ~ "Human observation",
+                basisOfRecord == "MACHINE_OBSERVATION" ~ "Machine observation",
+                basisOfRecord == "PRESERVED_SPECIMEN" ~ "Preserved specimen",
+                TRUE ~ NA_character_),
+    
+    # Add GBIF source column
+    source_gbif = "GBIF Query |",
+    
+    # Merge collector source and data source contents together
+    source = paste(source_gbif, recordedBy, sep = " ")) %>% 
   
   # Remove unneeded columns and rename
   select(scientificName = species,
@@ -86,6 +98,7 @@ gbif_new_bearded <- bearded_gbif %>%
 # Save as csv into respective folder - add tidy to the end of file names so we can differentiate easily
 write_csv(gbif_new_bearded, "../Data_Processed/TidyScripts/1-3_tidy_GBIF_queries_bearded_seal.csv")
 
-# Read in tidied data
-# marine_mams <- read_csv("../Data_Processed/1-3_tidy_GBIF_queries_bearded_seal.csv")
+# Save as rds and shp
+saveRDS(gbif_new_bearded, "../Data_Processed/rds_and_shps_new_tidy/1-3_tidy_GBIF_queries_bearded_seal.rds")
+st_write(gbif_new_bearded, "../Data_Processed/rds_and_shps_new_tidy/1-1_tidy_GBIF_queries_bearded_seal.shp")
 
