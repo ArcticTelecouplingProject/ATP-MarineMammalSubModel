@@ -90,3 +90,6 @@ write_csv(walrus, "../Data_Processed/TidyScripts/14_nmml_cetacean_survey_1999.cs
 # Save as rds
 saveRDS(walrus, "../Data_Processed/14_nmml_cetacean_survey_1999.rds")
 
+# Save as shp
+st_write(walrus, "../Data_Processed/14_nmml_cetacean_survey_1999.shp")
+
