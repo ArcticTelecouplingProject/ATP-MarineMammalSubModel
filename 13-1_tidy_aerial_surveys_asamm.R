@@ -297,3 +297,4 @@ all_mams <- rbind(years_mams, v0_mams, v2_mams, v24_mams)
 # Save output
 st_write(all_mams, "../Data_Processed/13_1_tidy_aerial_surveys_asamm.shp")
 saveRDS(all_mams, "../Data_Processed/13_1_tidy_aerial_surveys_asamm.rds")
+write_csv(all_mams, "../Data_Processed/13_1_tidy_aerial_surveys_asamm.csv")
