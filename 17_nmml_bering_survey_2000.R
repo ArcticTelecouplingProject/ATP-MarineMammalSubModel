@@ -65,7 +65,8 @@ walrus <- nmml %>%
          decimalLat,
          decimalLon,
          count,
-         methodObs) %>% 
+         methodObs,
+         source) %>% 
   
   # Remove occurrences outside of the study bounds
   filter(decimalLat >= 46.08836 & decimalLat <= 73.92759, 
@@ -89,3 +90,6 @@ write_csv(walrus, "../Data_Processed/TidyScripts/17_nmml_bering_survey_2000.csv"
 
 # Save as rds
 saveRDS(walrus, "../Data_Processed/17_nmml_bering_survey_2000.rds")
+
+# Save as shp
+st_write(walrus, "../Data_Processed/17_nmml_bering_survey_2000.shp")
