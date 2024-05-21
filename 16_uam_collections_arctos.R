@@ -67,7 +67,8 @@ marine_mams <- arctos %>%
          decimalLat,
          decimalLon,
          count,
-         methodObs) %>% 
+         methodObs,
+         source) %>% 
   
   # Remove occurrences outside of the study bounds
   filter(decimalLat >= 46.08836 & decimalLat <= 73.92759, 
@@ -91,4 +92,7 @@ write_csv(marine_mams, "../Data_Processed/TidyScripts/16_uam_collections_arctos.
 
 # Save as rds
 saveRDS(marine_mams, "../Data_Processed/16_uam_collections_arctos.rds")
+
+# Save as shp
+st_write(marine_mams, "../Data_Processed/16_uam_collections_arctos.shp", append = FALSE)
 
