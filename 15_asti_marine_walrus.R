@@ -72,7 +72,8 @@ walrus <- asti %>%
          decimalLat,
          decimalLon,
          count,
-         methodObs) %>% 
+         methodObs,
+         source) %>% 
   
   # Remove occurrences outside of the study bounds
   filter(decimalLat >= 46.08836 & decimalLat <= 73.92759, 
@@ -92,8 +93,10 @@ walrus <- asti %>%
 
 
 # Save as csv
-write_csv(walrus, "../Data_Processed/TidyScripts/15_asti_marine_walrus.csv")
+write_csv(walrus, "../Data_Processed/15_asti_marine_walrus.csv")
 
 # Save as rds
 saveRDS(walrus, "../Data_Processed/15_asti_marine_walrus.rds")
-  
+
+# Save as shp
+st_write(walrus, "../Data_Processed/15_asti_marine_walrus.shp")
