@@ -100,5 +100,5 @@ write_csv(gbif_new_bearded, "../Data_Processed/TidyScripts/1-3_tidy_GBIF_queries
 
 # Save as rds and shp
 saveRDS(gbif_new_bearded, "../Data_Processed/rds_and_shps_new_tidy/1-3_tidy_GBIF_queries_bearded_seal.rds")
-st_write(gbif_new_bearded, "../Data_Processed/rds_and_shps_new_tidy/1-1_tidy_GBIF_queries_bearded_seal.shp")
+st_write(gbif_new_bearded, "../Data_Processed/rds_and_shps_new_tidy/1-3_tidy_GBIF_queries_bearded_seal.shp")
 
