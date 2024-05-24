@@ -35,11 +35,7 @@ obis_new <- obis_mams %>%
   drop_na(latitude, longitude, scientific_name, date_time) %>% 
   
   # Filter to select species of interest by scientific name and spatial location within the study area bounds.
-  filter(scientific_name %in% c("Erignathus barbatus", "Phoca largha", "Odobenus rosmarus",
-                               "Balaena mysticetus", "Cetacea", "Pusa hispida", 
-                               "Eschrichtius robustus", "Phocoena phocoena", 
-                               "Megaptera novaeangliae", "Mysticeti", 
-                               "Balaenoptera acutorostrata", "Histriophoca fasciata"),
+  filter(scientific_name %in% c("Odobenus rosmarus", "Phoca largha", "Erignathus barbatus"), 
          latitude >= 46.08836 & latitude <= 73.92759, 
          longitude >= 172.18938 | longitude <= -146.30217) %>%
   
