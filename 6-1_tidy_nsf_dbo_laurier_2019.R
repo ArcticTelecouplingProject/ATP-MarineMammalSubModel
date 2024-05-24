@@ -76,7 +76,7 @@ mams_new <- mmwatch_mams %>%
          methodObs,
          source) %>% 
   
-  # Filter to select species of interest by scientific name and spatial location within the study area bounds.
+  # Filter to occurrences with spatial location within the study area bounds
   filter(decimalLat >= 46.08836 & decimalLat <= 73.92759, 
          decimalLon >= 172.18938 | decimalLon <= -146.30217) %>%
   
@@ -94,6 +94,10 @@ mams_new <- mmwatch_mams %>%
 
 # Save as csv into respective folder - add tidy to the end of file names so we can differentiate easily
 write_csv(mams_new, "../Data_Processed/TidyScripts/6-1_tidy_nsf_dbo_laurier_2019.csv")
+
+# Save rds and shps
+saveRDS(mams_new, "../Data_Processed/rds_and_shps_new_tidy/6-1_tidy_nsf_dbo_laurier_2019.rds")
+st_write(mams_new, "../Data_Processed/rds_and_shps_new_tidy/6-1_tidy_nsf_dbo_laurier_2019.shp")
 
 # Read in tidied data
 # marine_mams <- read_csv("../Data_Processed/TidyScrips/6-1_tidy_nsf_dbo_laurier_2019.csv")
