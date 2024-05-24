@@ -73,7 +73,7 @@ bird_new <- bird %>%
          methodObs,
          source) %>% 
   
-  # Filter to select occurrences with spatial location within the study area bounds.
+  # Filter to select occurrences with spatial location within the study area bounds
   filter(decimalLat >= 46.08836 & decimalLat <= 73.92759, 
          decimalLon >= 172.18938 | decimalLon <= -146.30217) %>%
   
