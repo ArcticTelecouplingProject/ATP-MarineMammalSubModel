@@ -43,8 +43,8 @@ mams_new <- mmwatch_mams %>%
         # Make longitude column negative to reflect proper hemisphere
         LONG..W. = LONG..W.*(-1), 
          
-        # format date column
-        date_mdy = mdy(Date), # this date column is now of class "Date" like "POSIXct"
+        # Format date column
+        date_mdy = mdy(Date), # This date column is now of class "Date" like "POSIXct"
 
         # Add columns for year, month, day
         year = 2018,
