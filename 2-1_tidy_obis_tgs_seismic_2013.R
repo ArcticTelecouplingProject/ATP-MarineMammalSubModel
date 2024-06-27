@@ -40,7 +40,7 @@ obis_new <- obis_mams %>%
          longitude >= 172.18938 | longitude <= -146.30217) %>%
   
   # Add method of observation and source columns
-  mutate(methodObs = "Seismic vessel visual observations",
+  mutate(methodObs = "Seismic survey visual observation",
          source = "TGS Seismic Survey 2013",
          
          # Format date column to a standard format
@@ -79,7 +79,8 @@ write_csv(obis_new, "../Data_Processed/TidyScripts/2-1_tidy_obis_tgs_seismic_201
 
 # Save as rds and shp files
 saveRDS(obis_new, "../Data_Processed/rds_and_shps_new_tidy/2-1_tidy_obis_tgs_seismic_2013.rds")
-st_write(obis_new, "../Data_Processed/rds_and_shps_new_tidy/2-1_tidy_obis_tgs_seismic_2013.shp")
+st_write(obis_new, "../Data_Processed/rds_and_shps_new_tidy/2-1_tidy_obis_tgs_seismic_2013.shp",
+         append = FALSE)
 
 # Read in tidied data
 # marine_mams <- read_csv("../Data_Processed/TidyScripts/2-1_tidy_obis_tgs_seismic_2013.csv")
