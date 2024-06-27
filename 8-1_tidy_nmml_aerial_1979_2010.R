@@ -35,6 +35,11 @@ marine_mams <- nmml %>%
   # Drop NAs in coordinate, species, and year columns
   drop_na(decimalLatitude, decimalLongitude, species, year) %>% 
  
+  # Filter to select species of interest by scientific name and spatial location within the study area bounds
+  filter(species %in% c("Odobenus rosmarus", "Phoca largha", "Erignathus barbatus"), 
+         decimalLatitude >= 46.08836 & decimalLatitude <= 73.92759, 
+         decimalLongitude >= 172.18938 | decimalLongitude <= -146.30217) %>% 
+  
   # Modify and create new columns using mutate() function  
   # Add method of observation and source columns
   mutate(methodObs = "Aerial survey",
@@ -47,11 +52,9 @@ marine_mams <- nmml %>%
          day,
          decimalLat = decimalLatitude,
          decimalLon = decimalLongitude,
-         count = individualCount) %>% 
-  
-  # Filter to select occurrences by spatial location within the study area bounds.
-  filter(decimalLat >= 46.08836 & decimalLat <= 73.92759, 
-         decimalLon >= 172.18938 | decimalLon <= -146.30217) %>%
+         count = individualCount,
+         methodObs,
+         source) %>%
   
   # Convert to sf and transform to Alaska Albers
   st_as_sf(coords = c("decimalLon", "decimalLat"),
@@ -67,6 +70,10 @@ marine_mams <- nmml %>%
 
 # Save as csv into respective folder - add tidy to the end of file names so we can differentiate easily
 write_csv(marine_mams, "../Data_Processed/TidyScripts/8-1_tidy_nmml_aerial_1979_2010.csv")
+
+# Save rds and shps
+saveRDS(marine_mams, "../Data_Processed/rds_and_shps_new_tidy/8-1_tidy_nmml_aerial_1979_2010.rds")
+st_write(marine_mams, "../Data_Processed/rds_and_shps_new_tidy/8-1_tidy_nmml_aerial_1979_2010.shp")
 
 # Read in tidied data
 # marine_mams <- read_csv("../Data_Processed/TidyScripts/8-1_tidy_nmml_aerial_1979_2010.csv")
