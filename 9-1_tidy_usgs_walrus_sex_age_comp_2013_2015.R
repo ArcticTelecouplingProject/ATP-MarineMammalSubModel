@@ -43,7 +43,7 @@ usgs_walrus <- usgs_walrus_comp %>%
          scientificName = "Odobenus rosmarus",
          
          # Add method of observation and source columns
-         methodObs = "Research vessel visual observation",
+         methodObs = "Research cruise visual observation survey",
          source = "USGS Sex and Age Comp of Walrus Haulouts 2013-2015") %>% 
   
   # Remove unneeded columns and rename
@@ -75,6 +75,10 @@ usgs_walrus <- usgs_walrus_comp %>%
 
 # Save as csv into respective folder - add tidy to the end of file names so we can differentiate easily
 write_csv(usgs_walrus, "../Data_Processed/TidyScripts/9-1_tidy_usgs_walrus_sex_age_comp_2013_2015.csv")
+
+# Save rds and shps
+saveRDS(usgs_walrus, "../Data_Processed/rds_and_shps_new_tidy/9-1_tidy_usgs_walrus_sex_age_comp_2013_2015.rds")
+st_write(usgs_walrus, "../Data_Processed/rds_and_shps_new_tidy/9-1_tidy_usgs_walrus_sex_age_comp_2013_2015.shp")
 
 # Read in tidied data
 # usgs_walrus <- read_csv("../Data_Processed/TidyScripts/9-1_tidy_usgs_walrus_sex_age_comp_2013_2015.csv")
