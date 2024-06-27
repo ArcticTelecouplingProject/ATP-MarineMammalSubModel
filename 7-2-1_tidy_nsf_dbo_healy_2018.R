@@ -95,5 +95,9 @@ mams_new <- mmwatch_mams %>%
 # Save as csv into respective folder - add tidy to the end of file names so we can differentiate easily
 write_csv(mams_new, "../Data_Processed/TidyScripts/7-2-1_tidy_nsf_dbo_healy_2018.csv")
 
+# Save rds and shps
+saveRDS(mams_new, "../Data_Processed/rds_and_shps_new_tidy/7-2-1_tidy_nsf_dbo_healy_2018.rds")
+st_write(mams_new, "../Data_Processed/rds_and_shps_new_tidy/7-2-1_tidy_nsf_dbo_healy_2018.shp")
+
 # Read in tidied data
 # marine_mams <- read_csv("../Data_Processed/TidyScript/7-2-1_tidy_nsf_dbo_healy_2018.csv")
