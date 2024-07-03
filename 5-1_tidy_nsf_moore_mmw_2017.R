@@ -113,8 +113,8 @@ mams_new <- mmwatch_mams %>%
 write_csv(mams_new, "../Data_Processed/TidyScripts/5-1_tidy_nsf_moore_mmw_2017.csv")
 
 # Save rds and shps
-saveRDS(mams_new, "../Data_Processed/rds_and_shps_new_tidy/5-1_tidy_nsf_moore_mmw_2017.rds")
-st_write(mams_new, "../Data_Processed/rds_and_shps_new_tidy/5-1_tidy_nsf_moore_mmw_2017.shp")
+# saveRDS(mams_new, "../Data_Processed/rds_and_shps_new_tidy/5-1_tidy_nsf_moore_mmw_2017.rds")
+# st_write(mams_new, "../Data_Processed/rds_and_shps_new_tidy/5-1_tidy_nsf_moore_mmw_2017.shp", append = FALSE)
 
 # Read in tidied data
 # marine_mams <- read_csv("../Data_Processed/TidyScripts/5-1_tidy_nsf_moore_mmw_2017.csv")
