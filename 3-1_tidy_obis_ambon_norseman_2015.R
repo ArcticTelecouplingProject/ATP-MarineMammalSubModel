@@ -44,14 +44,14 @@ bird_new <- bird %>%
   # Drop NAs in coordinate, scientific name, and date columns
   drop_na(decimalLatitude, decimalLongitude, scientificName, eventDate) %>% 
   
-  # Filter to select for marine mammals in data set
-  filter(scientificName %in% c("Erignathus barbatus", "Phoca largha", "Odobenus rosmarus",
-                               "Balaena mysticetus", "Cetacea", "Pusa hispida", "Phocidae",
-                               "Eschrichtius robustus" )) %>%
+  # Filter to select our species of interest and occurrences within our study bounds
+  filter(scientificName %in% c("Erignathus barbatus", "Phoca largha", "Odobenus rosmarus"),
+         decimalLatitude >= 46.08836 & decimalLatitude <= 73.92759, 
+         decimalLongitude >= 172.18938 | decimalLongitude <= -146.30217) %>%
   
   # Modify and create new columns using mutate() function
   # Add method of observation and source columns
-  mutate(methodObs = "Research cruise visual observation survey",
+  mutate(methodObs = "Line transect visual survey",
          source = "AMBON Norseman II Cruise 2015",
          
          # format date column to a standard format
@@ -73,10 +73,6 @@ bird_new <- bird %>%
          methodObs,
          source) %>% 
   
-  # Filter to select occurrences with spatial location within the study area bounds
-  filter(decimalLat >= 46.08836 & decimalLat <= 73.92759, 
-         decimalLon >= 172.18938 | decimalLon <= -146.30217) %>%
-  
   # Convert to sf and transform to Alaska Albers
   st_as_sf(coords = c("decimalLon", "decimalLat"),
            crs = 4326,
@@ -89,12 +85,12 @@ bird_new <- bird %>%
   # Rearrange - this will order the data by the earliest date and then follow chronologically
   arrange(year, month, day)
 
-# Save as csv into respective folder - add tidy to the end of file names so we can differentiate easily
+# Save as csv into respective folder
 write_csv(bird_new, "../Data_Processed/TidyScripts/3-1_tidy_obis_ambon_norseman_2015.csv")
 
 # Save rds and shps
-saveRDS(bird_new, "../Data_Processed/rds_and_shps_new_tidy/3_1_tidy_obis_ambon_norseman_2015.rds")
-st_write(bird_new, "../Data_Processed/rds_and_shps_new_tidy/3_1_tidy_obis_ambon_norseman_2015.shp")
+# saveRDS(bird_new, "../Data_Processed/rds_and_shps_new_tidy/3_1_tidy_obis_ambon_norseman_2015.rds")
+# st_write(bird_new, "../Data_Processed/rds_and_shps_new_tidy/3_1_tidy_obis_ambon_norseman_2015.shp")
 
 # Read in tidied data
 # marine_mams <- read_csv("../Data_Processed/TidyScripts/3-1_tidy_obis_ambon_norseman_2015.csv")
