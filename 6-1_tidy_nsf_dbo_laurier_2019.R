@@ -92,12 +92,12 @@ mams_new <- mmwatch_mams %>%
   # Rearrange - this will order the data by the earliest date and then follow chronologically
   arrange(year, month, day)
 
-# Save as csv into respective folder - add tidy to the end of file names so we can differentiate easily
+# Save as csv into respective folder
 write_csv(mams_new, "../Data_Processed/TidyScripts/6-1_tidy_nsf_dbo_laurier_2019.csv")
 
 # Save rds and shps
-saveRDS(mams_new, "../Data_Processed/rds_and_shps_new_tidy/6-1_tidy_nsf_dbo_laurier_2019.rds")
-st_write(mams_new, "../Data_Processed/rds_and_shps_new_tidy/6-1_tidy_nsf_dbo_laurier_2019.shp")
+# saveRDS(mams_new, "../Data_Processed/rds_and_shps_new_tidy/6-1_tidy_nsf_dbo_laurier_2019.rds")
+# st_write(mams_new, "../Data_Processed/rds_and_shps_new_tidy/6-1_tidy_nsf_dbo_laurier_2019.shp", append = FALSE)
 
 # Read in tidied data
 # marine_mams <- read_csv("../Data_Processed/TidyScrips/6-1_tidy_nsf_dbo_laurier_2019.csv")
