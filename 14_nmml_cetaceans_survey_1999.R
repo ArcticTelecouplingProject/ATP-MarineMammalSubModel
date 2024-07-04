@@ -4,8 +4,7 @@
 # Description: Data obtained from: https://obis.org/dataset/0124b64b-16f3-40ec-b1a1-d8e9b2b7171f
 # Aerial survey from 5 June to 4 July, 1999 in Bristol Bay
 
-# Data number 7. Tidy script number 14.
-
+# This script follows a standardized method for data tidying discussed in our data paper. 
 
 # setup -------------------------------------------------------------------
 
@@ -88,8 +87,8 @@ walrus <- nmml %>%
 write_csv(walrus, "../Data_Processed/TidyScripts/14_nmml_cetacean_survey_1999.csv")
 
 # Save as rds
-saveRDS(walrus, "../Data_Processed/14_nmml_cetacean_survey_1999.rds")
+# saveRDS(walrus, "../Data_Processed/14_nmml_cetacean_survey_1999.rds")
 
 # Save as shp
-st_write(walrus, "../Data_Processed/14_nmml_cetacean_survey_1999.shp")
+# st_write(walrus, "../Data_Processed/14_nmml_cetacean_survey_1999.shp")
 
