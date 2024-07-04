@@ -3,7 +3,7 @@
 # Date: 2024-01-14
 # Description: Dataset comes from the Arctic Data Center and was obtained from Marine Mammal aerial surveys in the Bering, Chukchi, and Beaufort Seas 1979-2010. https://www.gbif.org/dataset/e80fa6fc-5468-4ee7-8a74-e6dea5ccfaf9#description
 
-# This script follows standardized methods of tidying for the marine mammal data sets we have collected contributing to a data paper.
+# This script follows a standardized method for data tidying discussed in our data paper. 
 
 # setup -------------------------------------------------------------------
 
@@ -72,8 +72,8 @@ marine_mams <- nmml %>%
 write_csv(marine_mams, "../Data_Processed/TidyScripts/8-1_tidy_nmml_aerial_1979_2010.csv")
 
 # Save rds and shps
-saveRDS(marine_mams, "../Data_Processed/rds_and_shps_new_tidy/8-1_tidy_nmml_aerial_1979_2010.rds")
-st_write(marine_mams, "../Data_Processed/rds_and_shps_new_tidy/8-1_tidy_nmml_aerial_1979_2010.shp")
+# saveRDS(marine_mams, "../Data_Processed/rds_and_shps_new_tidy/8-1_tidy_nmml_aerial_1979_2010.rds")
+# st_write(marine_mams, "../Data_Processed/rds_and_shps_new_tidy/8-1_tidy_nmml_aerial_1979_2010.shp", append = FALSE)
 
 # Read in tidied data
 # marine_mams <- read_csv("../Data_Processed/TidyScripts/8-1_tidy_nmml_aerial_1979_2010.csv")
