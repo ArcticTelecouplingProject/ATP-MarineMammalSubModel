@@ -50,7 +50,7 @@ marine_mams <- arctos %>%
   
   # Standardize what's in the methodObs column and add source column
   mutate(methodObs = "Preserved specimen",
-         source = "UAM Mammal Collections (ARCTOS)",
+         source = "UAM Mammal Collections (Arctos)",
          count = 1,
          
          # Convert to POSIX format and create year, month, day columns
