@@ -92,7 +92,7 @@ mams_new <- mmwatch_mams %>%
   arrange(year, month, day)
 
 # Save as csv into respective folder
-write_csv(mams_new, "../Data_Processed/TidyScripts/7-1-1_tidy_nsf_dbo_laurier_2018.csv")
+write_csv(mams_new, "../Data_Processed/TidyScripts/7-1-1_tidy_nsf_dbo_laurier_2018.csv", append = FALSE)
 
 # Save rds and shps
 # saveRDS(mams_new, "../Data_Processed/rds_and_shps_new_tidy/7-1-1_tidy_nsf_dbo_laurier_2018.rds")
