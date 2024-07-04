@@ -68,7 +68,7 @@ marine_mams <- nmml %>%
   # Rearrange - this will order the data by the earliest date and then follow chronologically
   arrange(year, month, day)
 
-# Save as csv into respective folder - add tidy to the end of file names so we can differentiate easily
+# Save as csv into respective folder
 write_csv(marine_mams, "../Data_Processed/TidyScripts/8-1_tidy_nmml_aerial_1979_2010.csv")
 
 # Save rds and shps
