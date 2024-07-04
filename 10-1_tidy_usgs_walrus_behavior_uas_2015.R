@@ -35,7 +35,7 @@ usgs_walrus <- usgs_walrus_uas %>%
   drop_na(Latitude, Longitude) %>%
   
   # Modify and create new columns using mutate() function
-  # Separate DateTimeStart into month and day cols by using substr()
+  # Separate Flight into month and day cols by using substr()
   mutate(year = 2015,
          month = substr(Flight, 5, 6),
          day = substr(Flight, 7, 8),
@@ -74,7 +74,7 @@ usgs_walrus <- usgs_walrus_uas %>%
   # Rearrange - this will order the data by the earliest date and then follow chronologically
   arrange(year, month, day)
 
-# Save as csv into respective folder - add tidy to the end of file names so we can differentiate easily
+# Save as csv into respective folder
 write_csv(usgs_walrus, "../Data_Processed/TidyScripts/10-1_tidy_usgs_walrus_behavior_uas_2015.csv")
 
 # Read in tidied data
