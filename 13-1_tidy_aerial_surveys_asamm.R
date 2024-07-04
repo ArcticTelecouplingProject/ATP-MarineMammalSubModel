@@ -8,7 +8,7 @@
 # from 2020 to 2021
 # https://www.ncei.noaa.gov/archive/archive-management-system/OAS/bin/prd/jquery/accession/download/39614
 
-# This script follows standardized methods of tidying for the marine mammal data sets we have collected contributing to a data paper.
+# This script follows a standardized method for data tidying discussed in our data paper. 
 
 # Libraries and Packages --------------------------------------------------
 
@@ -295,6 +295,7 @@ v2_mams <- master_v2 %>%
 all_mams <- rbind(years_mams, v0_mams, v2_mams, v24_mams)
 
 # Save output
-st_write(all_mams, "../Data_Processed/13_1_tidy_aerial_surveys_asamm.shp")
-saveRDS(all_mams, "../Data_Processed/13_1_tidy_aerial_surveys_asamm.rds")
-write_csv(all_mams, "../Data_Processed/13_1_tidy_aerial_surveys_asamm.csv")
+write_csv(all_mams, "../Data_Processed/TidyScripts/13_1_tidy_aerial_surveys_asamm.csv")
+# st_write(all_mams, "../Data_Processed/rds_and_shps_new_tidy/13_1_tidy_aerial_surveys_asamm.shp")
+# saveRDS(all_mams, "../Data_Processed/rds_and_shps_new_tidy/13_1_tidy_aerial_surveys_asamm.rds")
+
