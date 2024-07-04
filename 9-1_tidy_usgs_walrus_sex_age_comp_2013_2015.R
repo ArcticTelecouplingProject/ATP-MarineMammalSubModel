@@ -73,12 +73,12 @@ usgs_walrus <- usgs_walrus_comp %>%
   # Rearrange - this will order the data by the earliest date and then follow chronologically
   arrange(year, month, day)
 
-# Save as csv into respective folder - add tidy to the end of file names so we can differentiate easily
+# Save as csv into respective folder
 write_csv(usgs_walrus, "../Data_Processed/TidyScripts/9-1_tidy_usgs_walrus_sex_age_comp_2013_2015.csv")
 
 # Save rds and shps
-saveRDS(usgs_walrus, "../Data_Processed/rds_and_shps_new_tidy/9-1_tidy_usgs_walrus_sex_age_comp_2013_2015.rds")
-st_write(usgs_walrus, "../Data_Processed/rds_and_shps_new_tidy/9-1_tidy_usgs_walrus_sex_age_comp_2013_2015.shp")
+# saveRDS(usgs_walrus, "../Data_Processed/rds_and_shps_new_tidy/9-1_tidy_usgs_walrus_sex_age_comp_2013_2015.rds")
+# st_write(usgs_walrus, "../Data_Processed/rds_and_shps_new_tidy/9-1_tidy_usgs_walrus_sex_age_comp_2013_2015.shp", append = FALSE)
 
 # Read in tidied data
 # usgs_walrus <- read_csv("../Data_Processed/TidyScripts/9-1_tidy_usgs_walrus_sex_age_comp_2013_2015.csv")
