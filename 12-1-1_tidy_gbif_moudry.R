@@ -3,7 +3,7 @@
 # Date: 2024-01-26
 # Description:  Source: GBIF. Quality and usability challenges of global marine biodiversity databases: An example for marine mammal data. https://www.gbif.org/occurrence/download/0024533-190918142434337
 
-# This script follows standardized methods of tidying for the marine mammal data sets we have collected contributing to a data paper.
+# This script follows a standardized method for data tidying discussed in our data paper. 
 
 # setup -------------------------------------------------------------------
 
@@ -66,7 +66,8 @@ gbif_mams_1 <- gbif_mams %>%
          decimalLat = decimalLatitude,
          decimalLon = decimalLongitude,
          count = individualCount,
-         methodObs) %>% 
+         methodObs,
+         source) %>% 
 
   # Convert to sf and transform to Alaska Albers
   st_as_sf(coords = c("decimalLon", "decimalLat"),
@@ -80,7 +81,7 @@ gbif_mams_1 <- gbif_mams %>%
   # Rearrange - this will order the data by the earliest date and then follow chronologically
   arrange(year, month, day)
 
-# Save as csv into respective folder - add tidy to the end of file names so we can differentiate easily
+# Save as csv into respective folder
 write_csv(gbif_mams_1, "../Data_Processed/TidyScripts/12-1-1_tidy_gbif_moudry.csv")
 
 # Read in tidied data
