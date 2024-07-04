@@ -9,7 +9,7 @@
 # 
 # The Arctic Species Trend Index (ASTI) is part of this suite of indicators and indices developed by CAFFs CBMP. It tracks trends in over 300 Arctic vertebrate species and comprises the Arctic component of the Living Planet Index. It is important to identify how wildlife and ecosystems are changing in order to develop effective conservation and adaptation strategies in the Arctic, an environment undergoing dramatic changes. The ASTI describes overall trends across species, taxonomy, ecosystems, regions and other categories.
 
-# Data number 9. Tidy script number 15.
+# This script follows a standardized method for data tidying discussed in our data paper. 
 
 
 # setup -------------------------------------------------------------------
@@ -96,7 +96,7 @@ walrus <- asti %>%
 write_csv(walrus, "../Data_Processed/15_asti_marine_walrus.csv")
 
 # Save as rds
-saveRDS(walrus, "../Data_Processed/15_asti_marine_walrus.rds")
+# saveRDS(walrus, "../Data_Processed/15_asti_marine_walrus.rds")
 
 # Save as shp
-st_write(walrus, "../Data_Processed/15_asti_marine_walrus.shp")
+# st_write(walrus, "../Data_Processed/15_asti_marine_walrus.shp")
