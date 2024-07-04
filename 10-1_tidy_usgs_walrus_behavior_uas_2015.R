@@ -3,7 +3,7 @@
 # Date: 2024-01-20
 # Description: Source: USGS. This dataset was obtained from Behavior of Pacific Walruses Hauled Out on Sea Ice during UAS Overflights, Eastern Chukchi Sea 2015. https://alaska.usgs.gov/products/data.php?dataid=74
 
-# This script follows standardized methods of tidying for the marine mammal data sets we have collected contributing to a data paper.
+# This script follows a standardized method for data tidying discussed in our data paper. 
 
 # setup -------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney 
 datadir <- "../../ATP-MarineMammal-DataRaw/"
 
 # This script will tidy USDA UAS overflight surveys from 2015.
-usgs_walrus_uas <- read.csv(paste0(datadir,"10_usgs_walrus_behavior_uas_2015/walrus_environConditionsUAS_chukchi_battaile_2015.csv"))
+usgs_walrus_uas <- read.csv(paste0(datadir, "10_usgs_walrus_behavior_uas_2015/walrus_environConditionsUAS_chukchi_battaile_2015.csv"))
 
 # data tidying ------------------------------------------------------------
 
