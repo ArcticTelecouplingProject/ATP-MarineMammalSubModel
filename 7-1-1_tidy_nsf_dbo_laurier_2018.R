@@ -23,7 +23,7 @@ datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney 
 datadir <- "../../ATP-MarineMammal-DataRaw/"
 
 # This script will tidy the first data set of mmw survey data from 2018.
-mmwatch_mams <- read.csv(paste0(datadir,"7_nsf_stafford_mmw_2018/data/DBO_SWL_2018.csv"))
+mmwatch_mams <- read.csv(paste0(datadir, "7_nsf_stafford_mmw_2018/data/DBO_SWL_2018.csv"))
 
 # data tidying ------------------------------------------------------------
 
@@ -74,7 +74,7 @@ mams_new <- mmwatch_mams %>%
          methodObs,
          source) %>%
   
-  # Filter to select species of interest by scientific name and spatial location within the study area bounds.
+  # Filter to select occurrences within the study area bounds
   filter(decimalLat >= 46.08836 & decimalLat <= 73.92759, 
          decimalLon >= 172.18938 | decimalLon <= -146.30217) %>%
   
@@ -90,12 +90,12 @@ mams_new <- mmwatch_mams %>%
   # Rearrange - this will order the data by the earliest date and then follow chronologically
   arrange(year, month, day)
 
-# Save as csv into respective folder - add tidy to the end of file names so we can differentiate easily
+# Save as csv into respective folder
 write_csv(mams_new, "../Data_Processed/TidyScripts/7-1-1_tidy_nsf_dbo_laurier_2018.csv")
 
 # Save rds and shps
-saveRDS(mams_new, "../Data_Processed/rds_and_shps_new_tidy/7-1-1_tidy_nsf_dbo_laurier_2018.rds")
-st_write(mams_new, "../Data_Processed/rds_and_shps_new_tidy/7-1-1_tidy_nsf_dbo_laurier_2018.shp")
+# saveRDS(mams_new, "../Data_Processed/rds_and_shps_new_tidy/7-1-1_tidy_nsf_dbo_laurier_2018.rds")
+# st_write(mams_new, "../Data_Processed/rds_and_shps_new_tidy/7-1-1_tidy_nsf_dbo_laurier_2018.shp", append = FALSE)
 
 # Read in tidied data
 # marine_mams <- read_csv("../Data_Processed/TidyScripts/7-1-1_tidy_nsf_dbo_laurier_2018.csv")
