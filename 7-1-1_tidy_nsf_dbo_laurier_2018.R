@@ -74,8 +74,9 @@ mams_new <- mmwatch_mams %>%
          methodObs,
          source) %>%
   
-  # Filter to select occurrences within the study area bounds
-  filter(decimalLat >= 46.08836 & decimalLat <= 73.92759, 
+  # Filter to select species of interest within the study area bounds
+  filter(scientificName %in% c("Odobenus rosmarus", "Phoca largha", "Erignathus barbatus"),
+         decimalLat >= 46.08836 & decimalLat <= 73.92759, 
          decimalLon >= 172.18938 | decimalLon <= -146.30217) %>%
   
   # Convert to sf and transform to Alaska Albers
