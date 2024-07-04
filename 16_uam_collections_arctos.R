@@ -3,7 +3,7 @@
 # Date: 2024-04-05
 # Description: Data obtained from: https://www.gbif.org/dataset/377be098-626f-4cc2-b4b5-35700050669a
 
-# Data number 10. Tidy script number 16
+# This script follows a standardized method for data tidying discussed in our data paper. 
 
 
 # setup -------------------------------------------------------------------
@@ -91,8 +91,8 @@ marine_mams <- arctos %>%
 write_csv(marine_mams, "../Data_Processed/TidyScripts/16_uam_collections_arctos.csv")
 
 # Save as rds
-saveRDS(marine_mams, "../Data_Processed/16_uam_collections_arctos.rds")
+# saveRDS(marine_mams, "../Data_Processed/16_uam_collections_arctos.rds")
 
 # Save as shp
-st_write(marine_mams, "../Data_Processed/16_uam_collections_arctos.shp", append = FALSE)
+# st_write(marine_mams, "../Data_Processed/16_uam_collections_arctos.shp", append = FALSE)
 
