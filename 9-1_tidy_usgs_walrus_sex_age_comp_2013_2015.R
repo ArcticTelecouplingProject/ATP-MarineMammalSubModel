@@ -3,7 +3,7 @@
 # Date: 2024-01-15
 # Description:  Source: USGS. This dataset was obtained from Sex and Age Composition of Walrus Groups Hauled Out on Ice Floes in the Bering and Chukchi Seas 2013-2015. https://alaska.usgs.gov/products/data.php?dataid=354
 
-# This script follows standardized methods of tidying for the marine mammal data sets we have collected contributing to a data paper.
+# This script follows a standardized method for data tidying discussed in our data paper. 
 
 # setup -------------------------------------------------------------------
 
