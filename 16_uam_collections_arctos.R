@@ -45,7 +45,7 @@ marine_mams <- arctos %>%
          count = individualCount,
          methodObs = basisOfRecord) %>% 
   
-  # Subset to species of interst
+  # Subset to species of interest
   filter(scientificName %in% c("Odobenus rosmarus", "Erignathus barbatus", "Phoca largha")) %>% 
   
   # Standardize what's in the methodObs column and add source column
