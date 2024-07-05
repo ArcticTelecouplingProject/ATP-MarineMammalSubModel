@@ -51,7 +51,7 @@ walrus <- asti %>%
          count = individualCount,
          methodObs = basisOfRecord) %>% 
   
-  # Subset to species of interst
+  # Subset to species of interest
   filter(scientificName == "Odobenus rosmarus") %>% 
   
   # Standardize what's in the methodObs column and add source column
