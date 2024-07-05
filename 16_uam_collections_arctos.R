@@ -91,8 +91,8 @@ marine_mams <- arctos %>%
 write_csv(marine_mams, "../Data_Processed/TidyScripts/16_uam_collections_arctos.csv")
 
 # Save as rds
-# saveRDS(marine_mams, "../Data_Processed/16_uam_collections_arctos.rds")
+# saveRDS(marine_mams, "../Data_Processed/rds_and_shps_new_tidy/16_uam_collections_arctos.rds")
 
 # Save as shp
-# st_write(marine_mams, "../Data_Processed/16_uam_collections_arctos.shp", append = FALSE)
+# st_write(marine_mams, "../Data_Processed/rds_and_shps_new_tidy/16_uam_collections_arctos.shp", append = FALSE)
 
