@@ -5,7 +5,7 @@
 
 # Visual line-transect surveys for cetaceans were conducted in the southeastern Bering Sea (SEBS) from 10 June to 3 July 2000, in association with a pollock stock assessment survey aboard the NOAA ship Miller Freeman.
 
-# Data number 19. Tidy script number 17
+# This script follows a standardized method for data tidying discussed in our data paper. 
 
 
 # setup -------------------------------------------------------------------
@@ -47,11 +47,11 @@ walrus <- nmml %>%
          count = group_size,
          source = provider) %>% 
   
-  # Subset to species of interst
+  # Subset to species of interest
   filter(scientificName %in% c("Odobenus rosmarus", "Erignathus barbatus", "Phoca largha")) %>% 
   
   # Standardize what's in the methodObs column and add source column
-  mutate(methodObs = "Visual line transect survey",
+  mutate(methodObs = "Line transect visual survey",
          source = "NMML Bering Sea Cetacean Survey 2000",
          year = year(date_time),
          month = month(date_time),
@@ -89,7 +89,7 @@ walrus <- nmml %>%
 write_csv(walrus, "../Data_Processed/TidyScripts/17_nmml_bering_survey_2000.csv")
 
 # Save as rds
-saveRDS(walrus, "../Data_Processed/17_nmml_bering_survey_2000.rds")
+# saveRDS(walrus, "../Data_Processed/rds_and_shps_new_tidy/17_nmml_bering_survey_2000.rds")
 
 # Save as shp
-st_write(walrus, "../Data_Processed/17_nmml_bering_survey_2000.shp")
+# st_write(walrus, "../Data_Processed/rds_and_shps_new_tidy/17_nmml_bering_survey_2000.shp")
