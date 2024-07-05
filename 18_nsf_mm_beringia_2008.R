@@ -3,9 +3,11 @@
 # Date: 2024-04-06
 # Description: Data obtained from: https://arcticdata.io/catalog/view/doi%3A10.5065%2FD6DV1GVN
 
+# Part 1: 0801
+
 # This data set contains marine mammal observations onboard the US Coast Guard Cutter Healy during the 2008 0801 and 0802 cruises in the Bering Sea. The objective of this project has been to observe marine mammals in the context of their sea-ice "seascape" habitat. Emphasis has been placed on the winter-spring period during which Pacific walruses and ribbon seals use sea ice for reproduction, molting, rest, and as a platform for feeding and migration. The thesis is that marine mammals partition sea-ice habitat according to their life-history requirements: for Pacific walruses, "broken pack" and for ribbon seals "loose pack" provide this habitat.
 
-# Data number 25. Tidy script number 18
+# This script follows a standardized method for data tidying discussed in our data paper. 
 
 
 # setup -------------------------------------------------------------------
@@ -80,10 +82,10 @@ walrus <- nsf_2008 %>%
 
 
 # Save as csv
-write_csv(walrus, "../Data_Processed/TidyScripts/18_nsf_mm_beringia_2008.csv")
+write_csv(walrus, "../Data_Processed/TidyScripts/18-1_nsf_mm_beringia_2008.csv")
 
 # Save as rds
-saveRDS(walrus, "../Data_Processed/18_nsf_mm_beringia_2008.rds")
+# saveRDS(walrus, "../Data_Processed/rds_and_shps_new_tidy/18_nsf_mm_beringia_2008.rds")
 
 # Save as shp
-st_write(walrus, "../Data_Processed/18_nsf_mm_beringia_2008.shp")
+# st_write(walrus, "../Data_Processed/rds_and_shps_new_tidy/18_nsf_mm_beringia_2008.shp")
