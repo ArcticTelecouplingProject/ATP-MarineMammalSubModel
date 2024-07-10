@@ -103,9 +103,5 @@ gbif_new_spotted <- na_gbif %>%
 write_csv(gbif_new_spotted, "../Data_Processed/TidyScripts/1-2_GBIF_queries_spotted_seal.csv", append = FALSE)
 
 # Save as rds and shp
-# saveRDS(gbif_new_spotted, "../Data_Processed/rds_and_shps_new_tidy/1-2_tidy_GBIF_queries_spotted_seal.rds")
-# st_write(gbif_new_spotted, "../Data_Processed/rds_and_shps_new_tidy/1-2_tidy_GBIF_queries_spotted_seal.shp", append = FALSE)
-
-# Read in tidied data
-# marine_mams <- read_csv("../Data_Processed/TidyScripts/1-2_tidy_GBIF_queries_spotted_seal.csv")
-
+# saveRDS(gbif_new_spotted, "../Data_Processed/rds_and_shps_new_tidy/1-2_GBIF_queries_spotted_seal.rds")
+# st_write(gbif_new_spotted, "../Data_Processed/rds_and_shps_new_tidy/1-2_GBIF_queries_spotted_seal.shp", append = FALSE)
