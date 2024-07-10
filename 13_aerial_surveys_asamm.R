@@ -295,7 +295,7 @@ v2_mams <- master_v2 %>%
 all_mams <- rbind(years_mams, v0_mams, v2_mams, v24_mams)
 
 # Save output
-write_csv(all_mams, "../Data_Processed/TidyScripts/13-1_tidy_aerial_surveys_asamm.csv")
-# st_write(all_mams, "../Data_Processed/rds_and_shps_new_tidy/13_1_tidy_aerial_surveys_asamm.shp")
-# saveRDS(all_mams, "../Data_Processed/rds_and_shps_new_tidy/13_1_tidy_aerial_surveys_asamm.rds")
+write_csv(all_mams, "../Data_Processed/TidyScripts/13_aerial_surveys_asamm.csv")
+# st_write(all_mams, "../Data_Processed/rds_and_shps_new_tidy/13_aerial_surveys_asamm.shp")
+# saveRDS(all_mams, "../Data_Processed/rds_and_shps_new_tidy/13_aerial_surveys_asamm.rds")
 
