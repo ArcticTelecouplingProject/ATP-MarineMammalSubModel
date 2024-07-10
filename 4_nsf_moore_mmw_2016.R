@@ -105,7 +105,7 @@ mams_new <- mmwatch_mams %>%
   arrange(year, month, day)
 
 # Save as csv into respective folder
-write_csv(mams_new, "../Data_Processed/TidyScripts/4-1_tidy_nsf_moore_mmw_2016.csv")
+write_csv(mams_new, "../Data_Processed/TidyScripts/4_nsf_moore_mmw_2016.csv")
 
 # Save rds and shps
 # saveRDS(mams_new, "../Data_Processed/rds_and_shps_new_tidy/4-1_tidy_nsf_moore_mmw_2016.rds")
