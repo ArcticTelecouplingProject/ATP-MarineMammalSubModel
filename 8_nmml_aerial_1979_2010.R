@@ -69,12 +69,9 @@ marine_mams <- nmml %>%
   arrange(year, month, day)
 
 # Save as csv into respective folder
-write_csv(marine_mams, "../Data_Processed/TidyScripts/8-1_tidy_nmml_aerial_1979_2010.csv")
+write_csv(marine_mams, "../Data_Processed/TidyScripts/8_nmml_aerial_1979_2010.csv")
 
 # Save rds and shps
-# saveRDS(marine_mams, "../Data_Processed/rds_and_shps_new_tidy/8-1_tidy_nmml_aerial_1979_2010.rds")
-# st_write(marine_mams, "../Data_Processed/rds_and_shps_new_tidy/8-1_tidy_nmml_aerial_1979_2010.shp", append = FALSE)
-
-# Read in tidied data
-# marine_mams <- read_csv("../Data_Processed/TidyScripts/8-1_tidy_nmml_aerial_1979_2010.csv")
+# saveRDS(marine_mams, "../Data_Processed/rds_and_shps_new_tidy/8_nmml_aerial_1979_2010.rds")
+# st_write(marine_mams, "../Data_Processed/rds_and_shps_new_tidy/8_nmml_aerial_1979_2010.shp", append = FALSE)
 
