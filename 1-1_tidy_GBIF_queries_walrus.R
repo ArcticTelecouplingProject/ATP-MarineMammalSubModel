@@ -1,11 +1,11 @@
 # Title: Marine Mammal Data Paper Tidying 
 # Author: Natalia Portales and Sydney Waloven
 # Date: 2024-04-12
-# Description: Source: GBIF. This data set was obtained from a query on Global Biodiversity Information Facilit (GBIF): https://www.gbif.org/
+# Description: This data set was obtained from a query on Global Biodiversity Information Facility (GBIF): https://www.gbif.org/
 
 # Only species featured in this script is Pacific walrus (Odobenus rosmarus).
 
-# This script follows standardized methods of tidying for the marine mammal data sets we have collected contributing to a data paper.
+# This script follows a standardized method for data tidying discussed in our data paper.
 
 # setup -------------------------------------------------------------------
 
@@ -101,7 +101,7 @@ gbif_new <- na_gbif %>%
   arrange(year, month, day)
 
 
-# Save as csv into respective folder - add tidy to the end of file names so we can differentiate easily
+# Save as csv into respective folder
 write_csv(gbif_new, "../Data_Processed/TidyScripts/1-1_tidy_GBIF_queries_walrus.csv", append = FALSE)
 
 # Save as rds and shp
