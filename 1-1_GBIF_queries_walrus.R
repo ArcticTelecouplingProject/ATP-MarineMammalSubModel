@@ -105,9 +105,7 @@ gbif_new <- na_gbif %>%
 write_csv(gbif_new, "../Data_Processed/TidyScripts/1-1_GBIF_queries_walrus.csv", append = FALSE)
 
 # Save as rds and shp
-# saveRDS(gbif_new, "../Data_Processed/rds_and_shps_new_tidy/1-1_tidy_GBIF_queries_walrus.rds")
-# st_write(gbif_new, "../Data_Processed/rds_and_shps_new_tidy/1-1_tidy_GBIF_queries_walrus.shp")
+# saveRDS(gbif_new, "../Data_Processed/rds_and_shps_new_tidy/1-1_GBIF_queries_walrus.rds")
+# st_write(gbif_new, "../Data_Processed/rds_and_shps_new_tidy/1-1_GBIF_queries_walrus.shp")
 
-# Read in tidied data
-# marine_mams <- read_csv("../Data_Processed/1-1_tidy_GBIF_queries_walrus.csv")
 
