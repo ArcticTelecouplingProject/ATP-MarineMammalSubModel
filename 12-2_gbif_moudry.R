@@ -85,8 +85,8 @@ gbif_mams_2 <- gbif_mams %>%
   arrange(year, month, day)
 
 # Save as csv into respective folder
-write_csv(gbif_mams_2, "../Data_Processed/TidyScripts/12-2-1_tidy_gbif_moudry.csv")
+write_csv(gbif_mams_2, "../Data_Processed/TidyScripts/12-2_gbif_moudry.csv")
 
-# Read in tidied data
-# marine_mams <- read_csv("../Data_Processed/TidyScripts/12-2-1_tidy_gbif_moudry.csv")
-
+# Save rds and shps
+# saveRDS(gbif_mams_2, "../Data_Processed/rds_and_shps_new_tidy/12-2_gbif_moudry.rds")
+# st_write(gbif_mams_2, "../Data_Processed/rds_and_shps_new_tidy/12-2_gbif_moudry.shp", append = FALSE)
