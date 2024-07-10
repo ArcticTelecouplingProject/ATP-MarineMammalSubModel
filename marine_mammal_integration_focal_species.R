@@ -1,29 +1,30 @@
 # Title: Marine Mammal Data Paper Integration Script
 # Author: Sydney Waloven and Natalia Portales
-# Date: 2024-04-04
-# Description: This dataset was built to merge collected marine mammal data sets and includes the following tidied datasets:
+# Date: 2024-07-10
+# Description: This data set merges the following tidied data sets:
 
-# 1-1_tidy_GBIF_queries_walrus
-# 1-2_tidy_GBIF_queries_spotted_seal
-# 1-3_tidy_GBIF_queries_bearded_seal
-# 2-1_tidy_obis_tgs_seismic_2013
-# 3-1_tidy_obis_ambon_norseman_2015
-# 4-1_tidy_nsf_moore_mmw_2016
-# 5-1_tidy_nsf_moore_mmw_2017
-# 6-1_tidy_nsf_dbo_laurier_2019
-# 7-1-1_tidy_nsf_dbo_laurier_2018
-# 7-2-1_tidy_nsf_dbo_healy_2018
-# 8-1_tidy_nmml_aerial_1979_2010
-# 9-1_tidy_usgs_walrus_sex_age_comp_2013_2015
-# 10-1_tidy_usgs_walrus_behavior_uas_2015
-# 12-1-1_tidy_gbif_moudry
-# 12-2-1_tidy_gbif_moudry
-# 13-1_tidy_aerial_surveys_asamm
+# 1-1_GBIF_queries_walrus
+# 1-2_GBIF_queries_spotted_seal
+# 1-3_GBIF_queries_bearded_seal
+# 2_obis_tgs_seismic_2013
+# 3_obis_ambon_norseman_2015
+# 4_nsf_moore_mmw_2016
+# 5_nsf_moore_mmw_2017
+# 6_nsf_dbo_laurier_2019
+# 7-1_nsf_dbo_laurier_2018
+# 7-2_nsf_dbo_healy_2018
+# 8_nmml_aerial_1979_2010
+# 9_usgs_walrus_sex_age_comp_2013_2015
+# 10_usgs_walrus_behavior_uas_2015
+# 12_1_gbif_moudry
+# 12_2_gbif_moudry
+# 13_aerial_surveys_asamm
 # 14_nmml_cetaceans_survey_1999
 # 15_asti_marine_walrus
 # 16_uam_collections_arctos
 # 17_nmml_bering_survey_2000
-# 18_nsf_mm_beringia_2008
+# 18-1_nsf_mm_beringia_2008
+# 18-2_nsf_mm_beringia_2008
 # 19_nsf_mm_beringia_2007
 
 # setup -------------------------------------------------------------------
