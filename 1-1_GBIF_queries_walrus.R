@@ -102,7 +102,7 @@ gbif_new <- na_gbif %>%
 
 
 # Save as csv into respective folder
-write_csv(gbif_new, "../Data_Processed/TidyScripts/1-1_tidy_GBIF_queries_walrus.csv", append = FALSE)
+write_csv(gbif_new, "../Data_Processed/TidyScripts/1-1_GBIF_queries_walrus.csv", append = FALSE)
 
 # Save as rds and shp
 # saveRDS(gbif_new, "../Data_Processed/rds_and_shps_new_tidy/1-1_tidy_GBIF_queries_walrus.rds")
