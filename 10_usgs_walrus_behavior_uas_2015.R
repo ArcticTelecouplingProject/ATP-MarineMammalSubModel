@@ -75,8 +75,8 @@ usgs_walrus <- usgs_walrus_uas %>%
   arrange(year, month, day)
 
 # Save as csv into respective folder
-write_csv(usgs_walrus, "../Data_Processed/TidyScripts/10-1_tidy_usgs_walrus_behavior_uas_2015.csv")
+write_csv(usgs_walrus, "../Data_Processed/TidyScripts/10_usgs_walrus_behavior_uas_2015.csv")
 
-# Read in tidied data
-# marine_mams <- read_csv("../Data_Processed/TidyScripts/10-1_tidy_usgs_walrus_behavior_uas_2015.csv")
-
+# Save rds and shps
+# saveRDS(usgs_walrus, "../Data_Processed/rds_and_shps_new_tidy/10_usgs_walrus_behavior_uas_2015.rds")
+# st_write(usgs_walrus, "../Data_Processed/rds_and_shps_new_tidy/10_usgs_walrus_behavior_uas_2015.shp", append = FALSE)

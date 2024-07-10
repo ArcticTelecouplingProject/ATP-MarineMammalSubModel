@@ -74,11 +74,8 @@ usgs_walrus <- usgs_walrus_comp %>%
   arrange(year, month, day)
 
 # Save as csv into respective folder
-write_csv(usgs_walrus, "../Data_Processed/TidyScripts/9-1_tidy_usgs_walrus_sex_age_comp_2013_2015.csv")
+write_csv(usgs_walrus, "../Data_Processed/TidyScripts/9_usgs_walrus_sex_age_comp_2013_2015.csv")
 
 # Save rds and shps
-# saveRDS(usgs_walrus, "../Data_Processed/rds_and_shps_new_tidy/9-1_tidy_usgs_walrus_sex_age_comp_2013_2015.rds")
-# st_write(usgs_walrus, "../Data_Processed/rds_and_shps_new_tidy/9-1_tidy_usgs_walrus_sex_age_comp_2013_2015.shp", append = FALSE)
-
-# Read in tidied data
-# usgs_walrus <- read_csv("../Data_Processed/TidyScripts/9-1_tidy_usgs_walrus_sex_age_comp_2013_2015.csv")
+# saveRDS(usgs_walrus, "../Data_Processed/rds_and_shps_new_tidy/9_usgs_walrus_sex_age_comp_2013_2015.rds")
+# st_write(usgs_walrus, "../Data_Processed/rds_and_shps_new_tidy/9_usgs_walrus_sex_age_comp_2013_2015.shp", append = FALSE)
