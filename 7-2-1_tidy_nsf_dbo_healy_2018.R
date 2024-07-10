@@ -2,9 +2,9 @@
 # Author: Natalia Portales and Sydney Waloven
 # Date: 2024-03-18
 # Description: Source: Arctic Data Center. This dataset was obtained from Marine Mammal Sightings from cruises in 2018. https://arcticdata.io/catalog/view/doi%3A10.18739%2FA2NV99B09
-# Part II
+# Part 2
 
-# This script follows standardized methods of tidying for the marine mammal data sets we have collected contributing to a data paper.
+# This script follows a standardized method for data tidying discussed in our data paper.
 
 # setup -------------------------------------------------------------------
 
