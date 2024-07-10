@@ -3,7 +3,7 @@
 # Date: 2024-03-23
 # Description: # Source: Arctic Data Center. This dataset was obtained from: Arctic Data Center Marine Mammal Watch, Northern Bering Sea and Chukchi Sea August 2017. https://arcticdata.io/catalog/view/doi%3A10.18739%2FA27P8TD2J
 
-# This script follows standardized methods of tidying for the marine mammal data sets we have collected contributing to a data paper.
+# This script follows a standardized method for data tidying discussed in our data paper.
 
 # setup -------------------------------------------------------------------
 
@@ -109,7 +109,7 @@ mams_new <- mmwatch_mams %>%
   # Rearrange - this will order the data by the earliest date and then follow chronologically
   arrange(year, month, day)
 
-# Save as csv into respective folder - add tidy to the end of file names so we can differentiate easily
+# Save as csv into respective folder
 write_csv(mams_new, "../Data_Processed/TidyScripts/5-1_tidy_nsf_moore_mmw_2017.csv")
 
 # Save rds and shps
