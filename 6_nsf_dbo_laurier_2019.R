@@ -99,7 +99,4 @@ write_csv(mams_new, "../Data_Processed/TidyScripts/6_nsf_dbo_laurier_2019.csv")
 # saveRDS(mams_new, "../Data_Processed/rds_and_shps_new_tidy/6_nsf_dbo_laurier_2019.rds")
 # st_write(mams_new, "../Data_Processed/rds_and_shps_new_tidy/6_nsf_dbo_laurier_2019.shp", append = FALSE)
 
-# Read in tidied data
-# marine_mams <- read_csv("../Data_Processed/TidyScrips/6-1_tidy_nsf_dbo_laurier_2019.csv")
-
 
