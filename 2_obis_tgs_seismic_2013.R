@@ -75,7 +75,7 @@ obis_new <- obis_mams %>%
   arrange(year, month, day)
 
 # Save as csv into respective folder
-write_csv(obis_new, "../Data_Processed/TidyScripts/2-1_tidy_obis_tgs_seismic_2013.csv")
+write_csv(obis_new, "../Data_Processed/TidyScripts/2_obis_tgs_seismic_2013.csv")
 
 # Save as rds and shp files
 # saveRDS(obis_new, "../Data_Processed/rds_and_shps_new_tidy/2-1_tidy_obis_tgs_seismic_2013.rds")
