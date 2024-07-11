@@ -58,14 +58,21 @@ list.files("../Data_Processed/TidyScripts/",
   list2env(.GlobalEnv)
 
 
-# Read all data sets into one integrated df -----
+# Read all data sets into one integrated CSV -----
 
-# List all csvs in the TidyScripts folder and read in to one df
+# List all CSVs in the TidyScripts folder and read in to one df
 tidyscripts <- list.files("../Data_Processed/TidyScripts/",
                           pattern = ".csv$",
                           full.names = TRUE) %>% 
   read_csv() %>% 
   drop_na()
+
+# Convert integrated df to sf object
+tidy_sf <- tidyscripts %>%
+  st_as_sf(coords = c("decimalLon", "decimalLat"),
+           crs = 4326,
+           remove = FALSE) %>% 
+  st_transform(crs = 3338)
 
 
 # data tidying ------------------------------------------------------------
@@ -81,10 +88,15 @@ scripts_focal <- tidyscripts %>%
   distinct() %>% 
   
   # Remove NAs
-  na.omit()
-
-
-
+  na.omit() %>% 
+  
+  # Convert necessary columns to numeric
+  mutate(year = as.numeric(year),
+         month = as.numeric(month),
+         day = as.numeric(day),
+         count = as.numeric(count),
+         decimalLat = as.numeric(decimalLat),
+         decimalLon = as.numeric(decimalLon)) 
 
 
 # Save this to a csv and shp
@@ -93,11 +105,116 @@ st_write(scripts_focal, "../Data_Processed/marine_mammal_integration/marine_mamm
 st_write(scripts_focal, "../Data_Processed/marine_mammal_integration/marine_mammal_integration_focal_species.shp")
 
 
+# summaries and plotting --------------------------------------------------
 
-# summaries ---------------------------------------------------------------
+# Set datadir
+datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney - ATP-MarineMammal-DataRaw/"
+datadir <- "../../ATP-MarineMammal-DataRaw/"
 
-test <- scripts_focal %>% 
-  group_by(source) %>% 
-  summarize(n = n()) %>% 
-  arrange(-n)
+# Summarize by year to see number of locations during each year
+all_mams_sum <- scripts_focal %>%
+  st_drop_geometry() %>%
+  group_by(year) %>%
+  summarize(n = n()) %>%
+  ungroup() %>% 
+  mutate(year_idx = c(1:nrow(.))) # Add time step index
+  
 
+all_mams_sum %>% 
+  ggplot(aes(x = year, y = n, fill = n)) +
+  # ggimage::geom_image(image = img,
+  #                     size = 0.03) +
+  geom_bar(stat = "identity") +
+  labs(
+    title = "Marine mammal occurrences in the greater Bering Strait Region",
+    subtitle = "Pacific walrus, spotted seal, bearded seal",
+    x = "Year",
+    y = "Counts",
+    fill = "Counts") +
+  scale_fill_viridis_c(direction = -1,
+                       na.value = "#dcdcdc") +
+  theme_bw() +
+  theme(plot.title = element_text(face = "bold", size = 20),
+        axis.title.x = element_text(face = "bold", size = 14),
+        axis.title.y = element_text(face = "bold", size = 14),
+        axis.text.x = element_text(size = 16),
+        axis.text.y = element_text(size = 16),
+        legend.position = "none") # remove legend
+  
+
+# Import base map of US/RUS - this is already projected to Alaska Albers 3338
+base_map <- st_read(paste0(datadir, "base_map")) %>% 
+  # These values came from reducing the extent of the original base_map
+  st_crop(xmin = -1500000, ymin = 159766, xmax = 1250000, ymax = 3000000)
+
+
+# Create tmap by decade
+mams_tmap <- scripts_focal %>% 
+  mutate(year = as.factor(year),
+         
+         # Add decade column based on if the year value fell between a certain range
+         decade =
+           case_when(year %in% c(1970:1979) ~ "1970s",
+                     year %in% c(1980:1989) ~ "1980s",
+                     year %in% c(1990:1999) ~ "1990s",
+                     year %in% c(2000:2009) ~ "2000s",
+                     year %in% c(2010:2019) ~ "2010s",
+                     year %in% c(2020:2029) ~ "2020s",
+                     TRUE ~ NA),
+         
+         season =
+           case_when(month %in% c(12, 1, 2) ~ "Winter",
+                     month %in% c(3:5) ~ "Spring",
+                     month %in% c(6:8) ~ "Summer",
+                     month %in% c(9:11) ~ "Fall",
+                     TRUE ~ NA))
+
+# Facet by decade
+ggplot() + 
+  geom_sf(data = base_map) + 
+  geom_sf(data = mams_tmap, mapping = aes(color = factor(season))) +
+  facet_wrap(~ decade,
+             
+             # Rename the facet labels to decade range
+             labeller = labeller(decade = 
+                                   c("1970s" = "1970-1979",
+                                     "1980s" = "1980-1989",
+                                     "1990s" = "1990-1999",
+                                     "2000s" = "2000-2009",
+                                     "2010s" = "2010-2019",
+                                     "2020s" = "2020-2022"))) +
+  labs(
+    title = "Bearded seal occurrences in the Bering Strait Region and North Slope, AK",
+    color = "Season") +
+  theme_bw() +
+  theme(plot.title = element_text(face = "bold", size = 18), # adjust title
+        strip.text = element_text(face = "bold", size = 14)) # adjust facet headers
+
+
+# Plot all bearded seal occurrence points against cropped base map - facet by month
+ggplot() + 
+  geom_sf(data = base_map) + 
+  geom_sf(data = mams_tmap, mapping = aes(color = factor(month))) +
+  facet_wrap(~ month,
+             
+             # Rename the facet labels to their month names instead of the number
+             labeller = labeller(month = 
+                                   c("1" = "January",
+                                     "2" = "February",
+                                     "3" = "March",
+                                     "4" = "April",
+                                     "5" = "May",
+                                     "6" = "June",
+                                     "7" = "July",
+                                     "8" = "August",
+                                     "9" = "September",
+                                     "10" = "October",
+                                     "11" = "November",
+                                     "12" = "December"))) +
+  labs(
+    title = "Bearded seal occurrences in the Bering Strait Region and North Slope, AK",
+    color = "Season") +
+  theme_bw() +
+  theme(plot.title = element_text(face = "bold", size = 15), # adjust title
+        strip.text = element_text(face = "bold", size = 14), # adjust facet headers
+        legend.position = "none") # remove legend
