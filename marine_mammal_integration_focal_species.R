@@ -50,8 +50,9 @@ list.files("../Data_Processed/TidyScripts/",
               tools::file_path_sans_ext() %>%
               gsub("^[^_]*_", "", .)) %>%
   
-  # Read each CSV
-  map(~ read_csv(.)) %>%
+  # Read each CSV and remove any rows that have NAs
+  map(~ read_csv(.) %>% 
+      drop_na()) %>%
   
   # List individual items to the global environment
   list2env(.GlobalEnv)
@@ -63,13 +64,14 @@ list.files("../Data_Processed/TidyScripts/",
 tidyscripts <- list.files("../Data_Processed/TidyScripts/",
                           pattern = ".csv$",
                           full.names = TRUE) %>% 
-  read_csv()
+  read_csv() %>% 
+  drop_na()
 
 
 # data tidying ------------------------------------------------------------
 
 
-# Isolate occurrences of focal species
+# Ensure only occurrences of focal species are included
 scripts_focal <- tidyscripts %>% 
   filter(scientificName %in% c("Odobenus rosmarus", 
                                "Phoca largha",
@@ -81,9 +83,21 @@ scripts_focal <- tidyscripts %>%
   # Remove NAs
   na.omit()
 
+
+
+
+
 # Save this to a csv and shp
-st_write(all_df_focal, "../Data_Processed/marine_mammal_integration/marine_mammal_integration_focal_species.csv")
+st_write(scripts_focal, "../Data_Processed/marine_mammal_integration/marine_mammal_integration_focal_species.csv")
 
-st_write(all_df_focal, "../Data_Processed/marine_mammal_integration/marine_mammal_integration_focal_species.shp")
+st_write(scripts_focal, "../Data_Processed/marine_mammal_integration/marine_mammal_integration_focal_species.shp")
 
+
+
+# summaries ---------------------------------------------------------------
+
+test <- scripts_focal %>% 
+  group_by(source) %>% 
+  summarize(n = n()) %>% 
+  arrange(-n)
 
