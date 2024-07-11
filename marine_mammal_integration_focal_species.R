@@ -70,14 +70,16 @@ tidyscripts <- list.files("../Data_Processed/TidyScripts/",
 
 
 # Isolate occurrences of focal species
-all_df_focal <- all_df %>% 
-  filter(scientificName %in% c("Odobenus rosmarus", "Phoca largha", "Erignathus barbatus")) %>% 
+all_df_focal <- tidyscripts %>% 
+  filter(scientificName %in% c("Odobenus rosmarus", 
+                               "Phoca largha",
+                               "Erignathus barbatus")) %>% 
   
   # Eliminate repeat occurrences
-  distinct(all_df_focal) %>% 
+  distinct() %>% 
   
   # Remove NAs
-  na.omit(unique_focal)
+  na.omit()
 
 # Save this to a csv and shp
 st_write(all_df_focal, "../Data_Processed/marine_mammal_integration/marine_mammal_integration_focal_species.csv")
