@@ -58,6 +58,10 @@ gbif_mams_2 <- gbif_mams %>%
             case_when(species == "Odobenus rosmarus divergens" ~ "Odobenus rosmarus",
                       species == "Odobenus rosmarus" ~ "Odobenus rosmarus")) %>%
   
+  # Add count column
+  transform(count = ifelse
+            (is.na(year) & is.na(month) & is.na(day), 0, 1)) %>%
+  
   # Remove unneeded columns and rename
   select(scientificName,
          year,
@@ -65,12 +69,9 @@ gbif_mams_2 <- gbif_mams %>%
          day,
          decimalLat = decimallatitude,
          decimalLon = decimallongitude,
+         count,
          methodObs,
          source) %>% 
-  
-  # Add count column
-  transform(count = ifelse
-              (is.na(year) & is.na(month) & is.na(day), 0, 1)) %>%
   
   # Convert to sf and transform to Alaska Albers
   st_as_sf(coords = c("decimalLon", "decimalLat"),
@@ -85,7 +86,7 @@ gbif_mams_2 <- gbif_mams %>%
   arrange(year, month, day)
 
 # Save as csv into respective folder
-write_csv(gbif_mams_2, "../Data_Processed/TidyScripts/12-2_gbif_moudry.csv")
+write_csv(gbif_mams_2, "../Data_Processed/TidyScripts/12-2_gbif_moudry.csv", append = FALSE)
 
 # Save rds and shps
 # saveRDS(gbif_mams_2, "../Data_Processed/rds_and_shps_new_tidy/12-2_gbif_moudry.rds")
