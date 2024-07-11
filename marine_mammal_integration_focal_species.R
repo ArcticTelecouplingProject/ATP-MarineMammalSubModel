@@ -70,7 +70,7 @@ tidyscripts <- list.files("../Data_Processed/TidyScripts/",
 
 
 # Isolate occurrences of focal species
-all_df_focal <- tidyscripts %>% 
+scripts_focal <- tidyscripts %>% 
   filter(scientificName %in% c("Odobenus rosmarus", 
                                "Phoca largha",
                                "Erignathus barbatus")) %>% 
