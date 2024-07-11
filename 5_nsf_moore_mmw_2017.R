@@ -94,7 +94,8 @@ mams_new <- mmwatch_mams %>%
          source) %>% 
   
   # Filter to select occurrences with spatial location within the study area bounds
-  filter(decimalLat >= 46.08836 & decimalLat <= 73.92759, 
+  filter(scientificName %in% c("Odobenus rosmarus", "Phoca largha", "Erignathus barbatus"),
+         decimalLat >= 46.08836 & decimalLat <= 73.92759, 
          decimalLon >= 172.18938 | decimalLon <= -146.30217) %>%
   
   # Convert to sf and transform to Alaska Albers
@@ -110,7 +111,7 @@ mams_new <- mmwatch_mams %>%
   arrange(year, month, day)
 
 # Save as csv into respective folder
-write_csv(mams_new, "../Data_Processed/TidyScripts/5_nsf_moore_mmw_2017.csv")
+write_csv(mams_new, "../Data_Processed/TidyScripts/5_nsf_moore_mmw_2017.csv", append = FALSE)
 
 # Save rds and shps
 # saveRDS(mams_new, "../Data_Processed/rds_and_shps_new_tidy/5_nsf_moore_mmw_2017.rds")
