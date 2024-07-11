@@ -38,26 +38,6 @@ rm(list=ls())
 
 # Import data -------------------------------------------------------------
 
-# List individual data sets to the environment -----
-
-# List all files
-list.files("../Data_Processed/TidyScripts/", 
-           pattern = ".csv$", 
-           full.names = TRUE) %>%
-  
-  # Assign names
-  set_names(~ basename(.) %>%
-              tools::file_path_sans_ext() %>%
-              gsub("^[^_]*_", "", .)) %>%
-  
-  # Read each CSV and remove any rows that have NAs
-  map(~ read_csv(.) %>% 
-      drop_na()) %>%
-  
-  # List individual items to the global environment
-  list2env(.GlobalEnv)
-
-
 # Read all data sets into one integrated CSV -----
 
 # List all CSVs in the TidyScripts folder and read in to one df
@@ -75,11 +55,31 @@ tidy_sf <- tidyscripts %>%
   st_transform(crs = 3338)
 
 
+# List individual data sets to the environment -----
+
+# List all files
+list.files("../Data_Processed/TidyScripts/", 
+           pattern = ".csv$", 
+           full.names = TRUE) %>%
+  
+  # Assign names
+  set_names(~ basename(.) %>%
+              tools::file_path_sans_ext() %>%
+              gsub("^[^_]*_", "", .)) %>%
+  
+  # Read each CSV and remove any rows that have NAs
+  map(~ read_csv(.) %>% 
+        drop_na()) %>%
+  
+  # List individual items to the global environment
+  list2env(.GlobalEnv)
+
+
 # data tidying ------------------------------------------------------------
 
 
 # Ensure only occurrences of focal species are included
-scripts_focal <- tidyscripts %>% 
+scripts_focal <- tidy_sf %>% 
   filter(scientificName %in% c("Odobenus rosmarus", 
                                "Phoca largha",
                                "Erignathus barbatus")) %>% 
@@ -102,10 +102,13 @@ scripts_focal <- tidyscripts %>%
 # Save this to a csv and shp
 st_write(scripts_focal, "../Data_Processed/marine_mammal_integration/marine_mammal_integration_focal_species.csv")
 
-st_write(scripts_focal, "../Data_Processed/marine_mammal_integration/marine_mammal_integration_focal_species.shp")
+st_write(tidy_sf, "../Data_Processed/marine_mammal_integration/marine_mammal_integration_focal_species.shp")
 
 
 # summaries and plotting --------------------------------------------------
+
+# Optional read-in saved data
+scripts_focal <- st_read("../Data_Processed/marine_mammal_integration/marine_mammal_integration_focal_species.shp")
 
 # Set datadir
 datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney - ATP-MarineMammal-DataRaw/"
@@ -126,7 +129,7 @@ all_mams_sum %>%
   #                     size = 0.03) +
   geom_bar(stat = "identity") +
   labs(
-    title = "Marine mammal occurrences in the greater Bering Strait Region",
+    title = "Marine mammal occurrences in the Bering Strait Region",
     subtitle = "Pacific walrus, spotted seal, bearded seal",
     x = "Year",
     y = "Counts",
@@ -162,6 +165,12 @@ mams_tmap <- scripts_focal %>%
                      year %in% c(2020:2029) ~ "2020s",
                      TRUE ~ NA),
          
+         century =
+           case_when(year %in% c(1800:1899) ~ "1800s",
+                     year %in% c(1900:1999) ~ "1900s",
+                     year %in% c(2000:2099) ~ "2000s",
+                     TRUE ~ NA),
+         
          season =
            case_when(month %in% c(12, 1, 2) ~ "Winter",
                      month %in% c(3:5) ~ "Spring",
@@ -169,22 +178,14 @@ mams_tmap <- scripts_focal %>%
                      month %in% c(9:11) ~ "Fall",
                      TRUE ~ NA))
 
-# Facet by decade
+# Facet by century
 ggplot() + 
   geom_sf(data = base_map) + 
   geom_sf(data = mams_tmap, mapping = aes(color = factor(season))) +
-  facet_wrap(~ decade,
-             
-             # Rename the facet labels to decade range
-             labeller = labeller(decade = 
-                                   c("1970s" = "1970-1979",
-                                     "1980s" = "1980-1989",
-                                     "1990s" = "1990-1999",
-                                     "2000s" = "2000-2009",
-                                     "2010s" = "2010-2019",
-                                     "2020s" = "2020-2022"))) +
+  facet_wrap(~ century) +
   labs(
-    title = "Bearded seal occurrences in the Bering Strait Region and North Slope, AK",
+    title = "Marine mammal occurrences",
+    subtitle = "Bering Strait Region and North Slope, Alaska",
     color = "Season") +
   theme_bw() +
   theme(plot.title = element_text(face = "bold", size = 18), # adjust title
@@ -212,7 +213,8 @@ ggplot() +
                                      "11" = "November",
                                      "12" = "December"))) +
   labs(
-    title = "Bearded seal occurrences in the Bering Strait Region and North Slope, AK",
+    title = "Marine mammal occurrences",
+    subtitle = "Bering Strait Region and North Slope, Alaska",
     color = "Season") +
   theme_bw() +
   theme(plot.title = element_text(face = "bold", size = 15), # adjust title
