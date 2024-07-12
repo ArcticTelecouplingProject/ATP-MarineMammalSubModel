@@ -131,14 +131,14 @@ datadir <- "../../ATP-MarineMammal-DataRaw/"
 # Summarize by year to see number of locations during each year
 all_mams_sum <- scripts_focal %>%
   st_drop_geometry() %>%
-  group_by(year) %>%
+  group_by(year(date)) %>%
   summarize(n = n()) %>%
   ungroup() %>% 
   mutate(year_idx = c(1:nrow(.))) # Add time step index
 
 
 all_mams_sum %>% 
-  ggplot(aes(x = year, y = n, fill = n)) +
+  ggplot(aes(x = `year(date)`, y = n, fill = n)) +
   # ggimage::geom_image(image = img,
   #                     size = 0.03) +
   geom_bar(stat = "identity") +
@@ -167,30 +167,36 @@ base_map <- st_read(paste0(datadir, "base_map")) %>%
 
 # Create tmap by decade
 mams_tmap <- scripts_focal %>% 
-  mutate(year = as.factor(year),
+  mutate(year = year(date),
+         month = month(date),
          
          # Add decade column based on if the year value fell between a certain range
-         decade =
-           case_when(year %in% c(1970:1979) ~ "1970s",
-                     year %in% c(1980:1989) ~ "1980s",
-                     year %in% c(1990:1999) ~ "1990s",
-                     year %in% c(2000:2009) ~ "2000s",
-                     year %in% c(2010:2019) ~ "2010s",
-                     year %in% c(2020:2029) ~ "2020s",
-                     TRUE ~ NA),
+         decade = case_when(
+           year %in% 1970:1979 ~ "1970s",
+           year %in% 1980:1989 ~ "1980s",
+           year %in% 1990:1999 ~ "1990s",
+           year %in% 2000:2009 ~ "2000s",
+           year %in% 2010:2019 ~ "2010s",
+           year %in% 2020:2029 ~ "2020s",
+           TRUE ~ NA_character_
+         ),
          
-         century =
-           case_when(year %in% c(1800:1899) ~ "1800s",
-                     year %in% c(1900:1999) ~ "1900s",
-                     year %in% c(2000:2099) ~ "2000s",
-                     TRUE ~ NA),
+         century = case_when(
+           year %in% 1800:1899 ~ "1800s",
+           year %in% 1900:1999 ~ "1900s",
+           year %in% 2000:2099 ~ "2000s",
+           TRUE ~ NA_character_
+         ),
          
-         season =
-           case_when(month %in% c(12, 1, 2) ~ "Winter",
-                     month %in% c(3:5) ~ "Spring",
-                     month %in% c(6:8) ~ "Summer",
-                     month %in% c(9:11) ~ "Fall",
-                     TRUE ~ NA))
+         season = case_when(
+           month %in% c(12, 1, 2) ~ "Winter",
+           month %in% 3:5 ~ "Spring",
+           month %in% 6:8 ~ "Summer",
+           month %in% 9:11 ~ "Fall",
+           TRUE ~ NA_character_
+         )
+  )
+
 
 # Facet by century
 ggplot() + 
@@ -206,7 +212,7 @@ ggplot() +
         strip.text = element_text(face = "bold", size = 14)) # adjust facet headers
 
 
-# Plot all bearded seal occurrence points against cropped base map - facet by month
+# Plot all occurrence points against cropped base map - facet by month
 ggplot() + 
   geom_sf(data = base_map) + 
   geom_sf(data = mams_tmap, mapping = aes(color = factor(month))) +
