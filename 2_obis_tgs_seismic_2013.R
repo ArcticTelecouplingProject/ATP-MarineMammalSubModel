@@ -1,7 +1,7 @@
 # Title: Marine Mammal Data Paper Tidying 
 # Author: Natalia Portales and Sydney Waloven
 # Date: 2024-03-24
-# Description: Source: TGS Seismic Survey Visual Sightings in Chukchi Sea 2013. https://obis.org/dataset/4b394534-8a6b-4bdb-bf1b-f07f983f9e37. This script follows standardized methods of tidying for the marine mammal data sets we have collected contributing to a data paper.
+# Description: Source: TGS Seismic Survey Visual Sightings in Chukchi Sea 2013. https://obis.org/dataset/4b394534-8a6b-4bdb-bf1b-f07f983f9e37.
 
 # This script follows a standardized method for data tidying discussed in our data paper.
 
