@@ -128,6 +128,12 @@ scripts_focal <- read_rds("../Data_Processed/marine_mammal_integration/marine_ma
 datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney - ATP-MarineMammal-DataRaw/"
 datadir <- "../../ATP-MarineMammal-DataRaw/"
 
+# Import base map of US/RUS - this is already projected to Alaska Albers 3338
+base_map <- st_read(paste0(datadir, "base_map")) %>% 
+  # These values came from reducing the extent of the original base_map
+  st_crop(xmin = -1500000, ymin = 159766, xmax = 1250000, ymax = 3000000)
+
+
 # Summarize by year to see number of locations during each year
 all_mams_sum <- scripts_focal %>%
   st_drop_geometry() %>%
@@ -157,12 +163,6 @@ all_mams_sum %>%
         axis.text.x = element_text(size = 16),
         axis.text.y = element_text(size = 16),
         legend.position = "none") # remove legend
-
-
-# Import base map of US/RUS - this is already projected to Alaska Albers 3338
-base_map <- st_read(paste0(datadir, "base_map")) %>% 
-  # These values came from reducing the extent of the original base_map
-  st_crop(xmin = -1500000, ymin = 159766, xmax = 1250000, ymax = 3000000)
 
 
 # Create tmap by decade
@@ -213,7 +213,7 @@ ggplot() +
 
 
 # Plot all occurrence points against cropped base map - facet by month
-ggplot() + 
+p <- ggplot() + 
   geom_sf(data = base_map) + 
   geom_sf(data = mams_tmap, mapping = aes(color = factor(month))) +
   facet_wrap(~ month,
@@ -240,3 +240,6 @@ ggplot() +
   theme(plot.title = element_text(face = "bold", size = 15), # adjust title
         strip.text = element_text(face = "bold", size = 14), # adjust facet headers
         legend.position = "none") # remove legend
+
+# Save plot
+ggsave("../Figures/marine_mams_facet_month.png", plot = p, width = 10, height = 8)
