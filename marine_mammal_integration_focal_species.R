@@ -96,19 +96,33 @@ scripts_focal <- tidy_sf %>%
          day = as.numeric(day),
          count = as.numeric(count),
          decimalLat = as.numeric(decimalLat),
-         decimalLon = as.numeric(decimalLon)) 
+         decimalLon = as.numeric(decimalLon),
+         
+         # Create Date column
+         date = as.Date(paste(year, month, day, sep = "-"))) %>% 
+  
+  # Rearrange columns
+  select(scientificName,
+         date,
+         decimalLat,
+         decimalLon,
+         count,
+         methodObs,
+         source,
+         geometry)
 
 
-# Save this to a csv and shp
+# Save this to a csv and rds
 st_write(scripts_focal, "../Data_Processed/marine_mammal_integration/marine_mammal_integration_focal_species.csv")
 
-st_write(tidy_sf, "../Data_Processed/marine_mammal_integration/marine_mammal_integration_focal_species.shp")
+saveRDS(scripts_focal, "../Data_Processed/marine_mammal_integration/marine_mammal_integration_focal_species.rds")
+# This doesn't abbreviate column names like when saving as a shapefile and still maintains the sf class.
 
 
 # summaries and plotting --------------------------------------------------
 
 # Optional read-in saved data
-scripts_focal <- st_read("../Data_Processed/marine_mammal_integration/marine_mammal_integration_focal_species.shp")
+scripts_focal <- read_rds("../Data_Processed/marine_mammal_integration/marine_mammal_integration_focal_species.rds")
 
 # Set datadir
 datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney - ATP-MarineMammal-DataRaw/"
@@ -121,7 +135,7 @@ all_mams_sum <- scripts_focal %>%
   summarize(n = n()) %>%
   ungroup() %>% 
   mutate(year_idx = c(1:nrow(.))) # Add time step index
-  
+
 
 all_mams_sum %>% 
   ggplot(aes(x = year, y = n, fill = n)) +
@@ -143,7 +157,7 @@ all_mams_sum %>%
         axis.text.x = element_text(size = 16),
         axis.text.y = element_text(size = 16),
         legend.position = "none") # remove legend
-  
+
 
 # Import base map of US/RUS - this is already projected to Alaska Albers 3338
 base_map <- st_read(paste0(datadir, "base_map")) %>% 
