@@ -26,6 +26,8 @@
 # 18-1_nsf_mm_beringia_2008
 # 18-2_nsf_mm_beringia_2008
 # 19_nsf_mm_beringia_2007
+# 20_obis_lamont_doherty
+# 21_obis_acoustic_mams
 
 # setup -------------------------------------------------------------------
 
@@ -113,7 +115,7 @@ scripts_focal <- tidy_sf %>%
 
 
 # Save this to a csv and rds
-st_write(scripts_focal, "../Data_Processed/marine_mammal_integration/marine_mammal_integration_focal_species.csv")
+st_write(scripts_focal, "../Data_Processed/marine_mammal_integration/marine_mammal_integration_focal_species.csv", append = FALSE)
 
 saveRDS(scripts_focal, "../Data_Processed/marine_mammal_integration/marine_mammal_integration_focal_species.rds")
 # This doesn't abbreviate column names like when saving as a shapefile and still maintains the sf class.
@@ -199,7 +201,7 @@ mams_tmap <- scripts_focal %>%
 
 
 # Facet by century
-ggplot() + 
+p1 <- ggplot() + 
   geom_sf(data = base_map) + 
   geom_sf(data = mams_tmap, mapping = aes(color = factor(season))) +
   facet_wrap(~ century) +
@@ -211,9 +213,12 @@ ggplot() +
   theme(plot.title = element_text(face = "bold", size = 18), # adjust title
         strip.text = element_text(face = "bold", size = 14)) # adjust facet headers
 
+# Save plot
+ggsave("../Figures/marine_mams_facet_century.png", plot = p1, width = 10, height = 8)
+
 
 # Plot all occurrence points against cropped base map - facet by month
-p <- ggplot() + 
+p2 <- ggplot() + 
   geom_sf(data = base_map) + 
   geom_sf(data = mams_tmap, mapping = aes(color = factor(month))) +
   facet_wrap(~ month,
@@ -242,4 +247,5 @@ p <- ggplot() +
         legend.position = "none") # remove legend
 
 # Save plot
-ggsave("../Figures/marine_mams_facet_month.png", plot = p, width = 10, height = 8)
+ggsave("../Figures/marine_mams_facet_month.png", plot = p2, width = 10, height = 8)
+
