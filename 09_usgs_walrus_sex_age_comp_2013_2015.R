@@ -22,7 +22,7 @@ datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney 
 datadir <- "../../ATP-MarineMammal-DataRaw/"
 
 # This script will tidy USGS visual surveys from 2013-2015.
-usgs_walrus_comp <- read_csv(paste0(datadir, "9_usgs_walrus_sex_age_comp_2013_2015/walrus_hauloutGroupComp_battaile_2013_2015.csv"))
+usgs_walrus_comp <- read_csv(paste0(datadir, "09_usgs_walrus_sex_age_comp_2013_2015/walrus_hauloutGroupComp_battaile_2013_2015.csv"))
 
 # data tidying ------------------------------------------------------------
 
@@ -74,8 +74,8 @@ usgs_walrus <- usgs_walrus_comp %>%
   arrange(year, month, day)
 
 # Save as csv into respective folder
-write_csv(usgs_walrus, "../Data_Processed/TidyScripts/9_usgs_walrus_sex_age_comp_2013_2015.csv")
+write_csv(usgs_walrus, "../Data_Processed/TidyScripts/09_usgs_walrus_sex_age_comp_2013_2015.csv")
 
 # Save rds and shps
-# saveRDS(usgs_walrus, "../Data_Processed/rds_and_shps_new_tidy/9_usgs_walrus_sex_age_comp_2013_2015.rds")
-# st_write(usgs_walrus, "../Data_Processed/rds_and_shps_new_tidy/9_usgs_walrus_sex_age_comp_2013_2015.shp", append = FALSE)
+# saveRDS(usgs_walrus, "../Data_Processed/rds_and_shps_new_tidy/09_usgs_walrus_sex_age_comp_2013_2015.rds")
+# st_write(usgs_walrus, "../Data_Processed/rds_and_shps_new_tidy/09_usgs_walrus_sex_age_comp_2013_2015.shp", append = FALSE)

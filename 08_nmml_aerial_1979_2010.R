@@ -22,7 +22,7 @@ datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney 
 datadir <- "../../ATP-MarineMammal-DataRaw/"
 
 # This script will tidy nmml aerial surveys from 1979-2010.
-nmml <- read_csv(paste0(datadir, "8_nmml_aerial_1979_2010/8_nmml_aerial_1979_2010.csv"))
+nmml <- read_csv(paste0(datadir, "08_nmml_aerial_1979_2010/8_nmml_aerial_1979_2010.csv"))
 
 
 # data tidying ------------------------------------------------------------
@@ -69,9 +69,9 @@ marine_mams <- nmml %>%
   arrange(year, month, day)
 
 # Save as csv into respective folder
-write_csv(marine_mams, "../Data_Processed/TidyScripts/8_nmml_aerial_1979_2010.csv")
+write_csv(marine_mams, "../Data_Processed/TidyScripts/08_nmml_aerial_1979_2010.csv")
 
 # Save rds and shps
-# saveRDS(marine_mams, "../Data_Processed/rds_and_shps_new_tidy/8_nmml_aerial_1979_2010.rds")
-# st_write(marine_mams, "../Data_Processed/rds_and_shps_new_tidy/8_nmml_aerial_1979_2010.shp", append = FALSE)
+# saveRDS(marine_mams, "../Data_Processed/rds_and_shps_new_tidy/08_nmml_aerial_1979_2010.rds")
+# st_write(marine_mams, "../Data_Processed/rds_and_shps_new_tidy/08_nmml_aerial_1979_2010.shp", append = FALSE)
 

@@ -22,7 +22,7 @@ datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney 
 datadir <- "../../ATP-MarineMammal-DataRaw/"
 
 # This script will tidy dbo survey data from 2019.
-mmwatch_mams <- read.csv(paste0(datadir,"6_nsf_dbo_laurier_2019/data/DBO_SWL_2019.csv"))
+mmwatch_mams <- read.csv(paste0(datadir,"06_nsf_dbo_laurier_2019/data/DBO_SWL_2019.csv"))
 
 # data tidying ------------------------------------------------------------
 
@@ -94,10 +94,10 @@ mams_new <- mmwatch_mams %>%
   arrange(year, month, day)
 
 # Save as csv into respective folder
-write_csv(mams_new, "../Data_Processed/TidyScripts/6_nsf_dbo_laurier_2019.csv", append = FALSE)
+write_csv(mams_new, "../Data_Processed/TidyScripts/06_nsf_dbo_laurier_2019.csv", append = FALSE)
 
 # Save rds and shps
-# saveRDS(mams_new, "../Data_Processed/rds_and_shps_new_tidy/6_nsf_dbo_laurier_2019.rds")
-# st_write(mams_new, "../Data_Processed/rds_and_shps_new_tidy/6_nsf_dbo_laurier_2019.shp", append = FALSE)
+# saveRDS(mams_new, "../Data_Processed/rds_and_shps_new_tidy/06_nsf_dbo_laurier_2019.rds")
+# st_write(mams_new, "../Data_Processed/rds_and_shps_new_tidy/06_nsf_dbo_laurier_2019.shp", append = FALSE)
 
 
