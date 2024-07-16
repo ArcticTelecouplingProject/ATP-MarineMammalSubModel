@@ -22,7 +22,7 @@ datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney 
 datadir <- "../../ATP-MarineMammal-DataRaw/"
 
 # This script will tidy mmw survey data from 2016.
-mmwatch_mams <- read.csv(paste0(datadir,"4_nsf_moore_mmw_2016/data/DBO_MMWatch_SWL2016_MooreGrebmeierVagle.csv"))
+mmwatch_mams <- read.csv(paste0(datadir,"04_nsf_moore_mmw_2016/data/DBO_MMWatch_SWL2016_MooreGrebmeierVagle.csv"))
 
 # data tidying ------------------------------------------------------------
 
@@ -106,10 +106,10 @@ mams_new <- mmwatch_mams %>%
   arrange(year, month, day)
 
 # Save as csv into respective folder
-write_csv(mams_new, "../Data_Processed/TidyScripts/4_nsf_moore_mmw_2016.csv", append = FALSE)
+write_csv(mams_new, "../Data_Processed/TidyScripts/04_nsf_moore_mmw_2016.csv", append = FALSE)
 
 # Save rds and shps
-# saveRDS(mams_new, "../Data_Processed/rds_and_shps_new_tidy/4_nsf_moore_mmw_2016.rds")
-# st_write(mams_new, "../Data_Processed/rds_and_shps_new_tidy/4_nsf_moore_mmw_2016.shp", append = FALSE)
+# saveRDS(mams_new, "../Data_Processed/rds_and_shps_new_tidy/04_nsf_moore_mmw_2016.rds")
+# st_write(mams_new, "../Data_Processed/rds_and_shps_new_tidy/04_nsf_moore_mmw_2016.shp", append = FALSE)
 
 

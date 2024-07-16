@@ -22,7 +22,7 @@ datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney 
 datadir <- "../../ATP-MarineMammal-DataRaw/"
 
 # This script will tidy obis survey data from 2013.
-obis_mams <- read.csv(paste0(datadir, "2_obis_tgs_seismic_2013/obis_seamap_dataset_1110_csv_71491/obis_seamap_dataset_1110_points.csv"))
+obis_mams <- read.csv(paste0(datadir, "02_obis_tgs_seismic_2013/obis_seamap_dataset_1110_csv_71491/obis_seamap_dataset_1110_points.csv"))
 
 # data tidying ------------------------------------------------------------
 
@@ -75,11 +75,11 @@ obis_new <- obis_mams %>%
   arrange(year, month, day)
 
 # Save as csv into respective folder
-write_csv(obis_new, "../Data_Processed/TidyScripts/2_obis_tgs_seismic_2013.csv")
+write_csv(obis_new, "../Data_Processed/TidyScripts/02_obis_tgs_seismic_2013.csv")
 
 # Save as rds and shp files
-# saveRDS(obis_new, "../Data_Processed/rds_and_shps_new_tidy/2_obis_tgs_seismic_2013.rds")
-# st_write(obis_new, "../Data_Processed/rds_and_shps_new_tidy/2_obis_tgs_seismic_2013.shp",
+# saveRDS(obis_new, "../Data_Processed/rds_and_shps_new_tidy/02_obis_tgs_seismic_2013.rds")
+# st_write(obis_new, "../Data_Processed/rds_and_shps_new_tidy/02_obis_tgs_seismic_2013.shp",
 #          append = FALSE)
 
 

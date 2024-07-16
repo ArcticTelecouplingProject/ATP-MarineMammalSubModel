@@ -24,10 +24,10 @@ datadir <- "../../ATP-MarineMammal-DataRaw/"
 # This script will tidy obis survey data from 2015. Two data sets need to be combined to include all data variables.
 
 # Occurrence data
-birdocc <- read.csv(paste0(datadir, "3_obis_ambon_norseman_2015/dlog_2015_dwc_occurrence.csv"))
+birdocc <- read.csv(paste0(datadir, "03_obis_ambon_norseman_2015/dlog_2015_dwc_occurrence.csv"))
 
 # Locations data - this data set has lat and long connected to birdocc via eventID column
-birdevent <- read.csv(paste0(datadir,"3_obis_ambon_norseman_2015/dlog_2015_dwc_event.csv"))
+birdevent <- read.csv(paste0(datadir,"03_obis_ambon_norseman_2015/dlog_2015_dwc_event.csv"))
 
 # Merge via the shared "eventID" column
 bird <- left_join(birdocc, birdevent, by=c("eventID"))
@@ -85,10 +85,10 @@ bird_new <- bird %>%
   arrange(year, month, day)
 
 # Save as csv into respective folder
-write_csv(bird_new, "../Data_Processed/TidyScripts/3_obis_ambon_norseman_2015.csv")
+write_csv(bird_new, "../Data_Processed/TidyScripts/03_obis_ambon_norseman_2015.csv")
 
 # Save rds and shps
-# saveRDS(bird_new, "../Data_Processed/rds_and_shps_new_tidy/3_obis_ambon_norseman_2015.rds")
-# st_write(bird_new, "../Data_Processed/rds_and_shps_new_tidy/3_obis_ambon_norseman_2015.shp")
+# saveRDS(bird_new, "../Data_Processed/rds_and_shps_new_tidy/03_obis_ambon_norseman_2015.rds")
+# st_write(bird_new, "../Data_Processed/rds_and_shps_new_tidy/03_obis_ambon_norseman_2015.shp")
 
 

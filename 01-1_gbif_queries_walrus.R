@@ -24,8 +24,7 @@ datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney 
 datadir <- "../../ATP-MarineMammal-DataRaw/"
 
 # This script will tidy gbif walrus data.
-walrus_gbif <- st_read(paste0(datadir, "1-1_gbif_queries/gbif_walrus_20240703.csv"))
-
+walrus_gbif <- st_read(paste0(datadir, "01_gbif_queries/gbif_walrus_20240703.csv"))
 
 # data tidying ------------------------------------------------------------
 
@@ -102,10 +101,10 @@ gbif_new <- na_gbif %>%
 
 
 # Save as csv into respective folder
-write_csv(gbif_new, "../Data_Processed/TidyScripts/1-1_GBIF_queries_walrus.csv", append = FALSE)
+write_csv(gbif_new, "../Data_Processed/TidyScripts/01-1_gbif_queries_walrus.csv", append = FALSE)
 
 # Save as rds and shp
-# saveRDS(gbif_new, "../Data_Processed/rds_and_shps_new_tidy/1-1_GBIF_queries_walrus.rds")
-# st_write(gbif_new, "../Data_Processed/rds_and_shps_new_tidy/1-1_GBIF_queries_walrus.shp")
+# saveRDS(gbif_new, "../Data_Processed/rds_and_shps_new_tidy/01-1_gbif_queries_walrus.rds")
+# st_write(gbif_new, "../Data_Processed/rds_and_shps_new_tidy/01-1_gbif_queries_walrus.shp")
 
 

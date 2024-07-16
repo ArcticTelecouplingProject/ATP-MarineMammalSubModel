@@ -24,7 +24,7 @@ datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney 
 datadir <- "../../ATP-MarineMammal-DataRaw/"
 
 # This script will tidy gbif bearded seal data.
-bearded_gbif <- st_read(paste0(datadir, "1-1_gbif_queries/gbif_bearded_20240703.csv"))
+bearded_gbif <- st_read(paste0(datadir, "01_gbif_queries/gbif_bearded_20240703.csv"))
 
 # data tidying ------------------------------------------------------------
 
@@ -96,9 +96,9 @@ gbif_new_bearded <- na_gbif %>%
   arrange(year, month, day)
 
 # Save as csv into respective folder
-write_csv(gbif_new_bearded, "../Data_Processed/TidyScripts/1-3_GBIF_queries_bearded_seal.csv", append = FALSE)
+write_csv(gbif_new_bearded, "../Data_Processed/TidyScripts/01-3_gbif_queries_bearded_seal.csv", append = FALSE)
 
 # Save as rds and shp
-# saveRDS(gbif_new_bearded, "../Data_Processed/rds_and_shps_new_tidy/1-3_GBIF_queries_bearded_seal.rds")
-# st_write(gbif_new_bearded, "../Data_Processed/rds_and_shps_new_tidy/1-3_GBIF_queries_bearded_seal.shp", append = FALSE)
+# saveRDS(gbif_new_bearded, "../Data_Processed/rds_and_shps_new_tidy/01-3_gbif_queries_bearded_seal.rds")
+# st_write(gbif_new_bearded, "../Data_Processed/rds_and_shps_new_tidy/01-3_gbif_queries_bearded_seal.shp", append = FALSE)
 

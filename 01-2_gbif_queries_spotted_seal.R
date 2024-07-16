@@ -24,7 +24,7 @@ datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney 
 datadir <- "../../ATP-MarineMammal-DataRaw/"
 
 # This script will tidy gbif spotted seal data.
-spotted_gbif <- st_read(paste0(datadir, "1-1_gbif_queries/gbif_spotted_20240703.csv"))
+spotted_gbif <- st_read(paste0(datadir, "01_gbif_queries/gbif_spotted_20240703.csv"))
 
 # data tidying ------------------------------------------------------------
 
@@ -100,8 +100,8 @@ gbif_new_spotted <- na_gbif %>%
   arrange(year, month, day)
 
 # Save as csv into respective folder
-write_csv(gbif_new_spotted, "../Data_Processed/TidyScripts/1-2_GBIF_queries_spotted_seal.csv", append = FALSE)
+write_csv(gbif_new_spotted, "../Data_Processed/TidyScripts/01-2_gbif_queries_spotted_seal.csv", append = FALSE)
 
 # Save as rds and shp
-# saveRDS(gbif_new_spotted, "../Data_Processed/rds_and_shps_new_tidy/1-2_GBIF_queries_spotted_seal.rds")
-# st_write(gbif_new_spotted, "../Data_Processed/rds_and_shps_new_tidy/1-2_GBIF_queries_spotted_seal.shp", append = FALSE)
+# saveRDS(gbif_new_spotted, "../Data_Processed/rds_and_shps_new_tidy/01-2_gbif_queries_spotted_seal.rds")
+# st_write(gbif_new_spotted, "../Data_Processed/rds_and_shps_new_tidy/01-2_gbif_queries_spotted_seal.shp", append = FALSE)
