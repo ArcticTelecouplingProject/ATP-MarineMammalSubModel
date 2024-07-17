@@ -200,7 +200,7 @@ mams_tmap <- scripts_focal %>%
   )
 
 
-# Facet by century
+# Plot all occurrence points against cropped base map - facet by century
 p1 <- ggplot() + 
   geom_sf(data = base_map) + 
   geom_sf(data = mams_tmap, mapping = aes(color = factor(season))) +
@@ -249,3 +249,19 @@ p2 <- ggplot() +
 # Save plot
 ggsave("../Figures/marine_mams_facet_month.png", plot = p2, width = 10, height = 8)
 
+
+# Plot occurrences by species
+p3 <- ggplot() + 
+  geom_sf(data = base_map) + 
+  geom_sf(data = mams_tmap, mapping = aes(color = factor(season))) +
+  facet_wrap(~ scientificName) +
+  labs(
+    title = "Marine mammal occurrences from 1860-2024",
+    subtitle = "Bering Strait Region and North Slope, Alaska",
+    color = "Season") +
+  theme_bw() +
+  theme(plot.title = element_text(face = "bold", size = 15), # adjust title
+        strip.text = element_text(face = "bold", size = 12)) # adjust facet headers
+
+# Save plot
+ggsave("../Figures/marine_mams_facet_species.png", plot = p3, width = 10, height = 8)
