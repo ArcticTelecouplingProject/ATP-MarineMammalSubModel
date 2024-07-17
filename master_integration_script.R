@@ -87,7 +87,13 @@ scripts_focal <- tidy_sf %>%
                                "Erignathus barbatus")) %>% 
   
   # Eliminate repeat occurrences
-  distinct() %>% 
+  distinct(scientificName,
+           year, month, day,
+           decimalLat,
+           decimalLon,
+           count,
+           methodObs,
+           .keep_all = TRUE) %>% 
   
   # Remove NAs
   na.omit() %>% 
@@ -120,6 +126,9 @@ st_write(scripts_focal, "../Data_Processed/marine_mammal_integration/marine_mamm
 saveRDS(scripts_focal, "../Data_Processed/marine_mammal_integration/marine_mammal_integration_focal_species.rds")
 # This doesn't abbreviate column names like when saving as a shapefile and still maintains the sf class.
 
+# Save as shp
+st_write(scripts_focal, "../Data_Processed/marine_mammal_integration/marine_mammal_integration_focal_species.shp", append = FALSE)
+
 
 # summaries and plotting --------------------------------------------------
 
@@ -134,6 +143,8 @@ datadir <- "../../ATP-MarineMammal-DataRaw/"
 base_map <- st_read(paste0(datadir, "base_map")) %>% 
   # These values came from reducing the extent of the original base_map
   st_crop(xmin = -1500000, ymin = 159766, xmax = 1250000, ymax = 3000000)
+
+
 
 
 # Summarize by year to see number of locations during each year
