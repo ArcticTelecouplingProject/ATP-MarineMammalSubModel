@@ -35,7 +35,7 @@ gbif_mams_1 <- gbif_mams %>%
   drop_na(decimalLatitude, decimalLongitude, verbatimScientificName, year) %>%
   
   # Filter to select species of interest by scientific name and spatial location within the study area bounds.
-  filter(verbatimScientificName %in% c("Odobenus rosmarus divergens", "Odobenus rosmarus"),
+  filter(species %in% c("Odobenus rosmarus divergens", "Odobenus rosmarus"),
          decimalLatitude >= 46.08836 & decimalLatitude <= 73.92759, 
          decimalLongitude >= 172.18938 | decimalLongitude <= -146.30217) %>%
   
@@ -82,7 +82,7 @@ gbif_mams_1 <- gbif_mams %>%
   arrange(year, month, day)
 
 # Save as csv into respective folder
-write_csv(gbif_mams_1, "../Data_Processed/TidyScripts/12-1_moudry_devillers.csv")
+write_csv(gbif_mams_1, "../Data_Processed/TidyScripts/12-1_moudry_devillers.csv", append = FALSE)
 
 # Save rds and shps
 # saveRDS(gbif_mams_1, "../Data_Processed/rds_and_shps_new_tidy/12-1_moudry_devillers.rds")
