@@ -41,7 +41,7 @@ gbif_mams_1 <- gbif_mams %>%
   
   # Modify and create new columns using mutate() function 
   # Add source column
-  mutate(source = "Moudry GBIF Marine Mammal Walrus Data",
+  mutate(source = "Moudry & Devillers Marine Mammal Walrus Data",
          
          # Rename values in method of observation column
          methodObs =
