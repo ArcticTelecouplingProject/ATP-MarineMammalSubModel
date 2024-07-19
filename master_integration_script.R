@@ -279,3 +279,9 @@ p3 <- ggplot() +
 
 # Save plot
 ggsave("../Figures/marine_mams_facet_species.png", plot = p3, width = 10, height = 8)
+
+
+# Create timeline of collection years for each data source -----
+
+# Create new df
+timeline_df <- 
