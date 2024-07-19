@@ -16,8 +16,8 @@
 # 8_nmml_aerial_1979_2010
 # 9_usgs_walrus_sex_age_comp_2013_2015
 # 10_usgs_walrus_behavior_uas_2015
-# 12_1_gbif_moudry
-# 12_2_gbif_moudry
+# 12_1_moudry_devillers
+# 12_2_moudry_devillers
 # 13_aerial_surveys_asamm
 # 14_nmml_cetaceans_survey_1999
 # 15_asti_marine_walrus
