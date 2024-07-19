@@ -22,7 +22,7 @@ datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney 
 datadir <- "../../ATP-MarineMammal-DataRaw/"
 
 # This script will tidy GBIF data.
-gbif_mams <- read_csv(paste0(datadir,"12_gbif_moudry/2-0003097-150811131857512.csv"))
+gbif_mams <- read_csv(paste0(datadir,"12_moudry_devillers/2-0003097-150811131857512.csv"))
 
 # data tidying ------------------------------------------------------------
 
@@ -41,7 +41,7 @@ gbif_mams_2 <- gbif_mams %>%
   
   # Modify and create new columns using mutate() function
   # Add source column
-  mutate(source = "Moudry GBIF Marine Mammal Walrus Data",
+  mutate(source = "Moudry & Devillers Marine Mammal Walrus Data",
          
          # Rename values in method of observation column
          methodObs =
@@ -86,8 +86,8 @@ gbif_mams_2 <- gbif_mams %>%
   arrange(year, month, day)
 
 # Save as csv into respective folder
-write_csv(gbif_mams_2, "../Data_Processed/TidyScripts/12-2_gbif_moudry.csv", append = FALSE)
+write_csv(gbif_mams_2, "../Data_Processed/TidyScripts/12-2_moudry_devillers.csv", append = FALSE)
 
 # Save rds and shps
-# saveRDS(gbif_mams_2, "../Data_Processed/rds_and_shps_new_tidy/12-2_gbif_moudry.rds")
-# st_write(gbif_mams_2, "../Data_Processed/rds_and_shps_new_tidy/12-2_gbif_moudry.shp", append = FALSE)
+# saveRDS(gbif_mams_2, "../Data_Processed/rds_and_shps_new_tidy/12-2_moudry_devillers.rds")
+# st_write(gbif_mams_2, "../Data_Processed/rds_and_shps_new_tidy/12-2_moudry_devillers.shp", append = FALSE)
