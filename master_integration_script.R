@@ -284,4 +284,49 @@ ggsave("../Figures/marine_mams_facet_species.png", plot = p3, width = 10, height
 # Create timeline of collection years for each data source -----
 
 # Create new df
-timeline_df <- 
+timeline_df <- scripts_focal %>% 
+  mutate(
+    plot_source = case_when(
+      str_detect(source, "GBIF Walrus Query") ~ "GBIF Walrus Query",
+      str_detect(source, "GBIF Spotted Seal Query") ~ "GBIF Spotted Seal Query",
+      str_detect(source, "GBIF Bearded Seal Query") ~ "GBIF Bearded Seal Query",
+      TRUE ~ source)
+  ) %>% 
+  st_drop_geometry() %>% 
+  group_by(plot_source) %>%
+  summarize(
+    start_date = min(date),
+    end_date = max(date),
+    length_years = as.numeric(difftime(max(date), min(date), units = "days")) / 365.25,
+    length_days = as.numeric(difftime(max(date), min(date), units = "days")),
+    .groups = "drop"
+  )
+
+# Plot timeline of sources
+p4 <- timeline_df %>%
+  ggplot(aes(x = start_date, y = plot_source, xend = end_date, yend = plot_source)) +
+  geom_segment(size = 3, color = "royalblue2") +
+  geom_text(aes(label = paste0(format(start_date, "%Y"), " -")),
+            vjust = -0.5,
+            hjust = 1, 
+            size = 3,
+            color = "black") +
+  geom_text(aes(x = end_date, label = paste0(" ", format(end_date, "%Y"))), 
+            vjust = -0.5, 
+            hjust = 0,
+            size = 3, 
+            color = "black") +
+  labs(title = "Collection Period by Data Source",
+       x = "Year",
+       y = "Data Source") +
+  theme_bw() +
+  theme(plot.title = element_text(face = "bold", size = 20),
+        axis.title.x = element_text(face = "bold", size = 17),
+        axis.title.y = element_text(face = "bold", size = 17),
+        axis.text.x = element_text(size = 16),
+        axis.text.y = element_text(size = 12))
+
+# Save plot
+ggsave("../Figures/collection_periods.png", plot = p4, width = 18, height = 8)
+
+
