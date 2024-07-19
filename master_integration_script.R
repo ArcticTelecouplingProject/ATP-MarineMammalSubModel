@@ -281,11 +281,10 @@ p3 <- ggplot() +
 ggsave("../Figures/marine_mams_facet_species.png", plot = p3, width = 10, height = 8)
 
 
-# Create timeline of collection years for each data source -----
-
-# Create new df
-timeline_df <- scripts_focal %>% 
+# Create timeline of collection years for each data source
+p4 <- scripts_focal %>% 
   mutate(
+    # Create a new column that groups GBIF sources under a species specific query
     plot_source = case_when(
       str_detect(source, "GBIF Walrus Query") ~ "GBIF Walrus Query",
       str_detect(source, "GBIF Spotted Seal Query") ~ "GBIF Spotted Seal Query",
@@ -295,15 +294,17 @@ timeline_df <- scripts_focal %>%
   st_drop_geometry() %>% 
   group_by(plot_source) %>%
   summarize(
+    # Create collection periods with start and end dates for each data source
     start_date = min(date),
     end_date = max(date),
     length_years = as.numeric(difftime(max(date), min(date), units = "days")) / 365.25,
     length_days = as.numeric(difftime(max(date), min(date), units = "days")),
+    
+    # Drop grouping
     .groups = "drop"
-  )
-
-# Plot timeline of sources
-p4 <- timeline_df %>%
+  ) %>%
+  
+  # Plot collection periods
   ggplot(aes(x = start_date, y = plot_source, xend = end_date, yend = plot_source)) +
   geom_segment(size = 3, color = "royalblue2") +
   geom_text(aes(label = paste0(format(start_date, "%Y"), " -")),
@@ -330,3 +331,46 @@ p4 <- timeline_df %>%
 ggsave("../Figures/collection_periods.png", plot = p4, width = 18, height = 8)
 
 
+# Create bar plot of number of observations per data source
+p5 <- scripts_focal %>% 
+  mutate(
+    plot_source = case_when(
+      str_detect(source, "GBIF Walrus Query") ~ "GBIF Walrus Query",
+      str_detect(source, "GBIF Spotted Seal Query") ~ "GBIF Spotted Seal Query",
+      str_detect(source, "GBIF Bearded Seal Query") ~ "GBIF Bearded Seal Query",
+      TRUE ~ source)
+  ) %>% 
+  st_drop_geometry() %>% 
+  group_by(plot_source, scientificName) %>%
+  summarize(
+    # Sum total number of occurrences for each data source
+    num_obs = n(),
+    
+    # Create collection period
+    start_date = min(date),
+    end_date = max(date),
+    length_years = as.numeric(difftime(max(date), min(date), units = "days")) / 365.25,
+    length_days = as.numeric(difftime(max(date), min(date), units = "days")),
+    
+    # Drop grouping
+    .groups = "drop"
+  ) %>% 
+  
+  # Plot occurrences by data source
+  ggplot(aes(x = num_obs, y = plot_source, fill = scientificName)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Marine Mammal Occurrences by Data Source",
+       x = "Occurrences",
+       y = "Data Source",
+       fill = "Scientific Name") +
+  scale_fill_manual(values = c("slategray4", "burlywood4", "lightblue2")) +
+  theme_bw() +
+  theme(plot.title = element_text(face = "bold", size = 20),
+        axis.title.x = element_text(face = "bold", size = 17),
+        axis.title.y = element_text(face = "bold", size = 17),
+        axis.text.x = element_text(size = 16),
+        axis.text.y = element_text(size = 12),
+        legend.title = element_text(face = "bold"))
+
+# Save plot
+ggsave("../Figures/occurrences_by_source.png", plot = p5, width = 12, height = 8)
