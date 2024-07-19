@@ -67,7 +67,7 @@ gbif_new <- na_gbif %>%
                 TRUE ~ NA_character_),
     
     # Add GBIF source column
-    source_gbif = "GBIF Query |",
+    source_gbif = "GBIF Walrus Query |",
     
     # Merge collector source and data source contents together
     source = paste(source_gbif, recordedBy, sep = " ")) %>% 
