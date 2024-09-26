@@ -86,7 +86,7 @@ scripts_focal <- tidy_sf %>%
                                "Phoca largha",
                                "Erignathus barbatus")) %>% 
   
-  # Eliminate repeat occurrences across duplicate data that be included from two sources (e.g., a study and the GBIF query)
+  # Eliminate repeat occurrences with duplicate data that may be included from two sources (e.g., a study and a GBIF query)
   distinct(scientificName,
            year, month, day,
            decimalLat,
