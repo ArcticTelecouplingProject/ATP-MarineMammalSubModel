@@ -37,7 +37,7 @@ mams_new <- mmwatch_mams %>%
   # Modify and create new columns using mutate() function
   # Add method of observation and source columns
   mutate(methodObs = "Research cruise visual observation survey",
-         source = "Marine Mammal Watch (Laurier) July 2016", 
+         source = "Marine Mammal Watch (SWL) July 2016", 
          
          # Change format of lat/lon columns from degrees-decimal minutes to decimal degrees
          deg_lat =
