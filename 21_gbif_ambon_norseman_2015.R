@@ -24,10 +24,10 @@ datadir <- "../../ATP-MarineMammal-DataRaw/"
 # This script will tidy marine mammal data from the AMBON Norseman II cruise in 2015.
 
 # Occurrence data
-pinniped_occ <- read_csv(paste0(datadir, "22_gbif_ambon_norseman_2015/pinnipeds_2015_dwc_occurrence.csv"))
+pinniped_occ <- read_csv(paste0(datadir, "21_gbif_ambon_norseman_2015/pinnipeds_2015_dwc_occurrence.csv"))
 
 # Locations data - this data set has lat and long connected to birdocc via eventID column
-pinniped_event <- read_csv(paste0(datadir,"22_gbif_ambon_norseman_2015/pinnipeds_2015_dwc_event.csv"))
+pinniped_event <- read_csv(paste0(datadir,"21_gbif_ambon_norseman_2015/pinnipeds_2015_dwc_event.csv"))
 
 # Merge via the shared "eventID" column
 pinniped <- left_join(pinniped_occ, pinniped_event, by = c("eventID"))
@@ -56,7 +56,10 @@ mams_new <- pinniped %>%
          source = "AMBON Norseman II Cruise 2015",
          year_date = year(eventDate),
          month_date = month(eventDate),
-         day_date = day(eventDate)) %>%
+         day_date = day(eventDate),
+         
+         # Add column to locate where the data was downloaded from
+         dataOrigin = "GBIF") %>%
   
   # Remove unneeded columns and rename
   select(scientificName,
@@ -67,7 +70,8 @@ mams_new <- pinniped %>%
          decimalLon = decimalLongitude,
          count = organismQuantity,
          methodObs,
-         source) %>% 
+         source,
+         dataOrigin) %>% 
   
   # Convert to sf and transform to Alaska Albers
   st_as_sf(coords = c("decimalLon", "decimalLat"),
@@ -83,9 +87,9 @@ mams_new <- pinniped %>%
   arrange(year, month, day)
 
 # Save as csv into respective folder
-write_csv(mams_new, "../Data_Processed/TidyScripts/22_gbif_ambon_norseman_2015.csv")
+write_csv(mams_new, "../Data_Processed/TidyScripts/21_gbif_ambon_norseman_2015.csv", append = FALSE)
 
 # Save rds and shps
-# saveRDS(mams_new, "../Data_Processed/rds_and_shps_new_tidy/22_gbif_ambon_norseman_2015.rds")
-# st_write(mams_new, "../Data_Processed/rds_and_shps_new_tidy/22_gbif_ambon_norseman_2015.shp")
+# saveRDS(mams_new, "../Data_Processed/rds_and_shps_new_tidy/21_gbif_ambon_norseman_2015.rds")
+# st_write(mams_new, "../Data_Processed/rds_and_shps_new_tidy/21_gbif_ambon_norseman_2015.shp")
 
