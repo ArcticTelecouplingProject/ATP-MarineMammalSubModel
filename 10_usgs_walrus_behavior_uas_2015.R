@@ -44,8 +44,11 @@ usgs_walrus <- usgs_walrus_uas %>%
          scientificName = "Odobenus rosmarus",
          
          # Add method of observation and source columns
-         methodObs = "Research vessel visual observation",
-         source = "USGS Walrus Behavior UAS 2015") %>% 
+         methodObs = "Research cruise visual observation",
+         source = "USGS Walrus Behavior UAS 2015",
+         
+         # Add column to locate where the data was downloaded from
+         dataOrigin = "USGS Alaska Science Center") %>% 
   
   # Remove unneeded columns and rename
   select(scientificName,
@@ -56,7 +59,8 @@ usgs_walrus <- usgs_walrus_uas %>%
          decimalLon = Longitude,
          count = Group_Size,
          methodObs,
-         source) %>% 
+         source,
+         dataOrigin) %>% 
   
   # Filter to select occurrences by spatial location within the study area bounds.
   filter(decimalLat >= 46.08836 & decimalLat <= 73.92759, 
@@ -75,7 +79,7 @@ usgs_walrus <- usgs_walrus_uas %>%
   arrange(year, month, day)
 
 # Save as csv into respective folder
-write_csv(usgs_walrus, "../Data_Processed/TidyScripts/10_usgs_walrus_behavior_uas_2015.csv")
+write_csv(usgs_walrus, "../Data_Processed/TidyScripts/10_usgs_walrus_behavior_uas_2015.csv", append = FALSE)
 
 # Save rds and shps
 # saveRDS(usgs_walrus, "../Data_Processed/rds_and_shps_new_tidy/10_usgs_walrus_behavior_uas_2015.rds")

@@ -43,8 +43,11 @@ usgs_walrus <- usgs_walrus_comp %>%
          scientificName = "Odobenus rosmarus",
          
          # Add method of observation and source columns
-         methodObs = "Research cruise visual observation survey",
-         source = "USGS Sex and Age Comp of Walrus Haulouts 2013-2015") %>% 
+         methodObs = "Research cruise visual observation",
+         source = "USGS Sex and Age Comp of Walrus Haulouts 2013-2015",
+         
+         # Add column to locate where the data was downloaded from
+         dataOrigin = "USGS Alaska Science Center") %>% 
   
   # Remove unneeded columns and rename
   select(scientificName,
@@ -55,7 +58,8 @@ usgs_walrus <- usgs_walrus_comp %>%
          decimalLon = Longitude,
          count = GroupSize,
          methodObs,
-         source) %>% 
+         source,
+         dataOrigin) %>% 
   
   # Filter to select occurrences by spatial location within the study area bounds.
   filter(decimalLat >= 46.08836 & decimalLat <= 73.92759, 
@@ -74,7 +78,7 @@ usgs_walrus <- usgs_walrus_comp %>%
   arrange(year, month, day)
 
 # Save as csv into respective folder
-write_csv(usgs_walrus, "../Data_Processed/TidyScripts/09_usgs_walrus_sex_age_comp_2013_2015.csv")
+write_csv(usgs_walrus, "../Data_Processed/TidyScripts/09_usgs_walrus_sex_age_comp_2013_2015.csv", append = FALSE)
 
 # Save rds and shps
 # saveRDS(usgs_walrus, "../Data_Processed/rds_and_shps_new_tidy/09_usgs_walrus_sex_age_comp_2013_2015.rds")
