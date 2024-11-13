@@ -93,5 +93,5 @@ gbif_mams_2 <- gbif_mams %>%
 write_csv(gbif_mams_2, "../Data_Processed/TidyScripts/11-2_moudry_devillers.csv", append = FALSE)
 
 # Save rds and shps
-# saveRDS(gbif_mams_2, "../Data_Processed/rds_and_shps_new_tidy/12-2_moudry_devillers.rds")
-# st_write(gbif_mams_2, "../Data_Processed/rds_and_shps_new_tidy/12-2_moudry_devillers.shp", append = FALSE)
+# saveRDS(gbif_mams_2, "../Data_Processed/rds_and_shps_new_tidy/11-2_moudry_devillers.rds")
+# st_write(gbif_mams_2, "../Data_Processed/rds_and_shps_new_tidy/11-2_moudry_devillers.shp", append = FALSE)
