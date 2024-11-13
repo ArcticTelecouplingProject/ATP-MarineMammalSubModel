@@ -52,7 +52,7 @@ obis_new <- obis_mams %>%
          day = as.numeric(substr(date_POSIXct, 9, 10)),
          
          # Add column to locate where the data was downloaded from
-         dataOrigin = "GBIF") %>%
+         dataOrigin = "OBIS-SEAMAP") %>%
   
   # Remove unneeded columns and rename
   select(scientificName = scientific_name,
