@@ -22,7 +22,7 @@ datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney 
 datadir <- "../../ATP-MarineMammal-DataRaw/"
 
 # This script will tidy GBIF data.
-gbif_mams <- read_csv(paste0(datadir,"12_moudry_devillers/1-0024533-190918142434337.csv"))
+gbif_mams <- read_csv(paste0(datadir,"11_moudry_devillers/1-0024533-190918142434337.csv"))
 
 # data tidying ------------------------------------------------------------
        
@@ -45,10 +45,10 @@ gbif_mams_1 <- gbif_mams %>%
          
          # Rename values in method of observation column
          methodObs =
-           case_when(basisOfRecord == "HUMAN_OBSERVATION" ~ "Human observation",
+           case_when(basisOfRecord == "HUMAN_OBSERVATION" ~ "Other",
                      basisOfRecord == "PRESERVED_SPECIMEN" ~ "Preserved specimen", 
-                     basisOfRecord == "MACHINE_OBSERVATION" ~ "Machine observation",
-                     basisOfRecord == "OBSERVATION" ~ "Observation",
+                     basisOfRecord == "MACHINE_OBSERVATION" ~ "Other",
+                     basisOfRecord == "OBSERVATION" ~ "Other",
                      basisOfRecord == "UNKNOWN" ~ "NA",
                      TRUE ~ NA),
          
@@ -56,7 +56,10 @@ gbif_mams_1 <- gbif_mams %>%
         scientificName =
           case_when(verbatimScientificName == "Odobenus rosmarus divergens" ~ "Odobenus rosmarus",
                     verbatimScientificName == "Odobenus rosmarus" ~ "Odobenus rosmarus",
-                    TRUE ~ NA)) %>%
+                    TRUE ~ NA),
+        
+        # Add column to locate where the data was downloaded from
+        dataOrigin = "GBIF") %>%
             
   # Remove unneeded columns and rename
   select(scientificName,
@@ -67,7 +70,8 @@ gbif_mams_1 <- gbif_mams %>%
          decimalLon = decimalLongitude,
          count = individualCount,
          methodObs,
-         source) %>% 
+         source,
+         dataOrigin) %>% 
 
   # Convert to sf and transform to Alaska Albers
   st_as_sf(coords = c("decimalLon", "decimalLat"),
@@ -82,7 +86,7 @@ gbif_mams_1 <- gbif_mams %>%
   arrange(year, month, day)
 
 # Save as csv into respective folder
-write_csv(gbif_mams_1, "../Data_Processed/TidyScripts/12-1_moudry_devillers.csv", append = FALSE)
+write_csv(gbif_mams_1, "../Data_Processed/TidyScripts/11-1_moudry_devillers.csv", append = FALSE)
 
 # Save rds and shps
 # saveRDS(gbif_mams_1, "../Data_Processed/rds_and_shps_new_tidy/12-1_moudry_devillers.rds")
