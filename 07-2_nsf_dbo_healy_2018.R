@@ -23,7 +23,7 @@ datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney 
 datadir <- "../../ATP-MarineMammal-DataRaw/"
 
 # This script will tidy the second data set of mmw survey data from 2018.
-mmwatch_mams <- read.csv(paste0(datadir, "7_nsf_stafford_mmw_2018/data/Healy_DBONCIS_Aug2018_byDBOregion.csv"))
+mmwatch_mams <- read.csv(paste0(datadir, "07_nsf_stafford_mmw_2018/data/Healy_DBONCIS_Aug2018_byDBOregion.csv"))
 
 # data tidying ------------------------------------------------------------
 
@@ -37,7 +37,7 @@ mams_new <- mmwatch_mams %>%
   
   # Modify and create new columns using mutate() function
   # Add method of observation and source columns
-  mutate(methodObs = "Research cruise visual observation survey",
+  mutate(methodObs = "Research cruise visual observation",
          source = "Marine Mammal Watch Cruises (Healy) 2018", 
          
          # Format date column
@@ -63,7 +63,10 @@ mams_new <- mmwatch_mams %>%
                      SPP == 15 ~ "Histriophoca fasciata",
                      SPP == 16 ~ "Unidentified cetacean",
                      SPP == 17 ~ "Unidentified pinniped",
-                     TRUE ~ NA)) %>%
+                     TRUE ~ NA),
+         
+         # Add column to locate where the data was downloaded from
+         dataOrigin = "NSF Arctic Data Center") %>%
   
   # Remove unneeded columns and rename
   select(scientificName,
@@ -74,7 +77,8 @@ mams_new <- mmwatch_mams %>%
          decimalLon = LONG,
          count = NO,
          methodObs,
-         source) %>% 
+         source,
+         dataOrigin) %>% 
   
   # Filter to select species of interest within the study area bounds
   filter(scientificName %in% c("Odobenus rosmarus", "Phoca largha", "Erignathus barbatus"),
@@ -94,7 +98,7 @@ mams_new <- mmwatch_mams %>%
   arrange(year, month, day)
 
 # Save as csv into respective folder
-write_csv(mams_new, "../Data_Processed/TidyScripts/7-2_nsf_dbo_healy_2018.csv")
+write_csv(mams_new, "../Data_Processed/TidyScripts/07-2_nsf_dbo_healy_2018.csv", append = FALSE)
 
 # Save rds and shps
 # saveRDS(mams_new, "../Data_Processed/rds_and_shps_new_tidy/7-2_nsf_dbo_healy_2018.rds")

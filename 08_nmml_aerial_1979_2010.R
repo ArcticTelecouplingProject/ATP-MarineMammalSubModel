@@ -43,7 +43,10 @@ marine_mams <- nmml %>%
   # Modify and create new columns using mutate() function  
   # Add method of observation and source columns
   mutate(methodObs = "Aerial survey",
-         source = "NMML Marine Mammal Aerial Surveys 1979-2010") %>% 
+         source = "NMML Marine Mammal Aerial Surveys 1979-2010",
+         
+         # Add column to locate where the data was downloaded from
+         dataOrigin = "GBIF") %>% 
   
   # Remove unneeded columns and rename
   select(scientificName = species,
@@ -54,7 +57,8 @@ marine_mams <- nmml %>%
          decimalLon = decimalLongitude,
          count = individualCount,
          methodObs,
-         source) %>%
+         source,
+         dataOrigin) %>%
   
   # Convert to sf and transform to Alaska Albers
   st_as_sf(coords = c("decimalLon", "decimalLat"),
@@ -69,7 +73,7 @@ marine_mams <- nmml %>%
   arrange(year, month, day)
 
 # Save as csv into respective folder
-write_csv(marine_mams, "../Data_Processed/TidyScripts/08_nmml_aerial_1979_2010.csv")
+write_csv(marine_mams, "../Data_Processed/TidyScripts/08_nmml_aerial_1979_2010.csv", append = FALSE)
 
 # Save rds and shps
 # saveRDS(marine_mams, "../Data_Processed/rds_and_shps_new_tidy/08_nmml_aerial_1979_2010.rds")
