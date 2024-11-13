@@ -61,9 +61,9 @@ gbif_new <- na_gbif %>%
     
     # Rename values in method of observation column
     methodObs =
-      case_when(basisOfRecord == "HUMAN_OBSERVATION" ~ "Human observation",
-                basisOfRecord == "MACHINE_OBSERVATION" ~ "Machine observation",
-                basisOfRecord == "PRESERVED_SPECIMEN" ~ "Preserved specimen",
+      case_when(basisOfRecord == "HUMAN_OBSERVATION" ~ "Other",
+                basisOfRecord == "MACHINE_OBSERVATION" ~ "Other",
+                basisOfRecord == "PRESERVED_SPECIMEN" ~ "Other",
                 TRUE ~ NA_character_),
     
     # Add GBIF source column
