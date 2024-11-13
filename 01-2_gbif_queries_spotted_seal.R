@@ -63,7 +63,7 @@ gbif_new_spotted <- na_gbif %>%
     methodObs =
       case_when(basisOfRecord == "HUMAN_OBSERVATION" ~ "Other",
                 basisOfRecord == "MACHINE_OBSERVATION" ~ "Other",
-                basisOfRecord == "PRESERVED_SPECIMEN" ~ "Other",
+                basisOfRecord == "PRESERVED_SPECIMEN" ~ "Preserved specimen",
                 TRUE ~ NA_character_),
     
     # Add GBIF source column
