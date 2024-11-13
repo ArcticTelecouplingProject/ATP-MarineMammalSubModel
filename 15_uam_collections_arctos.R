@@ -20,7 +20,7 @@ datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney 
 datadir <- "../../ATP-MarineMammal-DataRaw/"
 
 # Read in csv
-arctos <- read_csv(paste0(datadir, "16_uam_mammals_arctos/10_uam_mammals_arctos.csv"))
+arctos <- read_csv(paste0(datadir, "15_uam_mammals_arctos/10_uam_mammals_arctos.csv"))
 
 
 # data tidying ------------------------------------------------------------
@@ -53,6 +53,9 @@ marine_mams <- arctos %>%
          source = "UAM Mammal Collections (Arctos)",
          count = 1,
          
+         # Add column to locate where the data was downloaded from
+         dataOrigin = "GBIF",
+         
          # Convert to POSIX format and create year, month, day columns
          date_posix = as.POSIXct(date, format = "%m/%d/%Y"),
          year = year(date_posix),
@@ -68,7 +71,8 @@ marine_mams <- arctos %>%
          decimalLon,
          count,
          methodObs,
-         source) %>% 
+         source,
+         dataOrigin) %>% 
   
   # Remove occurrences outside of the study bounds
   filter(decimalLat >= 46.08836 & decimalLat <= 73.92759, 
@@ -88,7 +92,7 @@ marine_mams <- arctos %>%
 
 
 # Save as csv
-write_csv(marine_mams, "../Data_Processed/TidyScripts/16_uam_collections_arctos.csv")
+write_csv(marine_mams, "../Data_Processed/TidyScripts/15_uam_collections_arctos.csv", append = FALSE)
 
 # Save as rds
 # saveRDS(marine_mams, "../Data_Processed/rds_and_shps_new_tidy/16_uam_collections_arctos.rds")
