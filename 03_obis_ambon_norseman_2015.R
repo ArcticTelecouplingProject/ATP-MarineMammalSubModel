@@ -59,7 +59,10 @@ bird_new <- bird %>%
          # Add year, month, day columns
          year = as.numeric(substr(date_POSIXct, 1, 4)),
          month = as.numeric(substr(date_POSIXct, 6, 7)),
-         day = as.numeric(substr(date_POSIXct, 9, 10))) %>%
+         day = as.numeric(substr(date_POSIXct, 9, 10)),
+         
+         # Add column to locate where the data was downloaded from
+         dataOrigin = "GBIF") %>%
   
   # Remove unneeded columns and rename
   select(scientificName,
@@ -70,7 +73,8 @@ bird_new <- bird %>%
          decimalLon = decimalLongitude,
          count = individualCount,
          methodObs,
-         source) %>% 
+         source,
+         dataOrigin) %>% 
   
   # Convert to sf and transform to Alaska Albers
   st_as_sf(coords = c("decimalLon", "decimalLat"),
@@ -85,7 +89,7 @@ bird_new <- bird %>%
   arrange(year, month, day)
 
 # Save as csv into respective folder
-write_csv(bird_new, "../Data_Processed/TidyScripts/03_obis_ambon_norseman_2015.csv")
+write_csv(bird_new, "../Data_Processed/TidyScripts/03_obis_ambon_norseman_2015.csv", append = FALSE)
 
 # Save rds and shps
 # saveRDS(bird_new, "../Data_Processed/rds_and_shps_new_tidy/03_obis_ambon_norseman_2015.rds")

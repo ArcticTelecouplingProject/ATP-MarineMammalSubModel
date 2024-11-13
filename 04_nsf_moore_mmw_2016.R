@@ -36,7 +36,7 @@ mams_new <- mmwatch_mams %>%
   
   # Modify and create new columns using mutate() function
   # Add method of observation and source columns
-  mutate(methodObs = "Research cruise visual observation survey",
+  mutate(methodObs = "Research cruise visual observation",
          source = "Marine Mammal Watch (SWL) July 2016", 
          
          # Change format of lat/lon columns from degrees-decimal minutes to decimal degrees
@@ -75,7 +75,10 @@ mams_new <- mmwatch_mams %>%
                      SPP == 19 ~ "Phocoenoides dalli",
                      SPP == 20 ~ "Lagenorhynchus obliquidens",
                      SPP == 22 ~ "Arctocephalinae",
-                     TRUE ~ NA)) %>%
+                     TRUE ~ NA),
+         
+         # Add column to locate where the data was downloaded from
+         dataOrigin = "NSF Arctic Data Center") %>%
   
   # Remove unneeded columns and rename
   select(scientificName,
@@ -86,7 +89,8 @@ mams_new <- mmwatch_mams %>%
          decimalLon,
          count = No.,
          methodObs,
-         source) %>% 
+         source,
+         dataOrigin) %>% 
   
   # Filter to select spatial location within the study area bounds
   filter(scientificName %in% c("Odobenus rosmarus", "Phoca largha", "Erignathus barbatus"),
