@@ -37,7 +37,7 @@ mams_new <- mmwatch_mams %>%
   # Modify and create new columns using mutate() function
   # Add method of observation and source columns
   mutate(methodObs = "Research cruise visual observation",
-         source ="Marine Mammal Watch (SWL) 2019", 
+         source = "Marine Mammal Watch (SWL) 2019", 
          
          # format date column
          date_mdy = mdy(Date), # this date column is now of class "Date" like "POSIXct"
