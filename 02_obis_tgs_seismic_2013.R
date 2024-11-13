@@ -49,7 +49,10 @@ obis_new <- obis_mams %>%
          # Add year, month, day columns
          year = as.numeric(substr(date_POSIXct, 1, 4)),
          month = as.numeric(substr(date_POSIXct, 6, 7)),
-         day = as.numeric(substr(date_POSIXct, 9, 10))) %>%
+         day = as.numeric(substr(date_POSIXct, 9, 10)),
+         
+         # Add column to locate where the data was downloaded from
+         dataOrigin = "GBIF") %>%
   
   # Remove unneeded columns and rename
   select(scientificName = scientific_name,
@@ -60,7 +63,8 @@ obis_new <- obis_mams %>%
          decimalLon = longitude,
          count = group_size,
          methodObs,
-         source) %>% 
+         source,
+         dataOrigin) %>% 
   
   # Convert to sf and transform to Alaska Albers
   st_as_sf(coords = c("decimalLon", "decimalLat"),
@@ -75,7 +79,7 @@ obis_new <- obis_mams %>%
   arrange(year, month, day)
 
 # Save as csv into respective folder
-write_csv(obis_new, "../Data_Processed/TidyScripts/02_obis_tgs_seismic_2013.csv")
+write_csv(obis_new, "../Data_Processed/TidyScripts/02_obis_tgs_seismic_2013.csv", append = FALSE)
 
 # Save as rds and shp files
 # saveRDS(obis_new, "../Data_Processed/rds_and_shps_new_tidy/02_obis_tgs_seismic_2013.rds")
