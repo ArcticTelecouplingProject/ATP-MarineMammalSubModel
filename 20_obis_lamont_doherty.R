@@ -22,7 +22,7 @@ datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney 
 datadir <- "../../ATP-MarineMammal-DataRaw/"
 
 # This script will tidy OBIS survey data from a marine mammal and sea turtle monitoring program.
-obis_mams <- read.csv(paste0(datadir, "20_obis_lamont_doherty/obis_seamap_dataset_511_points.csv"))
+obis_mams <- read.csv(paste0(datadir, "19_obis_lamont_doherty/obis_seamap_dataset_511_points.csv"))
 
 # data tidying ------------------------------------------------------------
 
@@ -43,6 +43,9 @@ obis_new <- obis_mams %>%
   mutate(methodObs = "Seismic survey visual observation",
          source = "Lamont-Doherty/LGL/NSF cruises",
          
+         # Add column to locate where the data was downloaded from
+         dataOrigin = "OBIS-SEAMAP",
+         
          # Format date column to a standard format
          date = as.Date(date_time, "%Y-%m-%d"), 
          
@@ -60,7 +63,8 @@ obis_new <- obis_mams %>%
          decimalLon = longitude,
          count = group_size,
          methodObs,
-         source) %>% 
+         source,
+         dataOrigin) %>% 
   
   # Convert to sf and transform to Alaska Albers
   st_as_sf(coords = c("decimalLon", "decimalLat"),
@@ -75,11 +79,11 @@ obis_new <- obis_mams %>%
   arrange(year, month, day)
 
 # Save as csv into respective folder
-write_csv(obis_new, "../Data_Processed/TidyScripts/20_obis_lamont_doherty.csv")
+write_csv(obis_new, "../Data_Processed/TidyScripts/19_obis_lamont_doherty.csv", append = FALSE)
 
 # Save as rds and shp files
-# saveRDS(obis_new, "../Data_Processed/rds_and_shps_new_tidy/20_obis_lamont_doherty.rds")
-# st_write(obis_new, "../Data_Processed/rds_and_shps_new_tidy/20_obis_lamont_doherty.shp",
+# saveRDS(obis_new, "../Data_Processed/rds_and_shps_new_tidy/19_obis_lamont_doherty.rds")
+# st_write(obis_new, "../Data_Processed/rds_and_shps_new_tidy/19_obis_lamont_doherty.shp",
 #          append = FALSE)
 
 
