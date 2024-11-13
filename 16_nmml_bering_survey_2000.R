@@ -22,7 +22,7 @@ datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney 
 datadir <- "../../ATP-MarineMammal-DataRaw/"
 
 # Read in csv
-nmml <- read_csv(paste0(datadir, "17_nmml_bering_cetaceans_survey_2000/obis_seamap_dataset_122_points.csv"))
+nmml <- read_csv(paste0(datadir, "16_nmml_bering_cetaceans_survey_2000/obis_seamap_dataset_122_points.csv"))
 
 
 # data tidying ------------------------------------------------------------
@@ -55,7 +55,10 @@ walrus <- nmml %>%
          source = "NMML Bering Sea Cetacean Survey 2000",
          year = year(date_time),
          month = month(date_time),
-         day = day(date_time)) %>%
+         day = day(date_time),
+         
+         # Add column to locate where the data was downloaded from
+         dataOrigin = "GBIF") %>%
   
   # Remove old date column and reorder
   select(scientificName,
@@ -66,7 +69,8 @@ walrus <- nmml %>%
          decimalLon,
          count,
          methodObs,
-         source) %>% 
+         source,
+         dataOrigin) %>% 
   
   # Remove occurrences outside of the study bounds
   filter(decimalLat >= 46.08836 & decimalLat <= 73.92759, 
@@ -86,10 +90,10 @@ walrus <- nmml %>%
 
 
 # Save as csv
-write_csv(walrus, "../Data_Processed/TidyScripts/17_nmml_bering_survey_2000.csv")
+write_csv(walrus, "../Data_Processed/TidyScripts/16_nmml_bering_survey_2000.csv", append = FALSE)
 
 # Save as rds
-# saveRDS(walrus, "../Data_Processed/rds_and_shps_new_tidy/17_nmml_bering_survey_2000.rds")
+# saveRDS(walrus, "../Data_Processed/rds_and_shps_new_tidy/16_nmml_bering_survey_2000.rds")
 
 # Save as shp
-# st_write(walrus, "../Data_Processed/rds_and_shps_new_tidy/17_nmml_bering_survey_2000.shp")
+# st_write(walrus, "../Data_Processed/rds_and_shps_new_tidy/16_nmml_bering_survey_2000.shp")
