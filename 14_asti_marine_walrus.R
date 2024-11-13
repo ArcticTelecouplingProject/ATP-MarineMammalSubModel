@@ -26,7 +26,7 @@ datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney 
 datadir <- "../../ATP-MarineMammal-DataRaw/"
 
 # Read in csv
-asti <- read_csv(paste0(datadir, "15_asti_caff_obis/9_asti_caff_obis.csv"))
+asti <- read_csv(paste0(datadir, "14_asti_caff_obis/9_asti_caff_obis.csv"))
 
 
 # data tidying ------------------------------------------------------------
@@ -55,14 +55,17 @@ walrus <- asti %>%
   filter(scientificName == "Odobenus rosmarus") %>% 
   
   # Standardize what's in the methodObs column and add source column
-  mutate(methodObs = "Human observation",
+  mutate(methodObs = "Other",
          source = "Arctic Species Trend Index: Marine",
          
          # Add columns for year, month, day - it looks like these occurrences were defaulted to Jan 1 for each one so I've replaced them with NAs
          year = as.numeric(substr(date, 5, 8)),
          month = NA,
          day = NA,
-         count = 1) %>% 
+         count = 1,
+         
+         # Add column to locate where the data was downloaded from
+         dataOrigin = "GBIF") %>% 
   
   # Remove old date column
   select(scientificName,
@@ -73,7 +76,8 @@ walrus <- asti %>%
          decimalLon,
          count,
          methodObs,
-         source) %>% 
+         source,
+         dataOrigin) %>% 
   
   # Remove occurrences outside of the study bounds
   filter(decimalLat >= 46.08836 & decimalLat <= 73.92759, 
@@ -93,10 +97,10 @@ walrus <- asti %>%
 
 
 # Save as csv
-write_csv(walrus, "../Data_Processed/TidyScripts/15_asti_marine_walrus.csv")
+write_csv(walrus, "../Data_Processed/TidyScripts/14_asti_marine_walrus.csv", append = FALSE)
 
 # Save as rds
-# saveRDS(walrus, "../Data_Processed/rds_and_shps_new_tidy/15_asti_marine_walrus.rds")
+# saveRDS(walrus, "../Data_Processed/rds_and_shps_new_tidy/14_asti_marine_walrus.rds")
 
 # Save as shp
-# st_write(walrus, "../Data_Processed/rds_and_shps_new_tidy/15_asti_marine_walrus.shp")
+# st_write(walrus, "../Data_Processed/rds_and_shps_new_tidy/14_asti_marine_walrus.shp")
