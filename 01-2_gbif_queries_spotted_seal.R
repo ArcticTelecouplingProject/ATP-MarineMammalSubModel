@@ -61,16 +61,19 @@ gbif_new_spotted <- na_gbif %>%
     
     # Rename values in method of observation column
     methodObs =
-      case_when(basisOfRecord == "HUMAN_OBSERVATION" ~ "Human observation",
-                basisOfRecord == "MACHINE_OBSERVATION" ~ "Machine observation",
-                basisOfRecord == "PRESERVED_SPECIMEN" ~ "Preserved specimen",
+      case_when(basisOfRecord == "HUMAN_OBSERVATION" ~ "Other",
+                basisOfRecord == "MACHINE_OBSERVATION" ~ "Other",
+                basisOfRecord == "PRESERVED_SPECIMEN" ~ "Other",
                 TRUE ~ NA_character_),
     
     # Add GBIF source column
     source_gbif = "GBIF Spotted Seal Query |",
     
     # Merge collector source and data source contents together
-    source = paste(source_gbif, recordedBy, sep = " ")) %>% 
+    source = paste(source_gbif, recordedBy, sep = " "),
+    
+    # Add column to locate where the data was downloaded from
+    dataOrigin = "GBIF") %>% 
   
   # Remove unneeded columns and rename
   select(scientificName = species,
@@ -81,7 +84,8 @@ gbif_new_spotted <- na_gbif %>%
          decimalLon,
          count,
          methodObs,
-         source) %>% 
+         source,
+         dataOrigin) %>% 
   
   # Filter to select occurrences with spatial location within the study area bounds
   filter(decimalLat >= 46.08836 & decimalLat <= 73.92759, 
