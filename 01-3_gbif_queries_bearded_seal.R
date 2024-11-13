@@ -66,7 +66,10 @@ gbif_new_bearded <- na_gbif %>%
     source_gbif = "GBIF Bearded Seal Query |",
     
     # Merge collector source and data source contents together
-    source = paste(source_gbif, recordedBy, sep = " ")) %>% 
+    source = paste(source_gbif, recordedBy, sep = " "),
+    
+    # Add column to locate where the data was downloaded from
+    dataOrigin = "GBIF") %>% 
   
   # Remove unneeded columns and rename
   select(scientificName = species,
@@ -77,7 +80,8 @@ gbif_new_bearded <- na_gbif %>%
          decimalLon,
          count,
          methodObs,
-         source) %>% 
+         source,
+         dataOrigin) %>% 
   
   # Filter to select occurrences with spatial location within the study area bounds
   filter(decimalLat >= 46.08836 & decimalLat <= 73.92759, 
