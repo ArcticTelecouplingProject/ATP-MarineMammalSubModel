@@ -29,7 +29,7 @@ datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney 
 datadir <- "../../ATP-MarineMammal-DataRaw/"
 
 # Save file path prefix
-asamm <- "13_aerial_surveys_asamm/0039614/11.11/data/0-data/"
+asamm <- "12_aerial_surveys_asamm/0039614/11.11/data/0-data/"
 
 # Specify file path to Output files for relevant years
 
@@ -84,7 +84,10 @@ years_mams <- master_years %>%
     date = mdy_hms(GMT_Minus8_DateTime),
     year = year(date),
     month = month(date),
-    day = day(date)) %>% 
+    day = day(date),
+    
+    # Add column to locate where the data was downloaded from
+    dataOrigin = "NOAA National Centers for Environmental Information") %>% 
   
   # Subset 2012-2014 dataframe to get rid of extraneous columns
   dplyr::select(
@@ -96,7 +99,8 @@ years_mams <- master_years %>%
     decimalLon = ArcLong,
     count = Totalno,
     methodObs,
-    source) %>%
+    source,
+    dataOrigin) %>%
   
   # Convert to sf and transform to Alaska Albers
   st_as_sf(coords = c("decimalLon", "decimalLat"),
@@ -145,7 +149,10 @@ v0_mams <- master_v0 %>%
     date = mdy_hms(GMT_Minus8_DateTime),
     year = year(date),
     month = month(date),
-    day = day(date)) %>% 
+    day = day(date),
+    
+    # Add column to locate where the data was downloaded from
+    dataOrigin = "NOAA National Centers for Environmental Information") %>% 
   
   # Subset 2012-2014 dataframe to get rid of extraneous columns
   dplyr::select(
@@ -157,7 +164,8 @@ v0_mams <- master_v0 %>%
     decimalLon = ArcLong,
     count = Totalno,
     methodObs,
-    source) %>%
+    source,
+    dataOrigin) %>%
   
   # Convert to sf and transform to Alaska Albers
   st_as_sf(coords = c("decimalLon", "decimalLat"),
@@ -203,7 +211,10 @@ v24_mams <- master_v24 %>%
     date = mdy_hms(GMT_Minus8_DateTime),
     year = year(date),
     month = month(date),
-    day = day(date)) %>% 
+    day = day(date),
+    
+    # Add column to locate where the data was downloaded from
+    dataOrigin = "NOAA National Centers for Environmental Information") %>% 
   
   # Subset 2012-2014 dataframe to get rid of extraneous columns
   dplyr::select(
@@ -215,7 +226,8 @@ v24_mams <- master_v24 %>%
     decimalLon = ArcLong,
     count = Totalno,
     methodObs,
-    source) %>%
+    source,
+    dataOrigin) %>%
   
   # Convert to sf and transform to Alaska Albers
   st_as_sf(coords = c("decimalLon", "decimalLat"),
@@ -264,7 +276,10 @@ v2_mams <- master_v2 %>%
     date = mdy_hms(GMT_Minus8_DateTime),
     year = year(date),
     month = month(date),
-    day = day(date)) %>% 
+    day = day(date),
+    
+    # Add column to locate where the data was downloaded from
+    dataOrigin = "NOAA National Centers for Environmental Information") %>% 
   
   # Subset 2012-2014 dataframe to get rid of extraneous columns
   dplyr::select(
@@ -276,7 +291,8 @@ v2_mams <- master_v2 %>%
     decimalLon = ArcLong,
     count = Totalno,
     methodObs,
-    source) %>%
+    source,
+    dataOrigin) %>%
   
   # Convert to sf and transform to Alaska Albers
   st_as_sf(coords = c("decimalLon", "decimalLat"),
@@ -295,7 +311,7 @@ v2_mams <- master_v2 %>%
 all_mams <- rbind(years_mams, v0_mams, v2_mams, v24_mams)
 
 # Save output
-write_csv(all_mams, "../Data_Processed/TidyScripts/13_aerial_surveys_asamm.csv")
+write_csv(all_mams, "../Data_Processed/TidyScripts/12_aerial_surveys_asamm.csv", append = FALSE)
 # st_write(all_mams, "../Data_Processed/rds_and_shps_new_tidy/13_aerial_surveys_asamm.shp")
 # saveRDS(all_mams, "../Data_Processed/rds_and_shps_new_tidy/13_aerial_surveys_asamm.rds")
 
