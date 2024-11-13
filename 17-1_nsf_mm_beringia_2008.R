@@ -24,7 +24,7 @@ datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney 
 datadir <- "../../ATP-MarineMammal-DataRaw/"
 
 # Read in csv
-nsf_2008 <- read_csv(paste0(datadir, "18_nsf_mm_beringia_2008/data/HLY0801-FWS-Wal-obs-3.15-3.25.csv"))
+nsf_2008 <- read_csv(paste0(datadir, "17_nsf_mm_beringia_2008/data/HLY0801-FWS-Wal-obs-3.15-3.25.csv"))
 
 
 # data tidying ------------------------------------------------------------
@@ -50,8 +50,11 @@ walrus <- nsf_2008 %>%
   
   # Standardize what's in the methodObs column and add source and scientificName column
   mutate(scientificName = "Odobenus rosmarus",
-         methodObs = "Research cruise visual observation survey",
-         source = "Marine Mammal Beringia Survey (Healy) 2008") %>%
+         methodObs = "Research cruise visual observation",
+         source = "Marine Mammal Beringia Survey (Healy) 2008",
+         
+         # Add column to locate where the data was downloaded from
+         dataOrigin = "NSF Arctic Data Center") %>%
   
   # Remove old date column and reorder
   select(scientificName,
@@ -62,7 +65,8 @@ walrus <- nsf_2008 %>%
          decimalLon,
          count,
          methodObs,
-         source) %>% 
+         source,
+         dataOrigin) %>% 
   
   # Remove occurrences outside of the study bounds
   filter(decimalLat >= 46.08836 & decimalLat <= 73.92759, 
@@ -82,10 +86,10 @@ walrus <- nsf_2008 %>%
 
 
 # Save as csv
-write_csv(walrus, "../Data_Processed/TidyScripts/18-1_nsf_mm_beringia_2008.csv")
+write_csv(walrus, "../Data_Processed/TidyScripts/17-1_nsf_mm_beringia_2008.csv", append = FALSE)
 
 # Save as rds
-# saveRDS(walrus, "../Data_Processed/rds_and_shps_new_tidy/18_nsf_mm_beringia_2008.rds")
+# saveRDS(walrus, "../Data_Processed/rds_and_shps_new_tidy/17-1_nsf_mm_beringia_2008.rds")
 
 # Save as shp
-# st_write(walrus, "../Data_Processed/rds_and_shps_new_tidy/18_nsf_mm_beringia_2008.shp")
+# st_write(walrus, "../Data_Processed/rds_and_shps_new_tidy/17-1_nsf_mm_beringia_2008.shp")
