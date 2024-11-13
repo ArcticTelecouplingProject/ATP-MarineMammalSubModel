@@ -22,7 +22,7 @@ datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney 
 datadir <- "../../ATP-MarineMammal-DataRaw/"
 
 # This script will tidy OBIS survey data from a marine mammal and sea turtle monitoring program.
-obis_mams <- read.csv(paste0(datadir, "21_obis_acoustic_mams/obis_seamap_dataset_914_points.csv"))
+obis_mams <- read.csv(paste0(datadir, "20_obis_acoustic_mams/obis_seamap_dataset_914_points.csv"))
 
 # data tidying ------------------------------------------------------------
 
@@ -42,6 +42,9 @@ obis_new <- obis_mams %>%
   # Add method of observation and source columns
   mutate(methodObs = "Acoustic monitoring survey",
          source = "Acoustic detections of Arctic mammals 2010-2011",
+         
+         # Add column to locate where the data was downloaded from
+         dataOrigin = "OBIS-SEAMAP",
          
          # Format date column to a standard format
          date = as.Date(date_time, "%Y-%m-%d"), 
@@ -63,7 +66,8 @@ obis_new <- obis_mams %>%
          decimalLon = longitude,
          count,
          methodObs,
-         source) %>% 
+         source,
+         dataOrigin) %>% 
   
   # Convert to sf and transform to Alaska Albers
   st_as_sf(coords = c("decimalLon", "decimalLat"),
@@ -78,11 +82,11 @@ obis_new <- obis_mams %>%
   arrange(year, month, day)
 
 # Save as csv into respective folder
-write_csv(obis_new, "../Data_Processed/TidyScripts/21_obis_acoustic_mams.csv")
+write_csv(obis_new, "../Data_Processed/TidyScripts/20_obis_acoustic_mams.csv", append = FALSE)
 
 # Save as rds and shp files
-# saveRDS(obis_new, "../Data_Processed/rds_and_shps_new_tidy/21_obis_acoustic_mams.rds")
-# st_write(obis_new, "../Data_Processed/rds_and_shps_new_tidy/21_obis_acoustic_mams.shp",
+# saveRDS(obis_new, "../Data_Processed/rds_and_shps_new_tidy/20_obis_acoustic_mams.rds")
+# st_write(obis_new, "../Data_Processed/rds_and_shps_new_tidy/20_obis_acoustic_mams.shp",
 #          append = FALSE)
 
 
