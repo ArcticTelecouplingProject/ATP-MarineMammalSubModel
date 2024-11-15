@@ -76,7 +76,8 @@ gbif_new_spotted <- na_gbif %>%
     dataOrigin = "GBIF") %>% 
   
   # Remove unneeded columns and rename
-  select(scientificName = species,
+  select(gbifID,
+         scientificName = species,
          year,
          month,
          day,
