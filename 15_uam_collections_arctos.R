@@ -38,7 +38,8 @@ marine_mams <- arctos %>%
   drop_na(decimalLatitude, decimalLongitude) %>% 
   
   # Remove unneeded columns and rename
-  select(scientificName = verbatimScientificName,
+  select(gbifID,
+         scientificName = verbatimScientificName,
          date = eventDate,
          decimalLat = decimalLatitude,
          decimalLon = decimalLongitude,
@@ -63,7 +64,8 @@ marine_mams <- arctos %>%
          day = day(date_posix)) %>% # use / instead of - respectively
   
   # Remove old date column
-  select(scientificName,
+  select(gbifID,
+         scientificName,
          year,
          month, 
          day,
