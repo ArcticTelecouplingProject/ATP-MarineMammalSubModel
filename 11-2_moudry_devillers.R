@@ -66,7 +66,8 @@ gbif_mams_2 <- gbif_mams %>%
             (is.na(year) & is.na(month) & is.na(day), 0, 1)) %>%
   
   # Remove unneeded columns and rename
-  select(scientificName,
+  select(gbifID = gbifid,
+         scientificName,
          year,
          month,
          day,

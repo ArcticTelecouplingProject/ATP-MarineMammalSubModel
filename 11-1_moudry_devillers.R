@@ -62,7 +62,8 @@ gbif_mams_1 <- gbif_mams %>%
         dataOrigin = "GBIF") %>%
             
   # Remove unneeded columns and rename
-  select(scientificName,
+  select(gbifID,
+         scientificName,
          year,
          month,
          day,

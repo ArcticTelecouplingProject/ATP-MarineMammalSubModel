@@ -49,7 +49,8 @@ marine_mams <- nmml %>%
          dataOrigin = "GBIF") %>% 
   
   # Remove unneeded columns and rename
-  select(scientificName = species,
+  select(gbifID,
+         scientificName = species,
          year,
          month,
          day,

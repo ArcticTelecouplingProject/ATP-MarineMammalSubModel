@@ -44,7 +44,8 @@ walrus <- asti %>%
   drop_na(decimalLatitude, decimalLongitude) %>% 
   
   # Remove unneeded columns and rename
-  select(scientificName = verbatimScientificName,
+  select(gbifID,
+         scientificName = verbatimScientificName,
          date = eventDate,
          decimalLat = decimalLatitude,
          decimalLon = decimalLongitude,
@@ -68,7 +69,8 @@ walrus <- asti %>%
          dataOrigin = "GBIF") %>% 
   
   # Remove old date column
-  select(scientificName,
+  select(gbifID,
+         scientificName,
          year,
          month, 
          day,
