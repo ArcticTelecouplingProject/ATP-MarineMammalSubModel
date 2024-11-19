@@ -66,7 +66,8 @@ obis_new <- na_obis %>%
          decimalLongitude >= 172.18938 | decimalLongitude <= -146.30217) %>%
   
   # Remove unneeded columns and rename
-  select(scientificName = species,
+  select(gbifID,
+         scientificName = species,
          year,
          month,
          day,
