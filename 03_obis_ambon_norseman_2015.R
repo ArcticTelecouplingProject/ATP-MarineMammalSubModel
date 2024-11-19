@@ -1,7 +1,9 @@
 # Title: Marine Mammal Data Paper Tidying 
 # Author: Natalia Portales and Sydney Waloven
 # Date: 2024-03-23
-# Description: Source: OBIS. This dataset was obtained from: AMBON Chukchi Sea research cruse on the Norseman II. https://www.sciencebase.gov/catalog/item/5e0e24b3e4b0b207aa13782b
+# Description: AMBON Chukchi Sea research cruise on the Norseman II. https://www.sciencebase.gov/catalog/item/5e0e24b3e4b0b207aa13782b
+
+# Source: OBIS
 
 # This script follows a standardized method for data tidying discussed in our data paper.
 
