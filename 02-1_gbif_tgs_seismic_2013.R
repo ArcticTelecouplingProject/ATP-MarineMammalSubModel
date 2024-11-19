@@ -1,7 +1,7 @@
 # Title: Marine Mammal Data Paper Tidying 
 # Author: Sydney Waloven
 # Date: 2024-11-18
-# Description: Source: TGS Seismic Survey Visual Sightings in Chukchi Sea 2013 V2. https://obis.org/dataset/4b394534-8a6b-4bdb-bf1b-f07f983f9e37.
+# Description: Source: TGS Seismic Survey Visual Sightings in Chukchi Sea 2013 V2. https://www.gbif.org/occurrence/download/0020474-241107131044228.
 
 # This script follows a standardized method for data tidying discussed in our data paper.
 
