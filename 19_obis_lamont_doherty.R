@@ -1,7 +1,7 @@
 # Title: Marine Mammal Data Paper Tidying 
 # Author: Sydney Waloven
 # Date: 2024-07-12
-# Description: Source: Lamont-Doherty/LGL/NSF cruises https://obis.org/dataset/60ce413e-2d58-4d64-a057-7eed1b201250
+# Description: Lamont-Doherty/LGL/NSF cruises https://obis.org/dataset/60ce413e-2d58-4d64-a057-7eed1b201250
 
 # This script follows a standardized method for data tidying discussed in our data paper.
 
