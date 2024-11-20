@@ -98,11 +98,11 @@ walrus <- na_nmml %>%
 
 
 # Save as csv
-write_csv(walrus, "../Data_Processed/TidyScripts/13-1_nmml_cetacean_survey_1999.csv", append = FALSE)
+write_csv(walrus, "../Data_Processed/TidyScripts/13-1_gbif_nmml_cetacean_survey_1999.csv", append = FALSE)
 
 # Save as rds
-# saveRDS(walrus, "../Data_Processed/rds_and_shps_new_tidy/13-1_nmml_cetacean_survey_1999.rds")
+# saveRDS(walrus, "../Data_Processed/rds_and_shps_new_tidy/13-1_gbif_nmml_cetacean_survey_1999.rds")
 
 # Save as shp
-# st_write(walrus, "../Data_Processed/rds_and_shps_new_tidy/13-1_nmml_cetacean_survey_1999.shp")
+# st_write(walrus, "../Data_Processed/rds_and_shps_new_tidy/13-1_gbif_nmml_cetacean_survey_1999.shp")
 

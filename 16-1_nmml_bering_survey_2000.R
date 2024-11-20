@@ -96,10 +96,10 @@ walrus <- na_nmml %>%
 
 
 # Save as csv
-write_csv(walrus, "../Data_Processed/TidyScripts/16-1_nmml_bering_survey_2000.csv", append = FALSE)
+write_csv(walrus, "../Data_Processed/TidyScripts/16-1_gbif_nmml_bering_survey_2000.csv", append = FALSE)
 
 # Save as rds
-# saveRDS(walrus, "../Data_Processed/rds_and_shps_new_tidy/16-1_nmml_bering_survey_2000.rds")
+# saveRDS(walrus, "../Data_Processed/rds_and_shps_new_tidy/16-1_gbif_nmml_bering_survey_2000.rds")
 
 # Save as shp
-# st_write(walrus, "../Data_Processed/rds_and_shps_new_tidy/16-1_nmml_bering_survey_2000.shp")
+# st_write(walrus, "../Data_Processed/rds_and_shps_new_tidy/16-1_gbif_nmml_bering_survey_2000.shp")

@@ -99,10 +99,10 @@ walrus <- asti %>%
 
 
 # Save as csv
-write_csv(walrus, "../Data_Processed/TidyScripts/14_asti_marine_walrus.csv", append = FALSE)
+write_csv(walrus, "../Data_Processed/TidyScripts/14_gbif_asti_marine_walrus.csv", append = FALSE)
 
 # Save as rds
-# saveRDS(walrus, "../Data_Processed/rds_and_shps_new_tidy/14_asti_marine_walrus.rds")
+# saveRDS(walrus, "../Data_Processed/rds_and_shps_new_tidy/14_gbif_asti_marine_walrus.rds")
 
 # Save as shp
-# st_write(walrus, "../Data_Processed/rds_and_shps_new_tidy/14_asti_marine_walrus.shp")
+# st_write(walrus, "../Data_Processed/rds_and_shps_new_tidy/14_gbif_asti_marine_walrus.shp")
