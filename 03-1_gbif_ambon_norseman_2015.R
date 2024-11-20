@@ -1,7 +1,7 @@
 # Title: Marine Mammal Data Paper Tidying 
 # Author: Sydney Waloven
 # Date: 2024-11-19
-# Description: AMBON Chukchi Sea research cruise on the Norseman II V2 2015-08-09 to 2015-09-03. https://www.gbif.org/dataset/07be324e-bcf5-4e83-b9cc-dc2a962fba30
+# Description: Vessel line-transect surveys of Arctic pinnipeds in the Chukchi Sea, Arctic Marine Biodiversity Observing Network (AMBON) research cruise on the vessel Norseman II V2 2015-08-09 to 2015-09-03. https://www.gbif.org/dataset/07be324e-bcf5-4e83-b9cc-dc2a962fba30
 
 # This script follows a standardized method for data tidying discussed in our data paper.
 
@@ -22,7 +22,7 @@ datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney 
 datadir <- "../../ATP-MarineMammal-DataRaw/"
 
 # Read in data
-gbif <- st_read(paste0(datadir, "03_obis_ambon_norseman_2015/0022234-241107131044228.csv"))
+gbif <- st_read(paste0(datadir, "03_obis_ambon_norseman_2015/0022775-241107131044228.csv"))
 
 # data tidying ------------------------------------------------------------
 
