@@ -60,7 +60,7 @@ mams_new <- pinniped %>%
          day_date = day(eventDate),
          
          # Add column to locate where the data was downloaded from
-         dataOrigin = "GBIF") %>%
+         dataOrigin = "USGS") %>%
   
   # Remove unneeded columns and rename
   select(scientificName,
@@ -88,9 +88,9 @@ mams_new <- pinniped %>%
   arrange(year, month, day)
 
 # Save as csv into respective folder
-write_csv(mams_new, "../Data_Processed/TidyScripts/21_gbif_ambon_norseman_2015.csv", append = FALSE)
+write_csv(mams_new, "../Data_Processed/TidyScripts/21_usgs_ambon_norseman_2015.csv", append = FALSE)
 
 # Save rds and shps
-# saveRDS(mams_new, "../Data_Processed/rds_and_shps_new_tidy/21_gbif_ambon_norseman_2015.rds")
-# st_write(mams_new, "../Data_Processed/rds_and_shps_new_tidy/21_gbif_ambon_norseman_2015.shp")
+# saveRDS(mams_new, "../Data_Processed/rds_and_shps_new_tidy/21_usgs_ambon_norseman_2015.rds")
+# st_write(mams_new, "../Data_Processed/rds_and_shps_new_tidy/21_usgs_ambon_norseman_2015.shp")
 
