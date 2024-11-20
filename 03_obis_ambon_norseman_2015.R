@@ -1,9 +1,9 @@
 # Title: Marine Mammal Data Paper Tidying 
 # Author: Natalia Portales and Sydney Waloven
 # Date: 2024-03-23
-# Description: AMBON Chukchi Sea research cruise on the Norseman II. https://www.sciencebase.gov/catalog/item/5e0e24b3e4b0b207aa13782b
+# Description: Marine Bird Sighting Data, Arctic Marine Biodiversity Observing Network (AMBON) Chukchi Sea research cruise on the vessel Norseman II. https://www.sciencebase.gov/catalog/item/5e0e24b3e4b0b207aa13782b
 
-# Source: OBIS
+# Source: USGS/OBIS
 
 # This script follows a standardized method for data tidying discussed in our data paper.
 
