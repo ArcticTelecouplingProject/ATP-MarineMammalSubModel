@@ -1,7 +1,7 @@
 # Title: Marine Mammal Data Paper Tidying 
 # Author: Sydney Waloven
 # Date: 2024-11-19
-# Description: Vessel line-transect surveys of Arctic pinnipeds in the Chukchi Sea, Arctic Marine Biodiversity Observing Network (AMBON) research cruise on the vessel Norseman II V2 2015-08-09 to 2015-09-03. https://www.gbif.org/dataset/07be324e-bcf5-4e83-b9cc-dc2a962fba30
+# Description: Marine Bird Sighting Data, Arctic Marine Biodiversity Observing Network (AMBON) Chukchi Sea research cruise on the vessel Norseman II. https://www.gbif.org/dataset/d021ed3a-7179-4f25-bfd3-90d72cc6fd38
 
 # This script follows a standardized method for data tidying discussed in our data paper.
 
