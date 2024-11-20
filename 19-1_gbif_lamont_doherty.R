@@ -1,7 +1,7 @@
 # Title: Marine Mammal Data Paper Tidying 
 # Author: Sydney Waloven
 # Date: 2024-11-19
-# Description: Lamont-Doherty/LGL/NSF cruises https://www.gbif.org/occurrence/download/0022723-241107131044228
+# Description: Lamont-Doherty/LGL/NSF cruises https://www.gbif.org/dataset/cf715008-33c7-4aae-ae38-7a7bd501aa6d
 
 # This script follows a standardized method for data tidying discussed in our data paper.
 

@@ -1,7 +1,7 @@
 # Title: Marine Mammal Data Paper Tidying 
 # Author: Sydney Waloven
 # Date: 2024-11-19
-# Description: AMBON Chukchi Sea research cruise on the Norseman II V2. https://www.gbif.org/occurrence/download/0022234-241107131044228
+# Description: AMBON Chukchi Sea research cruise on the Norseman II V2 2015-08-09 to 2015-09-03. https://www.gbif.org/dataset/07be324e-bcf5-4e83-b9cc-dc2a962fba30
 
 # This script follows a standardized method for data tidying discussed in our data paper.
 

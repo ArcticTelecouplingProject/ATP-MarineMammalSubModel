@@ -1,7 +1,7 @@
 # Title: NMML Bering Sea Cetacean Survey 2000
 # Author: Sydney Waloven
 # Date: 2024-11-19
-# Description: Data obtained from https://www.gbif.org/occurrence/download/0022296-241107131044228
+# Description: Data obtained from https://www.gbif.org/dataset/eae32224-05a2-4e3c-90f8-77b1d22a850c
 
 # Visual line-transect surveys for cetaceans were conducted in the southeastern Bering Sea (SEBS) from 10 June to 3 July 2000, in association with a pollock stock assessment survey aboard the NOAA ship Miller Freeman.
 
