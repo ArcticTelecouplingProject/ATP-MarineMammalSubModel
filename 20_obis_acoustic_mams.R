@@ -1,7 +1,7 @@
 # Title: Marine Mammal Data Paper Tidying 
 # Author: Sydney Waloven
 # Date: 2024-07-12
-# Description: Source: Acoustic detections of Arctic mammals in the western Beaufort Sea 2010-2011. https://obis.org/dataset/a4dad102-eb66-4217-a6b7-10d79ee17413 
+# Description: Acoustic detections of Arctic mammals in the western Beaufort Sea 2010-2011. https://obis.org/dataset/a4dad102-eb66-4217-a6b7-10d79ee17413 
 
 # This script follows a standardized method for data tidying discussed in our data paper.
 
@@ -12,7 +12,7 @@ library(sf)
 library(tidyverse)
 
 # Clear environment history 
-rm(list=ls())
+rm(list = ls())
 
 # Import data
 # data_set <- read_csv("pathway/to/data/set.csv")
