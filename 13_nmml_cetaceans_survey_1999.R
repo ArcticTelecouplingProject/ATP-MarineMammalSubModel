@@ -20,7 +20,7 @@ datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney 
 datadir <- "../../ATP-MarineMammal-DataRaw/"
 
 # Read in csv
-nmml <- read_csv(paste0(datadir, "14_nmml_cetaceans_survey_1999/obis_seamap_dataset_117_points.csv"))
+nmml <- read_csv(paste0(datadir, "13_nmml_cetaceans_survey_1999/obis_seamap_dataset_117_points.csv"))
 
 
 # data tidying ------------------------------------------------------------
@@ -84,11 +84,11 @@ walrus <- nmml %>%
 
 
 # Save as csv
-write_csv(walrus, "../Data_Processed/TidyScripts/14_nmml_cetacean_survey_1999.csv")
+write_csv(walrus, "../Data_Processed/TidyScripts/13_nmml_cetacean_survey_1999.csv", append = FALSE)
 
 # Save as rds
-# saveRDS(walrus, "../Data_Processed/rds_and_shps_new_tidy/14_nmml_cetacean_survey_1999.rds")
+# saveRDS(walrus, "../Data_Processed/rds_and_shps_new_tidy/13_nmml_cetacean_survey_1999.rds")
 
 # Save as shp
-# st_write(walrus, "../Data_Processed/rds_and_shps_new_tidy/14_nmml_cetacean_survey_1999.shp")
+# st_write(walrus, "../Data_Processed/rds_and_shps_new_tidy/13_nmml_cetacean_survey_1999.shp")
 
