@@ -53,7 +53,10 @@ walrus <- nmml %>%
          year = year(date_time),
          month = month(date_time),
          day = day(date_time),
-         source = "NMML Cetaceans Survey 1999") %>% 
+         source = "NMML Small Cetacean Aerial Survey 1999",
+         
+         # Add column to locate where the data was downloaded from
+         dataOrigin = "OBIS-SEAMAP") %>% 
   
   # Remove occurrences outside of the study bounds
   filter(decimalLat >= 46.08836 & decimalLat <= 73.92759, 
@@ -74,7 +77,8 @@ walrus <- nmml %>%
          decimalLon,
          count,
          methodObs,
-         source) %>% 
+         source,
+         dataOrigin) %>% 
   
   # Eliminate repeat occurrences
   distinct() %>% 
