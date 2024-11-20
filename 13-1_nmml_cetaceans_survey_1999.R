@@ -75,6 +75,7 @@ walrus <- na_nmml %>%
          decimalLat = decimalLatitude,
          decimalLon = decimalLongitude,
          count,
+         methodObs,
          source,
          dataOrigin) %>% 
   
