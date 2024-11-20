@@ -1,33 +1,8 @@
 # Title: Marine Mammal Data Paper Integration Script
 # Author: Sydney Waloven and Natalia Portales
-# Date: 2024-07-10
-# Description: This data set merges the following tidied data sets:
+# Date: 2024-11-20
+# Description:
 
-# 1-1_GBIF_queries_walrus
-# 1-2_GBIF_queries_spotted_seal
-# 1-3_GBIF_queries_bearded_seal
-# 2_obis_tgs_seismic_2013
-# 3_obis_ambon_norseman_2015
-# 4_nsf_moore_mmw_2016
-# 5_nsf_moore_mmw_2017
-# 6_nsf_dbo_laurier_2019
-# 7-1_nsf_dbo_laurier_2018
-# 7-2_nsf_dbo_healy_2018
-# 8_nmml_aerial_1979_2010
-# 9_usgs_walrus_sex_age_comp_2013_2015
-# 10_usgs_walrus_behavior_uas_2015
-# 12_1_moudry_devillers
-# 12_2_moudry_devillers
-# 13_aerial_surveys_asamm
-# 14_nmml_cetaceans_survey_1999
-# 15_asti_marine_walrus
-# 16_uam_collections_arctos
-# 17_nmml_bering_survey_2000
-# 18-1_nsf_mm_beringia_2008
-# 18-2_nsf_mm_beringia_2008
-# 19_nsf_mm_beringia_2007
-# 20_obis_lamont_doherty
-# 21_obis_acoustic_mams
 
 # setup -------------------------------------------------------------------
 
@@ -36,11 +11,28 @@ library(sf)
 library(tidyverse)
 
 # Clear environment history 
-rm(list=ls())
+rm(list = ls())
 
 # Import data -------------------------------------------------------------
 
-# Read all data sets into one integrated CSV -----
+# Read all data sets downloaded from GBIF into one integrated CSV -----
+
+# List all CSVs in the TidyScripts folder with 'gbif' in the title and read in to one df
+tidygbif <- list.files("../Data_Processed/TidyScripts/",
+                          pattern = "gbif",
+                          full.names = TRUE) %>% 
+  read_csv() %>% 
+  drop_na()
+
+# Convert integrated df to sf object
+tidygbif_sf <- tidygbif %>%
+  st_as_sf(coords = c("decimalLon", "decimalLat"),
+           crs = 4326,
+           remove = FALSE) %>% 
+  st_transform(crs = 3338)
+
+
+# Read ALL data sets into one integrated CSV -----
 
 # List all CSVs in the TidyScripts folder and read in to one df
 tidyscripts <- list.files("../Data_Processed/TidyScripts/",
@@ -91,8 +83,6 @@ scripts_focal <- tidy_sf %>%
            year, month, day,
            decimalLat,
            decimalLon,
-           count,
-           methodObs,
            .keep_all = TRUE) %>% 
   
   # Remove NAs
@@ -117,6 +107,7 @@ scripts_focal <- tidy_sf %>%
          count,
          methodObs,
          source,
+         dataOrigin,
          geometry)
 
 
@@ -134,6 +125,8 @@ st_write(scripts_focal, "../Data_Processed/marine_mammal_integration/marine_mamm
 
 # Optional read-in saved data
 scripts_focal <- read_rds("../Data_Processed/marine_mammal_integration/marine_mammal_integration_focal_species.rds")
+
+scripts_focal <- read_csv("../Data_Processed/marine_mammal_integration/marine_mammal_integration_focal_species.csv")
 
 # Set datadir
 datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney - ATP-MarineMammal-DataRaw/"
@@ -387,7 +380,7 @@ p6 <- scripts_focal %>%
   summarize(
     # Sum total number of occurrences for each data source
     num_obs = n(),
-  
+    
     # Drop grouping
     .groups = "drop"
   ) %>% 
