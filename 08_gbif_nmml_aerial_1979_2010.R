@@ -33,7 +33,7 @@ names(nmml)
 marine_mams <- nmml %>%
   
   # Drop NAs in coordinate, species, and year columns
-  drop_na(decimalLatitude, decimalLongitude, species, year) %>% 
+  drop_na(decimalLatitude, decimalLongitude, species, eventDate) %>% 
  
   # Filter to select species of interest by scientific name and spatial location within the study area bounds
   filter(species %in% c("Odobenus rosmarus", "Phoca largha", "Erignathus barbatus"), 
@@ -74,9 +74,9 @@ marine_mams <- nmml %>%
   arrange(year, month, day)
 
 # Save as csv into respective folder
-write_csv(marine_mams, "../Data_Processed/TidyScripts/08_nmml_aerial_1979_2010.csv", append = FALSE)
+write_csv(marine_mams, "../Data_Processed/TidyScripts/08_gbif_nmml_aerial_1979_2010.csv", append = FALSE)
 
 # Save rds and shps
-# saveRDS(marine_mams, "../Data_Processed/rds_and_shps_new_tidy/08_nmml_aerial_1979_2010.rds")
-# st_write(marine_mams, "../Data_Processed/rds_and_shps_new_tidy/08_nmml_aerial_1979_2010.shp", append = FALSE)
+# saveRDS(marine_mams, "../Data_Processed/rds_and_shps_new_tidy/08_gbif_nmml_aerial_1979_2010.rds")
+# st_write(marine_mams, "../Data_Processed/rds_and_shps_new_tidy/08_gbif_nmml_aerial_1979_2010.shp", append = FALSE)
 
