@@ -21,8 +21,8 @@ rm(list = ls())
 
 # List all CSVs in the TidyScripts folder with 'gbif' in the title 
 tidygbif <- list.files("../Data_Processed/TidyScripts/",
-                          pattern = "gbif",
-                          full.names = TRUE) %>% 
+                       pattern = "gbif",
+                       full.names = TRUE) %>% 
   
   # Assign names
   set_names(~ basename(.) %>% # extracts file name from full file path
@@ -42,16 +42,16 @@ tidygbif <- list.files("../Data_Processed/TidyScripts/",
            remove = FALSE) %>% 
   st_transform(crs = 3338) # %>% 
 
-  # # List individual items to the global environment
-  # list2env(.GlobalEnv)
+# # List individual items to the global environment
+# list2env(.GlobalEnv)
 
 
 # Read all data sets NOT downloaded from GBIF into one integrated object -----
 
 # List all CSVs in the TidyScripts folder w/o 'gbif' in the title and read in to one df
 tidyother <- list.files("../Data_Processed/TidyScripts/",
-                       pattern = ".csv",
-                       full.names = TRUE) %>% 
+                        pattern = ".csv",
+                        full.names = TRUE) %>% 
   
   # Exclude all files containing 'gbif' in the name
   .[!grepl("gbif", .)] %>% 
@@ -100,34 +100,27 @@ tidyscripts <- rbind(tidygbif, tidyother) %>%
 
 
 # Ensure only occurrences of focal species are included
-scripts_focal <- tidy_sf %>% 
+scripts_focal <- tidyscripts %>% 
   filter(scientificName %in% c("Odobenus rosmarus", 
                                "Phoca largha",
                                "Erignathus barbatus")) %>% 
   
   # Eliminate repeat occurrences with duplicate data that may be included from two sources (e.g., a study and a GBIF query)
-  distinct(scientificName,
-           year, month, day,
-           decimalLat,
-           decimalLon,
+  distinct(gbifID,
+           dataOrigin,
            .keep_all = TRUE) %>% 
   
   # Remove NAs
   na.omit() %>% 
   
-  # Convert necessary columns to numeric
-  mutate(year = as.numeric(year),
-         month = as.numeric(month),
-         day = as.numeric(day),
-         count = as.numeric(count),
-         decimalLat = as.numeric(decimalLat),
-         decimalLon = as.numeric(decimalLon),
-         
-         # Create Date column
-         date = as.Date(paste(year, month, day, sep = "-"))) %>% 
+  mutate(
+    # Create Date column
+    date = as.Date(paste(year, month, day, sep = "-"))
+  ) %>% 
   
-  # Rearrange columns
-  select(scientificName,
+  # Reorder columns
+  select(gbifID,
+         scientificName,
          date,
          decimalLat,
          decimalLon,
@@ -135,17 +128,16 @@ scripts_focal <- tidy_sf %>%
          methodObs,
          source,
          dataOrigin,
-         geometry)
-
+         source_file)
 
 # Save this to a csv and rds
-st_write(scripts_focal, "../Data_Processed/marine_mammal_integration/marine_mammal_integration_focal_species.csv", append = FALSE)
+st_write(scripts_focal, "../Data_Processed/marine_mammal_integration/final_marine_mammal_integration.csv", append = FALSE)
 
-saveRDS(scripts_focal, "../Data_Processed/marine_mammal_integration/marine_mammal_integration_focal_species.rds")
+saveRDS(scripts_focal, "../Data_Processed/marine_mammal_integration/final_marine_mammal_integration.rds")
 # This doesn't abbreviate column names like when saving as a shapefile and still maintains the sf class.
 
 # Save as shp
-st_write(scripts_focal, "../Data_Processed/marine_mammal_integration/marine_mammal_integration_focal_species.shp", append = FALSE)
+st_write(scripts_focal, "../Data_Processed/marine_mammal_integration/final_marine_mammal_integration.shp", append = FALSE)
 
 
 # summaries and plotting --------------------------------------------------
