@@ -15,59 +15,86 @@ rm(list = ls())
 
 # Import data -------------------------------------------------------------
 
-# Read all data sets downloaded from GBIF into one integrated CSV -----
+## Read options for importing data ##
 
-# List all CSVs in the TidyScripts folder with 'gbif' in the title and read in to one df
+# Read all data sets downloaded from GBIF into one integrated object -----
+
+# List all CSVs in the TidyScripts folder with 'gbif' in the title 
 tidygbif <- list.files("../Data_Processed/TidyScripts/",
                           pattern = "gbif",
                           full.names = TRUE) %>% 
-  read_csv() %>% 
-  drop_na()
-
-# Convert integrated df to sf object
-tidygbif_sf <- tidygbif %>%
-  st_as_sf(coords = c("decimalLon", "decimalLat"),
-           crs = 4326,
-           remove = FALSE) %>% 
-  st_transform(crs = 3338)
-
-
-# Read ALL data sets into one integrated CSV -----
-
-# List all CSVs in the TidyScripts folder and read in to one df
-tidyscripts <- list.files("../Data_Processed/TidyScripts/",
-                          pattern = ".csv$",
-                          full.names = TRUE) %>% 
-  read_csv() %>% 
-  drop_na()
-
-# Convert integrated df to sf object
-tidy_sf <- tidyscripts %>%
-  st_as_sf(coords = c("decimalLon", "decimalLat"),
-           crs = 4326,
-           remove = FALSE) %>% 
-  st_transform(crs = 3338)
-
-
-# List individual data sets to the environment -----
-
-# List all files
-list.files("../Data_Processed/TidyScripts/", 
-           pattern = ".csv$", 
-           full.names = TRUE) %>%
   
   # Assign names
-  set_names(~ basename(.) %>%
-              tools::file_path_sans_ext() %>%
-              gsub("^[^_]*_", "", .)) %>%
+  set_names(~ basename(.) %>% # extracts file name from full file path
+              tools::file_path_sans_ext() %>% # removes file extension ('.csv')
+              gsub("^[^_]*_", "", .)) %>% # removes all up to and including the first underscore
   
-  # Read each CSV and remove any rows that have NAs
-  map(~ read_csv(.) %>% 
-        drop_na()) %>%
+  # Read in to one df
+  purrr::map_dfr(~ read_csv(.x),
+                 .id = "source_file") %>% # populates source_file col with names from set_names()
   
-  # List individual items to the global environment
-  list2env(.GlobalEnv)
+  # Remove NAs
+  drop_na() %>% 
+  
+  # Convert integrated df to sf object
+  st_as_sf(coords = c("decimalLon", "decimalLat"),
+           crs = 4326,
+           remove = FALSE) %>% 
+  st_transform(crs = 3338) # %>% 
 
+  # # List individual items to the global environment
+  # list2env(.GlobalEnv)
+
+
+# Read all data sets NOT downloaded from GBIF into one integrated object -----
+
+# List all CSVs in the TidyScripts folder w/o 'gbif' in the title and read in to one df
+tidyother <- list.files("../Data_Processed/TidyScripts/",
+                       pattern = ".csv",
+                       full.names = TRUE) %>% 
+  
+  # Exclude all files containing 'gbif' in the name
+  .[!grepl("gbif", .)] %>% 
+  
+  # Assign names
+  set_names(~ basename(.) %>% # extracts file name from full file path
+              tools::file_path_sans_ext() %>% # removes file extension ('.csv')
+              gsub("^[^_]*_", "", .)) %>% # removes all up to and including the first underscore
+  
+  # Read in to one df
+  purrr::map_dfr(~ read_csv(.x),
+                 .id = "source_file") %>% # populates source_file col with names from set_names()
+  
+  # Remove NAs
+  drop_na() %>% 
+  
+  # Convert integrated df to sf object
+  st_as_sf(coords = c("decimalLon", "decimalLat"),
+           crs = 4326,
+           remove = FALSE) %>% 
+  st_transform(crs = 3338)
+
+
+# Read ALL data sets into one integrated object -----
+
+# Since the GBIF and Other files have a different number of columns (Other is lacking the gbifID column), then these will not be able to be merged since 
+
+set.seed(108)
+
+# Add gbifID column to tidyother
+tidyother <- tidyother %>% 
+  
+  # Generate values to populate gbifID column
+  mutate(gbifID = 1:nrow(.)) %>% 
+  
+  # Rearrange columns so gbifID is first
+  select(gbifID,
+         everything())
+
+# Combine the tidygbif and tidyother now that tidyother has the same amount of columns
+tidyscripts <- rbind(tidygbif, tidyother) %>% 
+  select(gbifID,
+         everything())
 
 # data tidying ------------------------------------------------------------
 
