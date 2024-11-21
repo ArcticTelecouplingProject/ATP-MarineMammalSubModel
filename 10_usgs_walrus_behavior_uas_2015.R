@@ -40,6 +40,10 @@ usgs_walrus <- usgs_walrus_uas %>%
          month = substr(Flight, 5, 6),
          day = substr(Flight, 7, 8),
          
+         # Convert columns to numeric
+         month = as.numeric(month),
+         day = as.numeric(day),
+         
          # Add scientific name column
          scientificName = "Odobenus rosmarus",
          
