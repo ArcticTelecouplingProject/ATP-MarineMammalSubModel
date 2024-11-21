@@ -39,6 +39,10 @@ usgs_walrus <- usgs_walrus_comp %>%
   mutate(month = substr(DateTimeStart, 6, 7),
          day = substr(DateTimeStart, 9, 10),
          
+         # Convert columns to numeric
+         month = as.numeric(month),
+         day = as.numeric(day),
+         
          # Add scientific name column
          scientificName = "Odobenus rosmarus",
          
