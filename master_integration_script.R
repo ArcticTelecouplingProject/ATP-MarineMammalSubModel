@@ -143,9 +143,9 @@ st_write(scripts_focal, "../Data_Processed/marine_mammal_integration/final_marin
 # summaries and plotting --------------------------------------------------
 
 # Optional read-in saved data
-scripts_focal <- read_rds("../Data_Processed/marine_mammal_integration/marine_mammal_integration_focal_species.rds")
+scripts_focal <- read_rds("../Data_Processed/marine_mammal_integration/final_marine_mammal_integration.rds")
 
-scripts_focal <- read_csv("../Data_Processed/marine_mammal_integration/marine_mammal_integration_focal_species.csv")
+scripts_focal <- read_csv("../Data_Processed/marine_mammal_integration/final_marine_mammal_integration.csv")
 
 # Set datadir
 datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney - ATP-MarineMammal-DataRaw/"
@@ -238,7 +238,7 @@ p1 <- ggplot() +
         strip.text = element_text(face = "bold", size = 14)) # adjust facet headers
 
 # Save plot
-ggsave("../Figures/marine_mams_facet_century.png", plot = p1, width = 10, height = 8)
+ggsave("../Figures/final/marine_mams_facet_century.png", plot = p1, width = 10, height = 8)
 
 
 # Plot occurrences on base map - facet by month
@@ -272,7 +272,7 @@ p2 <- ggplot() +
         legend.position = "none") # remove legend
 
 # Save plot
-ggsave("../Figures/marine_mams_facet_month.png", plot = p2, width = 10, height = 8)
+ggsave("../Figures/final/marine_mams_facet_month.png", plot = p2, width = 10, height = 8)
 
 
 # Plot occurrences by species
@@ -291,7 +291,7 @@ p3 <- ggplot() +
         strip.text = element_text(face = "bold", size = 12))
 
 # Save plot
-ggsave("../Figures/marine_mams_facet_species.png", plot = p3, width = 10, height = 8)
+ggsave("../Figures/final/marine_mams_facet_species.png", plot = p3, width = 10, height = 8)
 
 
 # Create timeline of collection years for each data source
@@ -319,7 +319,7 @@ p4 <- scripts_focal %>%
   
   # Plot collection periods
   ggplot(aes(x = start_date, y = plot_source, xend = end_date, yend = plot_source)) +
-  geom_segment(size = 3, color = "royalblue2") +
+  geom_segment(linewidth = 3, color = "royalblue2") +
   geom_text(aes(label = paste0(format(start_date, "%Y"), " -")),
             vjust = -0.5,
             hjust = 1, 
