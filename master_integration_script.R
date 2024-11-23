@@ -143,9 +143,14 @@ st_write(scripts_focal, "../Data_Processed/marine_mammal_integration/final_marin
 # summaries and plotting --------------------------------------------------
 
 # Optional read-in saved data
-scripts_focal <- read_rds("../Data_Processed/marine_mammal_integration/final_marine_mammal_integration.rds")
+scripts_focal <- read_rds("../Data_Processed/marine_mammal_integration/final_marine_mammal_integration.rds") # maintains sf df and date col as POSIX/date
 
-scripts_focal <- read_csv("../Data_Processed/marine_mammal_integration/final_marine_mammal_integration.csv")
+scripts_focal <- read_csv("../Data_Processed/marine_mammal_integration/final_marine_mammal_integration.csv") %>% 
+  st_as_sf(coords = c("decimalLon", "decimalLat"),
+           crs = 4326,
+           remove = FALSE) %>% 
+  st_transform(crs = 3338) %>% 
+  mutate(date = as.Date(date))
 
 # Set datadir
 datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney - ATP-MarineMammal-DataRaw/"
@@ -168,8 +173,8 @@ all_mams_sum <- scripts_focal %>%
   mutate(year_idx = c(1:nrow(.))) # Add time step index
 
 
-# Bar plot of occurrences by year
-all_mams_sum %>% 
+# Bar plot of occurrences by year -----
+mams_sum <- all_mams_sum %>% 
   ggplot(aes(x = `year(date)`, y = n, fill = n)) +
   # ggimage::geom_image(image = img,
   #                     size = 0.03) +
@@ -189,6 +194,9 @@ all_mams_sum %>%
         axis.text.x = element_text(size = 16),
         axis.text.y = element_text(size = 16),
         legend.position = "none") # remove legend
+
+# Save plot
+ggsave("../Figures/final/all_mams_sum_bsr.png", plot = mams_sum, width = 10, height = 8)
 
 
 # Create tmap by decade
@@ -224,7 +232,7 @@ mams_tmap <- scripts_focal %>%
   )
 
 
-# Plot occurrences on base map - facet by century
+# Plot occurrences on base map - facet by century -----
 p1 <- ggplot() + 
   geom_sf(data = base_map) + 
   geom_sf(data = mams_tmap, mapping = aes(color = factor(season))) +
@@ -241,7 +249,7 @@ p1 <- ggplot() +
 ggsave("../Figures/final/marine_mams_facet_century.png", plot = p1, width = 10, height = 8)
 
 
-# Plot occurrences on base map - facet by month
+# Plot occurrences on base map - facet by month -----
 p2 <- ggplot() + 
   geom_sf(data = base_map) + 
   geom_sf(data = mams_tmap, mapping = aes(color = factor(month),
@@ -275,7 +283,7 @@ p2 <- ggplot() +
 ggsave("../Figures/final/marine_mams_facet_month.png", plot = p2, width = 10, height = 8)
 
 
-# Plot occurrences by species
+# Plot occurrences by species -----
 p3 <- ggplot() + 
   geom_sf(data = base_map) + 
   geom_sf(data = mams_tmap, mapping = aes(color = factor(season),
@@ -294,7 +302,7 @@ p3 <- ggplot() +
 ggsave("../Figures/final/marine_mams_facet_species.png", plot = p3, width = 10, height = 8)
 
 
-# Create timeline of collection years for each data source
+# Create timeline of collection years for each data source -----
 p4 <- scripts_focal %>% 
   mutate(
     # Create a new column that groups GBIF sources under a species specific query
@@ -341,11 +349,55 @@ p4 <- scripts_focal %>%
         axis.text.y = element_text(size = 12))
 
 # Save plot
-ggsave("../Figures/collection_periods.png", plot = p4, width = 18, height = 8)
+ggsave("../Figures/final/collection_periods.png", plot = p4, width = 18, height = 8)
 
 
-# Create bar plot of number of observations per data source
+# Create timeline of collection years for each data source_file
 p5 <- scripts_focal %>% 
+  st_drop_geometry() %>%
+  group_by(source_file) %>%
+  summarize(
+    # Create collection periods with start and end dates for each data source_file
+    start_date = min(date),
+    end_date = max(date),
+    length_years = as.numeric(difftime(max(date), min(date), units = "days")) / 365.25,
+    length_days = as.numeric(difftime(max(date), min(date), units = "days")),
+    
+    # Drop grouping
+    .groups = "drop"
+  ) %>%
+  
+  # Reorder source files by collection periods 
+  mutate(source_file = fct_reorder(source_file, length_years)) %>% 
+  
+  # Plot collection periods
+  ggplot(aes(x = start_date, y = source_file, xend = end_date, yend = source_file)) +
+  geom_segment(linewidth = 3, color = "royalblue2") +
+  geom_text(aes(label = paste0(format(start_date, "%Y"), " -")),
+            vjust = -0.5,
+            hjust = 1, 
+            size = 3,
+            color = "black") +
+  geom_text(aes(x = end_date, label = paste0(" ", format(end_date, "%Y"))), 
+            vjust = -0.5, 
+            hjust = 0,
+            size = 3, 
+            color = "black") +
+  labs(title = "Collection Period by Source File",
+       x = "Year",
+       y = "File Name Abbr.") +
+  theme_bw() +
+  theme(plot.title = element_text(face = "bold", size = 20),
+        axis.title.x = element_text(face = "bold", size = 17),
+        axis.title.y = element_text(face = "bold", size = 17),
+        axis.text.x = element_text(size = 16),
+        axis.text.y = element_text(size = 12))
+
+ggsave("../Figures/final/collection_period_source_file.png", plot = p5, width = 10, height = 8)
+
+
+# Create bar plot of number of observations per data source -----
+p6 <- scripts_focal %>% 
   mutate(
     # Group GBIF occurrences by species query instead of individual "Collected by"
     plot_source = case_when(
@@ -367,7 +419,11 @@ p5 <- scripts_focal %>%
   # Plot occurrences by data source
   ggplot(aes(x = num_obs, y = plot_source, fill = scientificName)) +
   geom_bar(stat = "identity") +
-  labs(title = "Marine Mammal Occurrences by Data Source",
+  geom_text(aes(label = num_obs),
+            position = position_stack(vjust = 0.5), # centers text within the bar
+            color = "black",
+            size = 4) +
+  labs(title = "Marine Mammal Aggregated Count by Data Source",
        x = "Occurrences",
        y = "Data Source",
        fill = "Scientific Name") +
@@ -381,7 +437,7 @@ p5 <- scripts_focal %>%
         legend.title = element_text(face = "bold"))
 
 # Save plot
-ggsave("../Figures/occurrences_by_source.png", plot = p5, width = 12, height = 8)
+ggsave("../Figures/occurrences_by_source.png", plot = p6, width = 12, height = 8)
 
 
 #	Display the number of occurrences to compare between data sets that focused on one species vs multiple species
