@@ -36,14 +36,18 @@ tidygbif <- list.files("../Data_Processed/TidyScripts/",
   # Remove NAs
   drop_na() %>% 
   
+  # Remove duplicates based on gbifID column
+  distinct(gbifID,
+           .keep_all = TRUE) %>% 
+  
   # Convert integrated df to sf object
   st_as_sf(coords = c("decimalLon", "decimalLat"),
            crs = 4326,
            remove = FALSE) %>% 
   st_transform(crs = 3338) # %>% 
 
-# # List individual items to the global environment
-# list2env(.GlobalEnv)
+  # List individual items to the global environment
+  # list2env(.GlobalEnv)
 
 
 # Read all data sets NOT downloaded from GBIF into one integrated object -----
@@ -77,7 +81,7 @@ tidyother <- list.files("../Data_Processed/TidyScripts/",
 
 # Read ALL data sets into one integrated object -----
 
-# Since the GBIF and Other files have a different number of columns (Other is lacking the gbifID column), then these will not be able to be merged since 
+# Since the GBIF and Other files have a different number of columns (Other is lacking the gbifID column), these will not be able to be merged. The Other files have to get a gbifID column before merging. 
 
 set.seed(108)
 
@@ -87,14 +91,19 @@ tidyother <- tidyother %>%
   # Generate values to populate gbifID column
   mutate(gbifID = 1:nrow(.)) %>% 
   
+  # Remove duplicates based on the gbifID column
+  distinct(gbifID,
+           .keep_all = TRUE) %>% 
+  
   # Rearrange columns so gbifID is first
   select(gbifID,
          everything())
 
 # Combine the tidygbif and tidyother now that tidyother has the same amount of columns
-tidyscripts <- rbind(tidygbif, tidyother) %>% 
+tidyscripts <- rbind(tidyother, tidygbif) %>% 
   select(gbifID,
          everything())
+
 
 # data tidying ------------------------------------------------------------
 
@@ -105,13 +114,13 @@ scripts_focal <- tidyscripts %>%
                                "Phoca largha",
                                "Erignathus barbatus")) %>% 
   
+  # Remove NAs
+  drop_na(year, month, day, decimalLat, decimalLon) %>% 
+  
   # Eliminate repeat occurrences with duplicate data that may be included from two sources (e.g., a study and a GBIF query)
-  distinct(gbifID,
+  distinct(source,
            dataOrigin,
            .keep_all = TRUE) %>% 
-  
-  # Remove NAs
-  na.omit() %>% 
   
   mutate(
     # Create Date column
