@@ -1,7 +1,7 @@
 # Title: Marine Mammal Data Paper Tidying 
 # Author: Natalia Portales and Sydney Waloven
 # Date: 2024-03-22
-# Description: Source: Arctic Data Center. This dataset was obtained from Marine Mammal Sightings During Sir Wilfrid Laurier. Cruise in July 2019. https://arcticdata.io/catalog/view/doi%3A10.18739%2FA2DZ0320P
+# Description: Arctic Data Center "Marine mammal sightings during Sir Wilfrid Laurier cruise to the Pacific Arctic 11-22 July 2019" https://arcticdata.io/catalog/view/doi%3A10.18739%2FA2DZ0320P
 
 # This script follows a standardized method for data tidying discussed in our data paper.
 
@@ -37,7 +37,7 @@ mams_new <- mmwatch_mams %>%
   # Modify and create new columns using mutate() function
   # Add method of observation and source columns
   mutate(methodObs = "Research cruise visual observation",
-         source = "Marine Mammal Watch (SWL) 2019", 
+         source = "Marine Mammal Watch (SWL) July 2019", 
          
          # format date column
          date_mdy = mdy(Date), # this date column is now of class "Date" like "POSIXct"
