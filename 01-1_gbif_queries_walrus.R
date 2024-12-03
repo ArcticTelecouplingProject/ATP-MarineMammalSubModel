@@ -70,7 +70,7 @@ gbif_new <- na_gbif %>%
     source = "GBIF Walrus Query",
     
     # Merge collector source and data source contents together
-    # source_gbif = paste(source_gbif, recordedBy, sep = " "),
+    # source_gbif = paste(source, recordedBy, sep = " "),
     
     # Add column to locate where the data was downloaded from
     dataOrigin = "GBIF") %>% 
