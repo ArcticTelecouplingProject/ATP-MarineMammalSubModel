@@ -102,7 +102,19 @@ tidyother <- tidyother %>%
 # Combine the tidygbif and tidyother now that tidyother has the same amount of columns
 tidyscripts <- rbind(tidyother, tidygbif) %>% 
   select(gbifID,
-         everything())
+         everything()) %>% 
+  
+  # Eliminate repeat occurrences with duplicate data that may be included from two sources (e.g., a study and a GBIF query), based on columns except for the gbifID and source
+  distinct(scientificName, 
+           year,
+           month, 
+           day, 
+           decimalLat, 
+           decimalLon, 
+           .keep_all = TRUE)
+
+# Save rds
+saveRDS(tidyscripts, "../Data_Processed/marine_mammal_integration/tidyscripts_part1.rds")
 
 
 # data tidying ------------------------------------------------------------
@@ -117,13 +129,8 @@ scripts_focal <- tidyscripts %>%
   # Remove NAs
   drop_na(year, month, day, decimalLat, decimalLon) %>% 
   
-  # Eliminate repeat occurrences with duplicate data that may be included from two sources (e.g., a study and a GBIF query)
-  distinct(source,
-           dataOrigin,
-           .keep_all = TRUE) %>% 
-  
+  # Add Date column
   mutate(
-    # Create Date column
     date = as.Date(paste(year, month, day, sep = "-"))
   ) %>% 
   
