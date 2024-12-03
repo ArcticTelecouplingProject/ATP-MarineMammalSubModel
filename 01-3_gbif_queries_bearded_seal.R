@@ -63,10 +63,10 @@ gbif_new_bearded <- na_gbif %>%
                 TRUE ~ NA_character_),
     
     # Add GBIF source column
-    source_gbif = "GBIF Bearded Seal Query |",
+    source = "GBIF Bearded Seal Query",
     
     # Merge collector source and data source contents together
-    source = paste(source_gbif, recordedBy, sep = " "),
+    # source_gbif = paste(source, recordedBy, sep = " "),
     
     # Add column to locate where the data was downloaded from
     dataOrigin = "GBIF") %>% 
