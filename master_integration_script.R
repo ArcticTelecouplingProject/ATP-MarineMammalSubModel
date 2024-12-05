@@ -36,19 +36,33 @@ tidygbif <- list.files("../Data_Processed/TidyScripts/",
   # Remove NAs
   drop_na() %>% 
   
-  # Remove duplicates based on gbifID column
-  distinct(gbifID,
-           .keep_all = TRUE) %>% 
-  
   # Convert integrated df to sf object
   st_as_sf(coords = c("decimalLon", "decimalLat"),
            crs = 4326,
            remove = FALSE) %>% 
   st_transform(crs = 3338) # %>% 
 
-  # List individual items to the global environment
-  # list2env(.GlobalEnv)
+# List individual items to the global environment
+# list2env(.GlobalEnv)
 
+
+tidygbif_dedup <- tidygbif %>% 
+  
+  # Add priority for each row to specify which record to keep when deduplicating. 
+  mutate(priority = case_when(
+    !str_detect(source, "GBIF") ~ 1, # All non-GBIF sources have the highest priority
+    str_detect(source, "GBIF") ~ 2 # GBIF has the lowest priority
+  )) %>% 
+  
+  # Rearrange by priority to keep rows of highest priority
+  arrange(scientificName, year, month, day, decimalLat, decimalLon, priority) %>%
+  
+  # Remove duplicates based on gbifID column
+  distinct(gbifID,
+           .keep_all = TRUE)
+  
+# Save data
+write_csv(tidygbif_dedup, "../Data_Processed/marine_mammal_integration/tidygbif_dedup.csv")
 
 # Read all data sets NOT downloaded from GBIF into one integrated object -----
 
@@ -81,7 +95,7 @@ tidyother <- list.files("../Data_Processed/TidyScripts/",
 
 # Read ALL data sets into one integrated object -----
 
-# Since the GBIF and Other files have a different number of columns (Other is lacking the gbifID column), these will not be able to be merged. The Other files have to get a gbifID column before merging. 
+# Since the tidygbif and tidyother objects have a different number of columns (Other is lacking the gbifID column), these will not be able to be merged. tidyother has to get a gbifID column before merging. 
 
 set.seed(108)
 
@@ -91,27 +105,25 @@ tidyother <- tidyother %>%
   # Generate values to populate gbifID column
   mutate(gbifID = 1:nrow(.)) %>% 
   
-  # Remove duplicates based on the gbifID column
-  distinct(gbifID,
-           .keep_all = TRUE) %>% 
+  # Remove duplicates based on exact matches across ALL columns
+  distinct(.keep_all = TRUE) %>% 
+  
+  # Add priority for each row to specify which record to keep when deduplicating. 
+  mutate(priority = case_when(
+    !str_detect(source, "GBIF") ~ 1, # All non-GBIF sources have the highest priority
+    str_detect(source, "GBIF") ~ 2 # GBIF has the lowest priority
+  )) %>% 
   
   # Rearrange columns so gbifID is first
   select(gbifID,
          everything())
 
-# Combine the tidygbif and tidyother now that tidyother has the same amount of columns
-tidyscripts <- rbind(tidyother, tidygbif) %>% 
+# Combine tidygbif and tidyother since they have the same number of columns now. 
+tidyscripts <- rbind(tidyother, tidygbif_dedup) %>%
   select(gbifID,
-         everything()) %>% 
-  
+         everything()) %>%
   # Eliminate repeat occurrences with duplicate data that may be included from two sources (e.g., a study and a GBIF query), based on columns except for the gbifID and source
-  distinct(scientificName, 
-           year,
-           month, 
-           day, 
-           decimalLat, 
-           decimalLon, 
-           .keep_all = TRUE)
+  distinct(.keep_all = TRUE)
 
 # Save rds
 saveRDS(tidyscripts, "../Data_Processed/marine_mammal_integration/tidyscripts_part1.rds")
@@ -119,6 +131,8 @@ saveRDS(tidyscripts, "../Data_Processed/marine_mammal_integration/tidyscripts_pa
 
 # data tidying ------------------------------------------------------------
 
+# Optional read-in saved data
+tidyscripts <- read_rds("../Data_Processed/marine_mammal_integration/tidyscripts_part1.rds")
 
 # Ensure only occurrences of focal species are included
 scripts_focal <- tidyscripts %>% 
@@ -147,9 +161,9 @@ scripts_focal <- tidyscripts %>%
          source_file)
 
 # Save this to a csv and rds
-st_write(scripts_focal, "../Data_Processed/marine_mammal_integration/final_marine_mammal_integration.csv", append = FALSE)
+write_csv(scripts_focal, "../Data_Processed/marine_mammal_integration/final_marine_mammal_integration.csv", append = FALSE)
 
-saveRDS(scripts_focal, "../Data_Processed/marine_mammal_integration/final_marine_mammal_integration.rds")
+write_rds(scripts_focal, "../Data_Processed/marine_mammal_integration/final_marine_mammal_integration.rds")
 # This doesn't abbreviate column names like when saving as a shapefile and still maintains the sf class.
 
 # Save as shp
@@ -320,16 +334,16 @@ ggsave("../Figures/final/marine_mams_facet_species.png", plot = p3, width = 10, 
 
 # Create timeline of collection years for each data source -----
 p4 <- scripts_focal %>% 
-  mutate(
-    # Create a new column that groups GBIF sources under a species specific query
-    plot_source = case_when(
-      str_detect(source, "GBIF Walrus Query") ~ "GBIF Walrus Query",
-      str_detect(source, "GBIF Spotted Seal Query") ~ "GBIF Spotted Seal Query",
-      str_detect(source, "GBIF Bearded Seal Query") ~ "GBIF Bearded Seal Query",
-      TRUE ~ source)
-  ) %>% 
+  # mutate(
+  #   # Create a new column that groups GBIF sources under a species specific query
+  #   plot_source = case_when(
+  #     str_detect(source, "GBIF Walrus Query") ~ "GBIF Walrus Query",
+  #     str_detect(source, "GBIF Spotted Seal Query") ~ "GBIF Spotted Seal Query",
+  #     str_detect(source, "GBIF Bearded Seal Query") ~ "GBIF Bearded Seal Query",
+  #     TRUE ~ source)
+  # ) %>% 
   st_drop_geometry() %>% 
-  group_by(plot_source) %>%
+  group_by(source) %>%
   summarize(
     # Create collection periods with start and end dates for each data source
     start_date = min(date),
@@ -342,7 +356,7 @@ p4 <- scripts_focal %>%
   ) %>%
   
   # Plot collection periods
-  ggplot(aes(x = start_date, y = plot_source, xend = end_date, yend = plot_source)) +
+  ggplot(aes(x = start_date, y = source, xend = end_date, yend = source)) +
   geom_segment(linewidth = 3, color = "royalblue2") +
   geom_text(aes(label = paste0(format(start_date, "%Y"), " -")),
             vjust = -0.5,
@@ -368,7 +382,7 @@ p4 <- scripts_focal %>%
 ggsave("../Figures/final/collection_periods.png", plot = p4, width = 18, height = 8)
 
 
-# Create timeline of collection years for each data source_file
+# Create timeline of collection years for each data source_file -----
 p5 <- scripts_focal %>% 
   st_drop_geometry() %>%
   group_by(source_file) %>%
@@ -414,16 +428,16 @@ ggsave("../Figures/final/collection_period_source_file.png", plot = p5, width = 
 
 # Create bar plot of number of observations per data source -----
 p6 <- scripts_focal %>% 
-  mutate(
-    # Group GBIF occurrences by species query instead of individual "Collected by"
-    plot_source = case_when(
-      str_detect(source, "GBIF Walrus Query") ~ "GBIF Walrus Query",
-      str_detect(source, "GBIF Spotted Seal Query") ~ "GBIF Spotted Seal Query",
-      str_detect(source, "GBIF Bearded Seal Query") ~ "GBIF Bearded Seal Query",
-      TRUE ~ source)
-  ) %>% 
+  # mutate(
+  #   # Group GBIF occurrences by species query instead of individual "Collected by"
+  #   plot_source = case_when(
+  #     str_detect(source, "GBIF Walrus Query") ~ "GBIF Walrus Query",
+  #     str_detect(source, "GBIF Spotted Seal Query") ~ "GBIF Spotted Seal Query",
+  #     str_detect(source, "GBIF Bearded Seal Query") ~ "GBIF Bearded Seal Query",
+  #     TRUE ~ source)
+  # ) %>% 
   st_drop_geometry() %>% 
-  group_by(plot_source, scientificName) %>%
+  group_by(source, scientificName) %>%
   summarize(
     # Sum total number of occurrences for each data source
     num_obs = n(),
@@ -433,7 +447,7 @@ p6 <- scripts_focal %>%
   ) %>% 
   
   # Plot occurrences by data source
-  ggplot(aes(x = num_obs, y = plot_source, fill = scientificName)) +
+  ggplot(aes(x = num_obs, y = source, fill = scientificName)) +
   geom_bar(stat = "identity") +
   geom_text(aes(label = num_obs),
             position = position_stack(vjust = 0.5), # centers text within the bar
@@ -453,21 +467,21 @@ p6 <- scripts_focal %>%
         legend.title = element_text(face = "bold"))
 
 # Save plot
-ggsave("../Figures/occurrences_by_source.png", plot = p6, width = 12, height = 8)
+ggsave("../Figures/final/occurrences_by_source.png", plot = p6, width = 12, height = 8)
 
 
 #	Display the number of occurrences to compare between data sets that focused on one species vs multiple species
 p6 <- scripts_focal %>% 
-  mutate(
-    # Group GBIF occurrences by species query instead of individual "Collected by"
-    plot_source = case_when(
-      str_detect(source, "GBIF Walrus Query") ~ "GBIF Walrus Query",
-      str_detect(source, "GBIF Spotted Seal Query") ~ "GBIF Spotted Seal Query",
-      str_detect(source, "GBIF Bearded Seal Query") ~ "GBIF Bearded Seal Query",
-      TRUE ~ source),
-  ) %>% 
+  # mutate(
+  #   # Group GBIF occurrences by species query instead of individual "Collected by"
+  #   plot_source = case_when(
+  #     str_detect(source, "GBIF Walrus Query") ~ "GBIF Walrus Query",
+  #     str_detect(source, "GBIF Spotted Seal Query") ~ "GBIF Spotted Seal Query",
+  #     str_detect(source, "GBIF Bearded Seal Query") ~ "GBIF Bearded Seal Query",
+  #     TRUE ~ source),
+  # ) %>% 
   st_drop_geometry() %>% 
-  group_by(plot_source, scientificName) %>%
+  group_by(source, scientificName) %>%
   summarize(
     # Sum total number of occurrences for each data source
     num_obs = n(),
@@ -477,7 +491,7 @@ p6 <- scripts_focal %>%
   ) %>% 
   
   # Plot occurrences by data source
-  ggplot(aes(x = num_obs, y = plot_source, fill = scientificName)) +
+  ggplot(aes(x = num_obs, y = source, fill = scientificName)) +
   geom_bar(stat = "identity") +
   facet_wrap(~ scientificName) +
   labs(title = "Marine Mammal Occurrences by Data Source",
@@ -495,7 +509,7 @@ p6 <- scripts_focal %>%
         legend.title = element_text(face = "bold"))
 
 # Save plot
-ggsave("../Figures/occurrences_by_source_facet_species.png", plot = p6, width = 12, height = 8)
+ggsave("../Figures/final/occurrences_by_source_facet_species.png", plot = p6, width = 12, height = 8)
 
 
 
