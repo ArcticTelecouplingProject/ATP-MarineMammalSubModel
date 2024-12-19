@@ -48,7 +48,7 @@ usgs_walrus <- usgs_walrus_comp %>%
          
          # Add method of observation and source columns
          methodObs = "Research cruise visual observation",
-         source = "USGS Sex and Age Comp of Walrus Haulouts 2013-2015",
+         source = "USGS Composition of Walrus Haulouts 2013-2015",
          
          # Add column to locate where the data was downloaded from
          dataOrigin = "USGS Alaska Science Center") %>% 
