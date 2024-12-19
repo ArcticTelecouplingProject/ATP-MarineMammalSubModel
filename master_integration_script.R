@@ -334,16 +334,40 @@ ggsave("../Figures/final/marine_mams_facet_species.png", plot = p3, width = 10, 
 
 # Create timeline of collection years for each data source -----
 p4 <- scripts_focal %>% 
-  # mutate(
-  #   # Create a new column that groups GBIF sources under a species specific query
-  #   plot_source = case_when(
-  #     str_detect(source, "GBIF Walrus Query") ~ "GBIF Walrus Query",
-  #     str_detect(source, "GBIF Spotted Seal Query") ~ "GBIF Spotted Seal Query",
-  #     str_detect(source, "GBIF Bearded Seal Query") ~ "GBIF Bearded Seal Query",
-  #     TRUE ~ source)
-  # ) %>% 
+  mutate(
+    # Add column to put data sources in order
+    table_num = as.numeric(
+      case_when(
+        str_detect(source_file, "queries_walrus") ~ "1",
+        str_detect(source_file, "queries_spotted") ~ "2",
+        str_detect(source_file, "queries_bearded") ~ "3",
+        str_detect(source_file, "tgs_seismic") ~ "4",
+        str_detect(source_file, "norseman_2015") ~ "5",
+        str_detect(source_file, "mmw_2016") ~ "6",
+        str_detect(source_file, "mmw_2017") ~ "7",
+        str_detect(source_file, "laurier_2019") ~ "8",
+        str_detect(source_file, "laurier_2018") ~ "9",
+        str_detect(source_file, "healy_2018") ~ "10",
+        str_detect(source_file, "nmml_aerial") ~ "11",
+        str_detect(source_file, "sex_age") ~ "12",
+        str_detect(source_file, "behavior_uas") ~ "13",
+        str_detect(source_file, "moudry") ~ "14",
+        str_detect(source_file, "asamm") ~ "15",
+        str_detect(source_file, "cetacean_survey") ~ "16",
+        str_detect(source_file, "asti") ~ "17",
+        str_detect(source_file, "arctos") ~ "18",
+        str_detect(source_file, "bering_survey") ~ "19",
+        str_detect(source_file, "beringia_2008") ~ "20",
+        str_detect(source_file, "beringia_2007") ~ "21",
+        str_detect(source_file, "lamont") ~ "22",
+        str_detect(source_file, "acoustic_mams") ~ "23",
+        str_detect(source_file, "norseman_2017") ~ "24",
+        TRUE ~ NA_character_)
+    )
+  ) %>% 
+  
   st_drop_geometry() %>% 
-  group_by(source) %>%
+  group_by(table_num, source) %>%
   summarize(
     # Create collection periods with start and end dates for each data source
     start_date = min(date),
@@ -355,9 +379,16 @@ p4 <- scripts_focal %>%
     .groups = "drop"
   ) %>%
   
+  # Arrange numerically
+  arrange(table_num) %>% 
+  
+  # Set factor levels for "source" based on numerical order, and reverse
+  mutate(source = factor(source, levels = source[order(table_num)]),
+         source = forcats::fct_rev(source)) %>% 
+  
   # Plot collection periods
   ggplot(aes(x = start_date, y = source, xend = end_date, yend = source)) +
-  geom_segment(linewidth = 3, color = "royalblue2") +
+  geom_segment(linewidth = 3, color = "lightsteelblue2") +
   geom_text(aes(label = paste0(format(start_date, "%Y"), " -")),
             vjust = -0.5,
             hjust = 1, 
@@ -368,9 +399,9 @@ p4 <- scripts_focal %>%
             hjust = 0,
             size = 3, 
             color = "black") +
-  labs(title = "Collection Period by Data Source",
-       x = "Year",
-       y = "Data Source") +
+  labs(# title = "Collection Period by Data Source",
+    x = "Year",
+    y = "Data Source") +
   theme_bw() +
   theme(plot.title = element_text(face = "bold", size = 20),
         axis.title.x = element_text(face = "bold", size = 17),
@@ -379,7 +410,7 @@ p4 <- scripts_focal %>%
         axis.text.y = element_text(size = 12))
 
 # Save plot
-ggsave("../Figures/final/collection_periods.png", plot = p4, width = 18, height = 8)
+ggsave("../Figures/final/collection_periods_ordered.png", plot = p4, width = 18, height = 8)
 
 
 # Create timeline of collection years for each data source_file -----
