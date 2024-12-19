@@ -365,7 +365,6 @@ p4 <- scripts_focal %>%
         TRUE ~ NA_character_)
     )
   ) %>% 
-  
   st_drop_geometry() %>% 
   group_by(table_num, source) %>%
   summarize(
@@ -413,62 +412,41 @@ p4 <- scripts_focal %>%
 ggsave("../Figures/final/collection_periods_ordered.png", plot = p4, width = 18, height = 8)
 
 
-# Create timeline of collection years for each data source_file -----
-p5 <- scripts_focal %>% 
-  st_drop_geometry() %>%
-  group_by(source_file) %>%
-  summarize(
-    # Create collection periods with start and end dates for each data source_file
-    start_date = min(date),
-    end_date = max(date),
-    length_years = as.numeric(difftime(max(date), min(date), units = "days")) / 365.25,
-    length_days = as.numeric(difftime(max(date), min(date), units = "days")),
-    
-    # Drop grouping
-    .groups = "drop"
-  ) %>%
-  
-  # Reorder source files by collection periods 
-  mutate(source_file = fct_reorder(source_file, length_years)) %>% 
-  
-  # Plot collection periods
-  ggplot(aes(x = start_date, y = source_file, xend = end_date, yend = source_file)) +
-  geom_segment(linewidth = 3, color = "royalblue2") +
-  geom_text(aes(label = paste0(format(start_date, "%Y"), " -")),
-            vjust = -0.5,
-            hjust = 1, 
-            size = 3,
-            color = "black") +
-  geom_text(aes(x = end_date, label = paste0(" ", format(end_date, "%Y"))), 
-            vjust = -0.5, 
-            hjust = 0,
-            size = 3, 
-            color = "black") +
-  labs(title = "Collection Period by Source File",
-       x = "Year",
-       y = "File Name Abbr.") +
-  theme_bw() +
-  theme(plot.title = element_text(face = "bold", size = 20),
-        axis.title.x = element_text(face = "bold", size = 17),
-        axis.title.y = element_text(face = "bold", size = 17),
-        axis.text.x = element_text(size = 16),
-        axis.text.y = element_text(size = 12))
-
-ggsave("../Figures/final/collection_period_source_file.png", plot = p5, width = 10, height = 8)
-
-
 # Create bar plot of number of observations per data source -----
 p6 <- scripts_focal %>% 
-  # mutate(
-  #   # Group GBIF occurrences by species query instead of individual "Collected by"
-  #   plot_source = case_when(
-  #     str_detect(source, "GBIF Walrus Query") ~ "GBIF Walrus Query",
-  #     str_detect(source, "GBIF Spotted Seal Query") ~ "GBIF Spotted Seal Query",
-  #     str_detect(source, "GBIF Bearded Seal Query") ~ "GBIF Bearded Seal Query",
-  #     TRUE ~ source)
-  # ) %>% 
+  mutate(
+    # Add column to put data sources in order
+    table_num = as.numeric(
+      case_when(
+        str_detect(source_file, "queries_walrus") ~ "1",
+        str_detect(source_file, "queries_spotted") ~ "2",
+        str_detect(source_file, "queries_bearded") ~ "3",
+        str_detect(source_file, "tgs_seismic") ~ "4",
+        str_detect(source_file, "norseman_2015") ~ "5",
+        str_detect(source_file, "mmw_2016") ~ "6",
+        str_detect(source_file, "mmw_2017") ~ "7",
+        str_detect(source_file, "laurier_2019") ~ "8",
+        str_detect(source_file, "laurier_2018") ~ "9",
+        str_detect(source_file, "healy_2018") ~ "10",
+        str_detect(source_file, "nmml_aerial") ~ "11",
+        str_detect(source_file, "sex_age") ~ "12",
+        str_detect(source_file, "behavior_uas") ~ "13",
+        str_detect(source_file, "moudry") ~ "14",
+        str_detect(source_file, "asamm") ~ "15",
+        str_detect(source_file, "cetacean_survey") ~ "16",
+        str_detect(source_file, "asti") ~ "17",
+        str_detect(source_file, "arctos") ~ "18",
+        str_detect(source_file, "bering_survey") ~ "19",
+        str_detect(source_file, "beringia_2008") ~ "20",
+        str_detect(source_file, "beringia_2007") ~ "21",
+        str_detect(source_file, "lamont") ~ "22",
+        str_detect(source_file, "acoustic_mams") ~ "23",
+        str_detect(source_file, "norseman_2017") ~ "24",
+        TRUE ~ NA_character_)
+    )
+  ) %>% 
   st_drop_geometry() %>% 
-  group_by(source, scientificName) %>%
+  group_by(table_num, source, scientificName) %>%
   summarize(
     # Sum total number of occurrences for each data source
     num_obs = n(),
@@ -477,14 +455,21 @@ p6 <- scripts_focal %>%
     .groups = "drop"
   ) %>% 
   
+  # Arrange numerically
+  arrange(table_num) %>% 
+  
+  # Set factor levels for "source" based on numerical order, and reverse
+  mutate(source = factor(source, levels = source[order(table_num)]),
+         source = forcats::fct_rev(source)) %>% 
+  
   # Plot occurrences by data source
   ggplot(aes(x = num_obs, y = source, fill = scientificName)) +
   geom_bar(stat = "identity") +
-  geom_text(aes(label = num_obs),
-            position = position_stack(vjust = 0.5), # centers text within the bar
-            color = "black",
-            size = 4) +
-  labs(title = "Marine Mammal Aggregated Count by Data Source",
+  # geom_text(aes(label = num_obs),
+  #           position = position_stack(vjust = 0.5), # centers text within the bar
+  #           color = "black",
+  #           size = 4) +
+  labs(# title = "Marine Mammal Aggregated Count by Data Source",
        x = "Occurrences",
        y = "Data Source",
        fill = "Scientific Name") +
@@ -493,7 +478,7 @@ p6 <- scripts_focal %>%
   theme(plot.title = element_text(face = "bold", size = 20),
         axis.title.x = element_text(face = "bold", size = 17),
         axis.title.y = element_text(face = "bold", size = 17),
-        axis.text.x = element_text(size = 16),
+        axis.text.x = element_text(size = 12),
         axis.text.y = element_text(size = 12),
         legend.title = element_text(face = "bold"))
 
@@ -501,46 +486,7 @@ p6 <- scripts_focal %>%
 ggsave("../Figures/final/occurrences_by_source.png", plot = p6, width = 12, height = 8)
 
 
-#	Display the number of occurrences to compare between data sets that focused on one species vs multiple species
-p6 <- scripts_focal %>% 
-  # mutate(
-  #   # Group GBIF occurrences by species query instead of individual "Collected by"
-  #   plot_source = case_when(
-  #     str_detect(source, "GBIF Walrus Query") ~ "GBIF Walrus Query",
-  #     str_detect(source, "GBIF Spotted Seal Query") ~ "GBIF Spotted Seal Query",
-  #     str_detect(source, "GBIF Bearded Seal Query") ~ "GBIF Bearded Seal Query",
-  #     TRUE ~ source),
-  # ) %>% 
-  st_drop_geometry() %>% 
-  group_by(source, scientificName) %>%
-  summarize(
-    # Sum total number of occurrences for each data source
-    num_obs = n(),
-    
-    # Drop grouping
-    .groups = "drop"
-  ) %>% 
-  
-  # Plot occurrences by data source
-  ggplot(aes(x = num_obs, y = source, fill = scientificName)) +
-  geom_bar(stat = "identity") +
-  facet_wrap(~ scientificName) +
-  labs(title = "Marine Mammal Occurrences by Data Source",
-       x = "Occurrences",
-       y = "Data Source",
-       fill = "Scientific Name") +
-  scale_fill_manual(values = c("slategray4", "burlywood4", "lightblue2")) +
-  theme_bw() +
-  theme(plot.title = element_text(face = "bold", size = 20),
-        axis.title.x = element_text(face = "bold", size = 17),
-        axis.title.y = element_text(face = "bold", size = 17),
-        axis.text.x = element_text(size = 16),
-        axis.text.y = element_text(size = 12),
-        strip.text = element_text(face = "bold", size = 12), # facet headers
-        legend.title = element_text(face = "bold"))
 
-# Save plot
-ggsave("../Figures/final/occurrences_by_source_facet_species.png", plot = p6, width = 12, height = 8)
 
 
 
