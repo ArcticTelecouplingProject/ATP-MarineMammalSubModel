@@ -22,7 +22,7 @@ library(lubridate) # to separate date into year, month, day columns
 # Clear history 
 rm(list=ls())
 
-# ASAMM Surveys -----------------------------------------------------------
+# Aerial Surveys of AMMs Surveys -----------------------------------------------------------
 
 # Import raw occurrence data
 datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney - ATP-MarineMammal-DataRaw/"
@@ -78,7 +78,7 @@ years_mams <- master_years %>%
     
     # Add observation and source columns
     methodObs = "Aerial survey",
-    source = "ASAMM 1979-2021",
+    source = "Aerial Surveys of AMMs 1979-2021",
     
     # Add year, month, day columns
     date = mdy_hms(GMT_Minus8_DateTime),
@@ -143,7 +143,7 @@ v0_mams <- master_v0 %>%
     
     # Add observation and source columns
     methodObs = "Aerial survey",
-    source = "ASAMM 1979-2021",
+    source = "Aerial Surveys of AMMs 1979-2021",
     
     # Add year, month, day columns
     date = mdy_hms(GMT_Minus8_DateTime),
@@ -205,7 +205,7 @@ v24_mams <- master_v24 %>%
     
     # Add observation and source columns
     methodObs = "Aerial survey",
-    source = "ASAMM 1979-2021",
+    source = "Aerial Surveys of AMMs 1979-2021",
     
     # Add year, month, day columns
     date = mdy_hms(GMT_Minus8_DateTime),
@@ -270,7 +270,7 @@ v2_mams <- master_v2 %>%
     
     # Add observation and source columns
     methodObs = "Aerial survey",
-    source = "ASAMM 1979-2021",
+    source = "Aerial Surveys of AMMs 1979-2021",
     
     # Add year, month, day columns
     date = mdy_hms(GMT_Minus8_DateTime),
