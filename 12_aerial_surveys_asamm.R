@@ -22,7 +22,9 @@ library(lubridate) # to separate date into year, month, day columns
 # Clear history 
 rm(list=ls())
 
-# Aerial Surveys of AMMs Surveys -----------------------------------------------------------
+
+# import data -------------------------------------------------------------
+
 
 # Import raw occurrence data
 datadir <- "C:/Users/Natalia Portales/Michigan State University/Waloven, Sydney - ATP-MarineMammal-DataRaw/"
