@@ -122,7 +122,7 @@ tidyother <- tidyother %>%
 tidyscripts <- rbind(tidyother, tidygbif_dedup) %>%
   select(gbifID,
          everything()) %>%
-  # Eliminate repeat occurrences with duplicate data that may be included from two sources (e.g., a study and a GBIF query), based on columns except for the gbifID and source
+  # Eliminate repeat occurrences with duplicate data that may be included from two sources (e.g., a study and a GBIF query)
   distinct(.keep_all = TRUE)
 
 # Save rds
