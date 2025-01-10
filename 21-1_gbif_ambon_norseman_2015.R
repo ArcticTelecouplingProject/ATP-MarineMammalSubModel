@@ -50,7 +50,7 @@ mams_new <- na_pinniped %>%
   
   # Add method of observation and source columns
   mutate(methodObs = "Line transect visual survey",
-         source = "AMBON Norseman II Cruise 2015",
+         source = "Pinniped Surveys Norseman II Cruise 2015",
          
          # Convert appropriate columns to numeric
          decimalLatitude = as.numeric(decimalLatitude),
