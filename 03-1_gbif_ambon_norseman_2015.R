@@ -48,7 +48,7 @@ gbif_new <- na_gbif %>%
   # Modify and create new columns using mutate() function
   # Add method of observation and source columns
   mutate(methodObs = "Line transect visual survey",
-         source = "AMBON Norseman II Cruise 2015",
+         source = "Marine Birds Norseman II Cruise 2015",
          
          # Convert appropriate columns to numeric
          decimalLatitude = as.numeric(decimalLatitude),
