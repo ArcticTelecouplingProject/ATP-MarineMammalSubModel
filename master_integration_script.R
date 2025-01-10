@@ -210,10 +210,10 @@ mams_sum <- all_mams_sum %>%
   #                     size = 0.03) +
   geom_bar(stat = "identity") +
   labs(
-    title = "Marine mammal occurrences in the Bering Strait Region",
-    subtitle = "Pacific walrus, spotted seal, bearded seal",
+    # title = "Marine mammal occurrences in the Bering Strait Region",
+    # subtitle = "Pacific walrus, spotted seal, bearded seal",
     x = "Year",
-    y = "Counts",
+    y = "Occurrences",
     fill = "Counts") +
   scale_fill_viridis_c(direction = -1,
                        na.value = "#dcdcdc") +
@@ -229,7 +229,7 @@ mams_sum <- all_mams_sum %>%
 ggsave("../Figures/final/all_mams_sum_bsr.png", plot = mams_sum, width = 10, height = 8)
 
 
-# Create tmap by decade
+# Create plot by decade
 mams_tmap <- scripts_focal %>% 
   mutate(year = year(date),
          month = month(date),
@@ -268,15 +268,15 @@ p1 <- ggplot() +
   geom_sf(data = mams_tmap, mapping = aes(color = factor(season))) +
   facet_wrap(~ century) +
   labs(
-    title = "Marine mammal occurrences from 1860-2024",
-    subtitle = "Bering Strait Region and North Slope, Alaska",
+    # title = "Marine mammal occurrences from 1860-2024",
+    # subtitle = "Bering Strait Region and North Slope, Alaska",
     color = "Season") +
   theme_bw() +
   theme(plot.title = element_text(face = "bold", size = 18), # adjust title
         strip.text = element_text(face = "bold", size = 14)) # adjust facet headers
 
 # Save plot
-ggsave("../Figures/final/marine_mams_facet_century.png", plot = p1, width = 10, height = 8)
+ggsave("../Figures/final/marine_mams_facet_century_DIB.png", plot = p1, width = 10, height = 8)
 
 
 # Plot occurrences on base map - facet by month -----
@@ -301,8 +301,8 @@ p2 <- ggplot() +
                                      "11" = "November",
                                      "12" = "December"))) +
   labs(
-    title = "Marine mammal occurrences from 1860-2024",
-    subtitle = "Bering Strait Region and North Slope, Alaska",
+    # title = "Marine mammal occurrences from 1860-2024",
+    # subtitle = "Bering Strait Region and North Slope, Alaska",
     color = "Season") +
   theme_bw() +
   theme(plot.title = element_text(face = "bold", size = 15), # adjust title
@@ -321,8 +321,8 @@ p3 <- ggplot() +
           show.legend = c(alpha = FALSE)) +
   facet_wrap(~ scientificName) +
   labs(
-    title = "Marine mammal occurrences from 1860-2024",
-    subtitle = "Bering Strait Region and North Slope, Alaska",
+    # title = "Marine mammal occurrences from 1860-2024",
+    # subtitle = "Bering Strait Region and North Slope, Alaska",
     color = "Season") +
   theme_bw() +
   theme(plot.title = element_text(face = "bold", size = 15), # adjust title
@@ -400,7 +400,7 @@ p4 <- scripts_focal %>%
             color = "black") +
   labs(# title = "Collection Period by Data Source",
     x = "Year",
-    y = "Data Source") +
+    y = "Dataset") +
   theme_bw() +
   theme(plot.title = element_text(face = "bold", size = 20),
         axis.title.x = element_text(face = "bold", size = 17),
