@@ -276,7 +276,7 @@ p1 <- ggplot() +
         strip.text = element_text(face = "bold", size = 14)) # adjust facet headers
 
 # Save plot
-ggsave("../Figures/final/marine_mams_facet_century_DIB.png", plot = p1, width = 10, height = 8)
+ggsave("../Figures/final/marine_mams_facet_century.png", plot = p1, width = 10, height = 8)
 
 
 # Plot occurrences on base map - facet by month -----
@@ -413,7 +413,7 @@ ggsave("../Figures/final/collection_periods_ordered.png", plot = p4, width = 18,
 
 
 # Create bar plot of number of observations per data source -----
-p6 <- scripts_focal %>% 
+p5 <- scripts_focal %>% 
   mutate(
     # Add column to put data sources in order
     table_num = as.numeric(
@@ -483,7 +483,7 @@ p6 <- scripts_focal %>%
         legend.title = element_text(face = "bold"))
 
 # Save plot
-ggsave("../Figures/final/occurrences_by_source.png", plot = p6, width = 12, height = 8)
+ggsave("../Figures/final/occurrences_by_source.png", plot = p5, width = 12, height = 8)
 
 
 
