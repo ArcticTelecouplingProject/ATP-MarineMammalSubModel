@@ -413,7 +413,12 @@ ggsave("../Figures/final/collection_periods_ordered.png", plot = p4, width = 18,
 
 
 # Create bar plot of number of observations per data source -----
-p5 <- scripts_focal %>% 
+p5 <- scripts_focal %>%
+  st_drop_geometry() %>%
+  group_by(source, source_file, scientificName, dataOrigin) %>% 
+  summarize(record_count = n(),
+            .groups = "drop") %>% 
+  
   mutate(
     # Add column to put data sources in order
     table_num = as.numeric(
@@ -422,7 +427,7 @@ p5 <- scripts_focal %>%
         str_detect(source_file, "queries_spotted") ~ "2",
         str_detect(source_file, "queries_bearded") ~ "3",
         str_detect(source_file, "tgs_seismic") ~ "4",
-        str_detect(source_file, "norseman_2015") ~ "5",
+        str_detect(source_file, "marine_bird") ~ "5",
         str_detect(source_file, "mmw_2016") ~ "6",
         str_detect(source_file, "mmw_2017") ~ "7",
         str_detect(source_file, "laurier_2019") ~ "8",
@@ -441,46 +446,40 @@ p5 <- scripts_focal %>%
         str_detect(source_file, "beringia_2007") ~ "21",
         str_detect(source_file, "lamont") ~ "22",
         str_detect(source_file, "acoustic_mams") ~ "23",
-        str_detect(source_file, "norseman_2017") ~ "24",
+        str_detect(source_file, "pinniped_norseman") ~ "24",
+        str_detect(source_file, "norseman_2017") ~ "25",
         TRUE ~ NA_character_)
     )
-  ) %>% 
-  st_drop_geometry() %>% 
-  group_by(table_num, source, scientificName) %>%
-  summarize(
-    # Sum total number of occurrences for each data source
-    num_obs = n(),
-    
-    # Drop grouping
-    .groups = "drop"
   ) %>% 
   
   # Arrange numerically
   arrange(table_num) %>% 
   
-  # Set factor levels for "source" based on numerical order, and reverse
-  mutate(source = factor(source, levels = source[order(table_num)]),
-         source = forcats::fct_rev(source)) %>% 
+  # Convert source into a factor with the desired order
+  mutate(source = 
+           factor(source,
+                  levels = rev(
+                    unique(
+                      source[order(table_num)]
+                    )
+                  )
+           )
+  ) %>% 
   
-  # Plot occurrences by data source
-  ggplot(aes(x = num_obs, y = source, fill = scientificName)) +
+  ggplot(aes(x = record_count, y = source, fill = scientificName)) +
   geom_bar(stat = "identity") +
-  # geom_text(aes(label = num_obs),
-  #           position = position_stack(vjust = 0.5), # centers text within the bar
-  #           color = "black",
-  #           size = 4) +
-  labs(# title = "Marine Mammal Aggregated Count by Data Source",
-       x = "Occurrences",
-       y = "Data Source",
-       fill = "Scientific Name") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(x = "Source",
+       y = "Number of Occurrences",
+       # title = "Number of Records per Source by Species",
+       fill = "Species") +
   scale_fill_manual(values = c("slategray4", "burlywood4", "lightblue2")) +
   theme_bw() +
   theme(plot.title = element_text(face = "bold", size = 20),
         axis.title.x = element_text(face = "bold", size = 17),
         axis.title.y = element_text(face = "bold", size = 17),
-        axis.text.x = element_text(size = 12),
-        axis.text.y = element_text(size = 12),
-        legend.title = element_text(face = "bold"))
+        axis.text.x = element_text(size = 16),
+        axis.text.y = element_text(size = 12))
 
 # Save plot
 ggsave("../Figures/final/occurrences_by_source.png", plot = p5, width = 12, height = 8)
