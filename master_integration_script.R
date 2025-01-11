@@ -469,8 +469,8 @@ p5 <- scripts_focal %>%
   ggplot(aes(x = record_count, y = source, fill = scientificName)) +
   geom_bar(stat = "identity") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  labs(x = "Source",
-       y = "Number of Occurrences",
+  labs(x = "Number of Occurrences",
+       y = "Dataset",
        # title = "Number of Records per Source by Species",
        fill = "Species") +
   scale_fill_manual(values = c("slategray4", "burlywood4", "lightblue2")) +
