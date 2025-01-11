@@ -91,10 +91,10 @@ bird_new <- bird %>%
   arrange(year, month, day)
 
 # Save as csv into respective folder
-write_csv(bird_new, "../Data_Processed/TidyScripts/03_obis_ambon_norseman_2015.csv", append = FALSE)
+write_csv(bird_new, "../Data_Processed/TidyScripts/03_obis_marine_birds_norseman_2015.csv", append = FALSE)
 
 # Save rds and shps
-# saveRDS(bird_new, "../Data_Processed/rds_and_shps_new_tidy/03_obis_ambon_norseman_2015.rds")
-# st_write(bird_new, "../Data_Processed/rds_and_shps_new_tidy/03_obis_ambon_norseman_2015.shp")
+# saveRDS(bird_new, "../Data_Processed/rds_and_shps_new_tidy/03_obis_marine_birds_norseman_2015.rds")
+# st_write(bird_new, "../Data_Processed/rds_and_shps_new_tidy/03_obis_marine_birds_norseman_2015.shp")
 
 
