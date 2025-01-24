@@ -280,9 +280,9 @@ ggsave("../Figures/final/marine_mams_facet_century.png", plot = p1, width = 10, 
 
 
 # Plot occurrences on base map - facet by month -----
-p2 <- ggplot() + 
+poster_p2 <- ggplot() + 
   geom_sf(data = base_map) + 
-  geom_sf(data = mams_tmap, mapping = aes(color = factor(month),
+  geom_sf(data = mams_tmap, mapping = aes(color = factor(scientificName),
                                           alpha = 0.7)) +
   facet_wrap(~ month,
              
@@ -300,17 +300,20 @@ p2 <- ggplot() +
                                      "10" = "October",
                                      "11" = "November",
                                      "12" = "December"))) +
+  scale_color_manual(values = c("Erignathus barbatus" = "slategray4",
+                                "Odobenus rosmarus" = "burlywood4",
+                                "Phoca largha" = "lightblue2")) +
   labs(
     # title = "Marine mammal occurrences from 1860-2024",
     # subtitle = "Bering Strait Region and North Slope, Alaska",
-    color = "Season") +
+    color = "Species") +
   theme_bw() +
   theme(plot.title = element_text(face = "bold", size = 15), # adjust title
         strip.text = element_text(face = "bold", size = 14), # adjust facet headers
-        legend.position = "none") # remove legend
+        legend.position = "right")
 
 # Save plot
-ggsave("../Figures/final/marine_mams_facet_month.png", plot = p2, width = 10, height = 8)
+ggsave("../Figures/final/marine_mams_month_facet_species_poster.png", plot = poster_p2, width = 16, height = 14)
 
 
 # Plot occurrences by species -----
@@ -485,8 +488,138 @@ p5 <- scripts_focal %>%
 ggsave("../Figures/final/occurrences_by_source.png", plot = p5, width = 12, height = 8)
 
 
+# amss --------------------------------------------------------------------
+
+poster <- ggplot() + 
+  geom_sf(data = base_map) + 
+  geom_sf(data = mams_tmap, mapping = aes(color = factor(season),
+                                          alpha = 0.7),
+          show.legend = c(alpha = FALSE)) +
+  facet_wrap(~ scientificName, ncol = 1) +
+  labs(
+    # title = "Marine mammal occurrences from 1860-2024",
+    # subtitle = "Bering Strait Region and North Slope, Alaska",
+    color = "Season") +
+  theme_bw() +
+  theme(plot.title = element_text(face = "bold", size = 15), # adjust title
+        strip.text = element_text(face = "bold", size = 12))
+poster
+
+ggsave("../Figures/final/marine_mams_species_facet_poster.png", plot = poster, width = 10, height = 8)
+
+# Plot total occurrences for each method of data collection -----
+method_plot <- scripts_focal %>% 
+  st_drop_geometry() %>% 
+  group_by(methodObs) %>% 
+  summarize(n = n()) %>% 
+  arrange(n) %>% 
+  
+  ggplot(aes(x = n, y = methodObs, fill = methodObs)) +
+  geom_bar(stat = "identity") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(x = "Number of Occurrences",
+       y = "Method of Observation",
+       fill = "Species") +
+  theme_bw() +
+  theme(plot.title = element_text(face = "bold", size = 20),
+        axis.title.x = element_text(face = "bold", size = 17),
+        axis.title.y = element_text(face = "bold", size = 17),
+        axis.text.x = element_text(size = 16),
+        axis.text.y = element_text(size = 14),
+        legend.position = "none") # remove legend
+
+# Save plot
+ggsave("../Figures/final/methodObs_poster.png", plot = method_plot, width = 10, height = 8)
+
+# Plot total occurrences for each year index time step, color coded by database origin -----
+all_mams_sum <- scripts_focal %>%
+  st_drop_geometry() %>%
+  group_by(year(date), dataOrigin) %>%
+  summarize(n = n()) %>%
+  ungroup() %>% 
+  mutate(year_idx = c(1:nrow(.))) # Add time step index
+
+mams_sum <- all_mams_sum %>% 
+  ggplot(aes(x = year_idx, y = n, fill = dataOrigin)) +
+  geom_bar(stat = "identity") +
+  labs(
+    # title = "Marine mammal occurrences in the Bering Strait Region",
+    # subtitle = "Pacific walrus, spotted seal, bearded seal",
+    x = "Year Index from 1860-2024",
+    y = "Number of Occurrences",
+    fill = "Data Origin") +
+  # scale_fill_viridis_c(option = "G", 
+  #                    direction = -1,
+  #                    na.value = "#dcdcdc")
+  theme_bw() +
+  theme(plot.title = element_text(face = "bold", size = 20),
+        axis.title.x = element_text(face = "bold", size = 14),
+        axis.title.y = element_text(face = "bold", size = 14),
+        axis.text.x = element_text(size = 16),
+        axis.text.y = element_text(size = 16))
+# legend.position = "none") # remove legend
+
+# Save plot
+ggsave("../Figures/final/all_mams_sum_yearidx_poster.png", plot = mams_sum, width = 10, height = 8)
 
 
-
-
+# Plot total occurrences for each dataset and color coded by database origin -----
+dataset <- scripts_focal %>% 
+  mutate(
+    # Add column to put data sources in order
+    table_num = as.numeric(
+      case_when(
+        str_detect(source_file, "queries_walrus") ~ "1",
+        str_detect(source_file, "queries_spotted") ~ "2",
+        str_detect(source_file, "queries_bearded") ~ "3",
+        str_detect(source_file, "tgs_seismic") ~ "4",
+        str_detect(source_file, "norseman_2015") ~ "5",
+        str_detect(source_file, "mmw_2016") ~ "6",
+        str_detect(source_file, "mmw_2017") ~ "7",
+        str_detect(source_file, "laurier_2019") ~ "8",
+        str_detect(source_file, "laurier_2018") ~ "9",
+        str_detect(source_file, "healy_2018") ~ "10",
+        str_detect(source_file, "nmml_aerial") ~ "11",
+        str_detect(source_file, "sex_age") ~ "12",
+        str_detect(source_file, "behavior_uas") ~ "13",
+        str_detect(source_file, "moudry") ~ "14",
+        str_detect(source_file, "asamm") ~ "15",
+        str_detect(source_file, "cetacean_survey") ~ "16",
+        str_detect(source_file, "asti") ~ "17",
+        str_detect(source_file, "arctos") ~ "18",
+        str_detect(source_file, "bering_survey") ~ "19",
+        str_detect(source_file, "beringia_2008") ~ "20",
+        str_detect(source_file, "beringia_2007") ~ "21",
+        str_detect(source_file, "lamont") ~ "22",
+        str_detect(source_file, "acoustic_mams") ~ "23",
+        str_detect(source_file, "norseman_2017") ~ "24",
+        TRUE ~ NA_character_)
+    )
+  ) %>% 
+  
+  # Arrange numerically
+  arrange(table_num) %>% 
+  
+  # Set factor levels for "source" based on numerical order, and reverse
+  mutate(source = factor(source, levels = source[order(table_num)]),
+         source = forcats::fct_rev(source)) %>% 
+  
+  st_drop_geometry() %>% 
+  group_by(table_num, dataOrigin, source) %>% 
+  summarize(n = n(),
+            .groups = "drop") %>% 
+  # arrange(n) %>% 
+  
+  ggplot(aes(x = n, y = source, fill = dataOrigin)) +
+  geom_bar(stat = "identity") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(x = "Number of Occurrences",
+       y = "Dataset",
+       fill = "Data Origin") +
+  theme_bw() +
+  theme(plot.title = element_text(face = "bold", size = 20),
+        axis.title.x = element_text(face = "bold", size = 17),
+        axis.title.y = element_text(face = "bold", size = 17),
+        axis.text.x = element_text(size = 16),
+        axis.text.y = element_text(size = 14))
 
