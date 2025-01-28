@@ -2,3 +2,7 @@
 .Rhistory
 .RData
 .Ruserdata
+habitat_suitability/
+old_integrations/
+old_tidying/
+telemetry/
