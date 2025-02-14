@@ -60,7 +60,7 @@ tidygbif_dedup <- tidygbif %>%
   # Remove duplicates based on gbifID column
   distinct(gbifID,
            .keep_all = TRUE)
-  
+
 # Save data
 write_csv(tidygbif_dedup, "../Data_Processed/marine_mammal_integration/tidygbif_dedup.csv")
 
@@ -564,6 +564,7 @@ ggsave("../Figures/final/all_mams_sum_yearidx_poster.png", plot = mams_sum, widt
 
 
 # Plot total occurrences for each dataset and color coded by database origin -----
+# doesn't work #
 dataset <- scripts_focal %>% 
   mutate(
     # Add column to put data sources in order
@@ -622,4 +623,19 @@ dataset <- scripts_focal %>%
         axis.title.y = element_text(face = "bold", size = 17),
         axis.text.x = element_text(size = 16),
         axis.text.y = element_text(size = 14))
+
+
+# Plot occurrences by season and methodObs --------------------------------
+
+obs <- ggplot() +
+  geom_sf(data = base_map) +
+  geom_sf(data = mams_tmap, mapping = aes(color = factor(methodObs))) +
+  facet_wrap(~ season) +
+  theme_bw() +
+  labs(color = "Method of Observation") + # legend title
+  theme(plot.title = element_text(face = "bold", size = 18), # adjust title
+        strip.text = element_text(face = "bold", size = 14)) # adjust facet headers
+
+# Save plot
+ggsave("../Figures/final/occ_season_facet_obs_color.png", plot = obs, width = 10, height = 8)
 
