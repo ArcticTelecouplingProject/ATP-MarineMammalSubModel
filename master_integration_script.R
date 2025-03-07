@@ -415,6 +415,61 @@ p4 <- scripts_focal %>%
 ggsave("../Figures/final/collection_periods_ordered.png", plot = p4, width = 18, height = 8)
 
 
+# Create time of collection periods ---------------------------------------
+
+# Ordered by length of collection years instead of by tidy order
+
+col_length <- scripts_focal %>% 
+  st_drop_geometry() %>% 
+  group_by(source) %>%
+  summarize(
+    # Create collection periods with start and end dates for each data source
+    start_date = min(date),
+    end_date = max(date),
+    length_years = as.numeric(difftime(max(date), min(date), units = "days")) / 365.25,
+    length_days = as.numeric(difftime(max(date), min(date), units = "days")),
+    
+    # Drop grouping
+    .groups = "drop"
+  ) %>%
+  
+  # Arrange by start_date (earliest years first)
+  arrange(start_date) %>%
+  
+  # Convert source to a factor
+  mutate(source = factor(source, levels = source)) %>%
+  
+  # Plot collection periods
+  ggplot(aes(x = start_date, y = source, xend = end_date, yend = source)) +
+  geom_segment(linewidth = 3, color = "lightsteelblue2") +
+  geom_text(aes(label = paste0(format(start_date, "%Y"), " -")),
+            vjust = -0.5,
+            hjust = 1, 
+            size = 3,
+            color = "black") +
+  geom_text(aes(x = end_date, label = paste0(" ", format(end_date, "%Y"))), 
+            vjust = -0.5, 
+            hjust = 0,
+            size = 3, 
+            color = "black") +
+  labs(# title = "Collection Period by Data Source",
+    x = "Year",
+    y = "Dataset") +
+  theme_bw() +
+  theme(plot.title = element_text(face = "bold", size = 20),
+        axis.title.x = element_text(face = "bold", size = 17),
+        axis.title.y = element_text(face = "bold", size = 17),
+        axis.text.x = element_text(size = 16),
+        axis.text.y = element_text(size = 12))
+
+# Save plot
+ggsave("../Figures/final/collection_periods_ordered_by_length.png", plot = col_length, width = 18, height = 8)
+
+
+# Ridgeline plot for collection periods -----------------------------------
+
+
+
 # Create bar plot of number of observations per data source -----
 p5 <- scripts_focal %>%
   st_drop_geometry() %>%
