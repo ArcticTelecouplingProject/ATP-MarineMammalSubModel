@@ -475,8 +475,23 @@ library(hrbrthemes)
 rl <- scripts_focal %>% 
   st_drop_geometry() %>% 
   group_by(scientificName, source, date) %>% 
-  summarize(num_species = n(), .groups = "drop") %>% # Count occurrences per dataset per date
-  mutate(source = factor(source, levels = unique(source))) %>% # Ensure proper factor ordering
+  summarize(
+    num_species = n(), # Count occurrences per dataset per date
+    # Create collection periods with start and end dates for each data source
+    start_date = min(date),
+    end_date = max(date),
+    length_years = as.numeric(difftime(max(date), min(date), units = "days")) / 365.25,
+    length_days = as.numeric(difftime(max(date), min(date), units = "days")),
+    
+    # Drop grouping
+    .groups = "drop"
+  ) %>%
+  
+  # Arrange by start_date (earliest years first)
+  arrange(start_date) %>%
+  
+  # Convert source to a factor to ensure proper factor ordering
+  mutate(source = factor(source, levels = unique(source))) %>%
   
   # Create the ridgeline plot
   ggplot(aes(x = date, y = source, fill = ..density..)) + # Color by occurrence density
