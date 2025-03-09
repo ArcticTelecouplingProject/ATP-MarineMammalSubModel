@@ -468,6 +468,40 @@ ggsave("../Figures/final/collection_periods_ordered_by_length.png", plot = col_l
 
 # Ridgeline plot for collection periods -----------------------------------
 
+library(ggridges)
+library(viridis)
+library(hrbrthemes)
+
+rl <- scripts_focal %>% 
+  st_drop_geometry() %>% 
+  group_by(scientificName, source, date) %>% 
+  summarize(num_species = n(), .groups = "drop") %>% # Count occurrences per dataset per date
+  mutate(source = factor(source, levels = unique(source))) %>% # Ensure proper factor ordering
+  
+  # Create the ridgeline plot
+  ggplot(aes(x = date, y = source, fill = ..density..)) + # Color by occurrence density
+  geom_density_ridges_gradient(scale = 3, rel_min_height = 0.01) +
+  scale_fill_viridis_c(name = "Density of Occurrences", option = "C") +
+  # facet_wrap(~ scientificName, scales = "free_y") + # Separate by species
+  labs(
+    # title = "Occurrence Distribution Across Collection Periods by Dataset",
+    x = "Year",
+    y = "Dataset"
+  ) +
+  theme_bw() +
+  theme(
+    legend.position = "none",
+    panel.spacing = unit(0.2, "lines"),
+    strip.text.x = element_text(size = 10, face = "bold"),
+    axis.text.x = element_text(size = 16),
+    axis.text.y = element_text(size = 12),
+    plot.title = element_text(face = "bold", size = 20),
+    axis.title.x = element_text(face = "bold", size = 17),
+    axis.title.y = element_text(face = "bold", size = 17)
+  )
+
+# Save plot
+ggsave("../Figures/final/occurrence_density_ridgeline.png", plot = rl, width = 18, height = 8)
 
 
 # Create bar plot of number of observations per data source -----
