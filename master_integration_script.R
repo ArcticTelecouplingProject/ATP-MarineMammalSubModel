@@ -468,6 +468,8 @@ ggsave("../Figures/final/collection_periods_ordered_by_length.png", plot = col_l
 
 # Ridgeline plot for collection periods -----------------------------------
 
+# This ridgeline plot works but corresponds peak height with the year, so if the occurrences are all collected during one year then the peak will be bigger, rather than peak height corresponding with number of occurrences (i.e., higher peak during years with more occurrences).
+
 library(ggridges)
 library(viridis)
 library(hrbrthemes)
@@ -475,23 +477,8 @@ library(hrbrthemes)
 rl <- scripts_focal %>% 
   st_drop_geometry() %>% 
   group_by(scientificName, source, date) %>% 
-  summarize(
-    num_species = n(), # Count occurrences per dataset per date
-    # Create collection periods with start and end dates for each data source
-    start_date = min(date),
-    end_date = max(date),
-    length_years = as.numeric(difftime(max(date), min(date), units = "days")) / 365.25,
-    length_days = as.numeric(difftime(max(date), min(date), units = "days")),
-    
-    # Drop grouping
-    .groups = "drop"
-  ) %>%
-  
-  # Arrange by start_date (earliest years first)
-  arrange(start_date) %>%
-  
-  # Convert source to a factor to ensure proper factor ordering
-  mutate(source = factor(source, levels = unique(source))) %>%
+  summarize(num_species = n(), .groups = "drop") %>% # Count occurrences per dataset per date
+  mutate(source = factor(source, levels = unique(source))) %>% # Ensure proper factor ordering
   
   # Create the ridgeline plot
   ggplot(aes(x = date, y = source, fill = ..density..)) + # Color by occurrence density
@@ -516,8 +503,54 @@ rl <- scripts_focal %>%
   )
 
 # Save plot
-ggsave("../Figures/final/occurrence_density_ridgeline.png", plot = rl, width = 18, height = 8)
+ggsave("../Figures/final/year_density_ridgeline.png", plot = rl, width = 18, height = 8)
 
+
+# Ridgeline plot with peak heights for occurrence density -----------------
+# Resources:
+# https://r-graph-gallery.com/294-basic-ridgeline-plot.html
+# https://cran.r-project.org/web/packages/ggridges/vignettes/introduction.html
+
+# This ridgeline plot corresponds peak height with number of occurrences.
+
+rl2 <- scripts_focal %>% 
+  st_drop_geometry() %>% 
+  group_by(source, date) %>% 
+  summarize(
+    num_species = n(), # Count occurrences per dataset per date
+    # Create collection periods with start and end dates for each data source
+    start_date = min(date),
+    end_date = max(date),
+    
+    # Drop grouping
+    .groups = "drop"
+  ) %>% 
+  # Arrange by start_date (earliest years first)
+  arrange(start_date) %>%
+  
+  # Convert source to a factor to ensure proper factor ordering
+  mutate(source = factor(source, levels = unique(source))) %>% 
+
+ggplot(aes(x = date, y = source, height = (num_species/max(num_species)), fill = source)) +
+  geom_density_ridges(stat = "identity", scale = 5, alpha = 0.8) +
+  scale_fill_viridis_d(name = "Dataset") +  # Color by dataset
+  labs(
+    # title = "Occurrence Density Across Collection Periods by Dataset",
+    x = "Year",
+    y = "Dataset"
+  ) +
+  theme_bw() +
+  theme(
+    legend.position = "none",
+    strip.text.x = element_text(size = 10, face = "bold"),
+    axis.text.x = element_text(size = 16),
+    axis.text.y = element_text(size = 10),
+    axis.title.x = element_text(face = "bold", size = 17),
+    axis.title.y = element_text(face = "bold", size = 17)
+  )
+
+# Save plot
+ggsave("../Figures/final/occurrence_density_ridgeline.png", plot = rl2, width = 18, height = 8)
 
 # Create bar plot of number of observations per data source -----
 p5 <- scripts_focal %>%
