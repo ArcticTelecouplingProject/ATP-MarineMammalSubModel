@@ -552,6 +552,109 @@ ggplot(aes(x = date, y = source, height = (num_species/max(num_species)), fill =
 # Save plot
 ggsave("../Figures/final/occurrence_density_ridgeline.png", plot = rl2, width = 18, height = 8)
 
+
+# Ridgeline plot for single year datasets ---------------------------------
+
+rl_single <- scripts_focal %>% 
+  st_drop_geometry() %>% 
+  group_by(source, date) %>% 
+  summarize(
+    num_species = n(),  # Count occurrences per dataset per date
+    .groups = "drop"
+  ) %>%
+  
+  # Arrange by start_date (earliest years first)
+  arrange(date) %>%
+  
+  # Convert source to a factor to ensure proper ordering
+  mutate(source = factor(source, levels = unique(source))) %>%
+  
+  # Filter datasets that span one year or less
+  group_by(source) %>%
+  filter(as.numeric(difftime(max(date), min(date), units = "days")) <= 365) %>%
+  ungroup() %>%  
+  
+  ggplot(aes(x = date, y = source, height = (num_species / max(num_species)), fill = ..x..)) +
+  geom_density_ridges_gradient(stat = "identity", scale = 3, alpha = 0.7) +  # Fix scale
+  scale_x_date(limits = c(as.Date("1999-01-01"), as.Date("2020-01-01"))) +
+  scale_fill_viridis_c(name = "Time Progression", option = "C") + 
+  labs(
+    # title = "Occurrence Density Across Collection Periods by Dataset",
+    x = "Year",
+    y = "Dataset"
+  ) +
+  theme_bw() +
+  theme(
+    legend.position = "none",
+    strip.text.x = element_text(size = 10, face = "bold"),
+    axis.text.x = element_text(size = 16),
+    axis.text.y = element_text(size = 10),
+    axis.title.x = element_text(face = "bold", size = 17),
+    axis.title.y = element_text(face = "bold", size = 17)
+  )
+
+# Save plot
+ggsave("../Figures/final/occurrence_density_ridgeline_single_datasets.png", plot = rl_single, width = 18, height = 8)
+
+
+# Ridgeline plot for multi-year datasets ----------------------------------
+
+rl_multi <- scripts_focal %>% 
+  st_drop_geometry() %>% 
+  group_by(source, date) %>% 
+  summarize(
+    num_species = n(),  # Count occurrences per dataset per date
+    .groups = "drop"
+  ) %>%
+  
+  # Arrange by start_date (earliest years first)
+  arrange(date) %>%
+  
+  # Convert source to a factor to ensure proper ordering
+  mutate(source = factor(source, levels = unique(source))) %>%
+  
+  # Filter datasets that span one year or less
+  group_by(source) %>%
+  filter(as.numeric(difftime(max(date), min(date), units = "days")) >= 365) %>%
+  ungroup() %>%  
+  
+  ggplot(aes(x = date, y = source, height = (num_species / max(num_species)), fill = source)) +
+  geom_density_ridges_gradient(stat = "identity", scale = 3, alpha = 0.7) +  # Fix scale
+  scale_x_date(limits = c(as.Date("1860-01-01"), as.Date("2025-01-01"))) +
+  scale_fill_viridis_d(name = "Dataset") +  # Color by dataset + 
+  labs(
+    # title = "Occurrence Density Across Collection Periods by Dataset",
+    x = "Year",
+    y = "Dataset"
+  ) +
+  theme_bw() +
+  theme(
+    legend.position = "none",
+    strip.text.x = element_text(size = 10, face = "bold"),
+    axis.text.x = element_text(size = 16),
+    axis.text.y = element_text(size = 10),
+    axis.title.x = element_text(face = "bold", size = 17),
+    axis.title.y = element_text(face = "bold", size = 17)
+  )
+
+# Save plot
+ggsave("../Figures/final/occurrence_density_ridgeline_multi_datasets.png", plot = rl_multi, width = 18, height = 8)
+
+
+# Combine ridgeline plots for single and multiyear datasets ---------------
+
+cowplot <- cowplot::plot_grid(rl_single, rl_multi, 
+                              labels = c("Single Year Datasets", "Multi Year Datasets"),
+                              label_size = 10,
+                              ncol = 1, 
+                              label_y = 1.01, # Moves label slightly higher to avoid overlap with y-axis
+                              align = "v")
+
+cowplot
+
+# Save plot
+ggsave("../Figures/final/occurrence_density_ridgelines_cowplot.png", plot = cowplot, width = 18, height = 8)
+
 # Create bar plot of number of observations per data source -----
 p5 <- scripts_focal %>%
   st_drop_geometry() %>%
