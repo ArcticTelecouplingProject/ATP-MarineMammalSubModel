@@ -60,7 +60,7 @@ gbif_new <- na_gbif %>%
          day = as.numeric(day),
          
          # Add count column
-         count = 1) %>% 
+         count = NA) %>% 
   
   # Filter to select species of interest by scientific name and spatial location within the study area bounds.
   filter(species %in% c("Odobenus rosmarus", "Phoca largha", "Erignathus barbatus"), 

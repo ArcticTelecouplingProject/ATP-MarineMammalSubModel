@@ -55,7 +55,7 @@ obis_new <- obis_mams %>%
          day = day(date),
          
          # Add count column
-         count = 1) %>%
+         count = NA) %>%
   
   # Remove unneeded columns and rename
   select(scientificName = scientific_name,

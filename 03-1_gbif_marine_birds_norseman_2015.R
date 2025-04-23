@@ -59,7 +59,7 @@ gbif_new <- na_gbif %>%
          individualCount = as.numeric(individualCount),
          
          # Populate count column with 1 observation per row
-         count = 1,
+         count = NA,
          
          # Add column to locate where the data was downloaded from
          dataOrigin = "GBIF") %>% 

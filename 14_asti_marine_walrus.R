@@ -63,7 +63,7 @@ walrus <- asti %>%
          year = as.numeric(substr(date, 5, 8)),
          month = NA,
          day = NA,
-         count = 1,
+         count = NA,
          
          # Add column to locate where the data was downloaded from
          dataOrigin = "GBIF") %>% 

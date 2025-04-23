@@ -61,7 +61,7 @@ walrus <- na_nmml %>%
          day = as.numeric(day),
          
          # Add count column
-         count = 1,
+         count = NA,
          
          # Add column to locate where the data was downloaded from
          dataOrigin = "GBIF") %>% 

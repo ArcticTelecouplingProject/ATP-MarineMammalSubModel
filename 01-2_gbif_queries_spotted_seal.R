@@ -57,7 +57,7 @@ gbif_new_spotted <- na_gbif %>%
     day = as.numeric(day),
     
     # Add count column
-    count = 1,
+    count = NA,
     
     # Rename values in method of observation column
     methodObs =

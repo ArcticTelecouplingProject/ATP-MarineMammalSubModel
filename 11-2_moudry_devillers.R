@@ -63,7 +63,7 @@ gbif_mams_2 <- gbif_mams %>%
   
   # Add count column
   transform(count = ifelse
-            (is.na(year) & is.na(month) & is.na(day), 0, 1)) %>%
+            (is.na(year) & is.na(month) & is.na(day), 0, NA)) %>%
   
   # Remove unneeded columns and rename
   select(gbifID = gbifid,
