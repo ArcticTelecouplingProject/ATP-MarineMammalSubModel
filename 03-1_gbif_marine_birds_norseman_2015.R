@@ -58,9 +58,6 @@ gbif_new <- na_gbif %>%
          day = as.numeric(day),
          individualCount = as.numeric(individualCount),
          
-         # There is no count column so we will fill in with NA
-         count = NA,
-         
          # Add column to locate where the data was downloaded from
          dataOrigin = "GBIF") %>% 
   
@@ -77,7 +74,7 @@ gbif_new <- na_gbif %>%
          day,
          decimalLat = decimalLatitude,
          decimalLon = decimalLongitude,
-         count,
+         count = individualCount,
          methodObs,
          source,
          dataOrigin) %>% 
