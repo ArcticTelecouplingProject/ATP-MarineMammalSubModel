@@ -52,7 +52,6 @@ marine_mams <- arctos %>%
   # Standardize what's in the methodObs column and add source column
   mutate(methodObs = "Preserved specimen",
          source = "UAM Mammal Collections (Arctos)",
-         count = NA,
          
          # Add column to locate where the data was downloaded from
          dataOrigin = "GBIF",
