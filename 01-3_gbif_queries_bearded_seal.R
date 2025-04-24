@@ -52,9 +52,6 @@ gbif_new_bearded <- na_gbif %>%
     month = as.numeric(month),
     day = as.numeric(day),
     
-    # Add count column
-    count = NA,
-    
     # Rename values in method of observation column
     methodObs =
       case_when(basisOfRecord == "HUMAN_OBSERVATION" ~ "Other",
@@ -79,7 +76,7 @@ gbif_new_bearded <- na_gbif %>%
          day,
          decimalLat,
          decimalLon,
-         count,
+         count = individualCount,
          methodObs,
          source,
          dataOrigin) %>% 
