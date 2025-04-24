@@ -52,10 +52,8 @@ obis_new <- obis_mams %>%
          # Add year, month, day columns
          year = year(date),
          month = month(date),
-         day = day(date),
-         
-         # Add count column
-         count = NA) %>%
+         day = day(date)
+  ) %>%
   
   # Remove unneeded columns and rename
   select(scientificName = scientific_name,
@@ -64,7 +62,7 @@ obis_new <- obis_mams %>%
          day,
          decimalLat = latitude,
          decimalLon = longitude,
-         count,
+         count = group_size,
          methodObs,
          source,
          dataOrigin) %>% 
