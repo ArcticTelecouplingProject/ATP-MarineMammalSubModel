@@ -59,9 +59,6 @@ mams_new <- na_pinniped %>%
          month = as.numeric(month),
          day = as.numeric(day),
          
-         # Add count column
-         count = NA,
-         
          # Add column to locate where the data was downloaded from
          dataOrigin = "GBIF") %>% 
   
@@ -78,7 +75,7 @@ mams_new <- na_pinniped %>%
          day,
          decimalLat = decimalLatitude,
          decimalLon = decimalLongitude,
-         count,
+         count = individualCount,
          methodObs,
          source,
          dataOrigin) %>% 
