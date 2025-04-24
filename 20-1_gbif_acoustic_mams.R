@@ -57,10 +57,7 @@ gbif_new <- na_gbif %>%
          decimalLongitude = as.numeric(decimalLongitude),
          year = as.numeric(year),
          month = as.numeric(month),
-         day = as.numeric(day),
-         
-         # Add count column
-         count = NA) %>% 
+         day = as.numeric(day)) %>% 
   
   # Filter to select species of interest by scientific name and spatial location within the study area bounds.
   filter(species %in% c("Odobenus rosmarus", "Phoca largha", "Erignathus barbatus"), 
@@ -75,7 +72,7 @@ gbif_new <- na_gbif %>%
          day,
          decimalLat = decimalLatitude,
          decimalLon = decimalLongitude,
-         count,
+         count = individualCount,
          methodObs,
          source,
          dataOrigin) %>% 
