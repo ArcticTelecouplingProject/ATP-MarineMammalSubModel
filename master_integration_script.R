@@ -62,7 +62,7 @@ tidygbif_dedup <- tidygbif %>%
            .keep_all = TRUE)
 
 # Save data
-write_csv(tidygbif_dedup, "../Data_Processed/marine_mammal_integration/tidygbif_dedup.csv")
+write_csv(tidygbif_dedup, "../Data_Processed/marine_mammal_integration/tidygbif_dedup.csv", append = FALSE)
 
 # Read all data sets NOT downloaded from GBIF into one integrated object -----
 
@@ -102,8 +102,9 @@ set.seed(108)
 # Add gbifID column to tidyother
 tidyother <- tidyother %>% 
   
-  # Generate values to populate gbifID column
-  mutate(gbifID = 1:nrow(.)) %>% 
+  # Generate values to populate gbifID column. Add "custom_id" to identify IDs not associated with GBIF
+  mutate(gbifID = paste0("custom_id_", 1:nrow(.))
+  ) %>% 
   
   # Remove duplicates based on exact matches across ALL columns
   distinct(.keep_all = TRUE) %>% 
@@ -120,10 +121,11 @@ tidyother <- tidyother %>%
 
 # Combine tidygbif and tidyother since they have the same number of columns now. 
 tidyscripts <- rbind(tidyother, tidygbif_dedup) %>%
-  select(gbifID,
+  select(unique_id = gbifID,
          everything()) %>%
   # Eliminate repeat occurrences with duplicate data that may be included from two sources (e.g., a study and a GBIF query)
   distinct(.keep_all = TRUE)
+
 
 # Save rds
 saveRDS(tidyscripts, "../Data_Processed/marine_mammal_integration/tidyscripts_part1.rds")
@@ -149,7 +151,7 @@ scripts_focal <- tidyscripts %>%
   ) %>% 
   
   # Reorder columns
-  select(gbifID,
+  select(unique_id,
          scientificName,
          date,
          decimalLat,
@@ -482,7 +484,8 @@ rl <- scripts_focal %>%
   
   # Create the ridgeline plot
   ggplot(aes(x = date, y = source, fill = ..density..)) + # Color by occurrence density
-  geom_density_ridges_gradient(scale = 3, rel_min_height = 0.01) +
+  geom_density_ridges_gradient(scale = 3, rel_min_height = 0.01,
+                               color = NA) + # removes black border around peaks
   scale_fill_viridis_c(name = "Density of Occurrences", option = "C") +
   # facet_wrap(~ scientificName, scales = "free_y") + # Separate by species
   labs(
@@ -532,7 +535,8 @@ rl2 <- scripts_focal %>%
   mutate(source = factor(source, levels = unique(source))) %>% 
 
 ggplot(aes(x = date, y = source, height = (num_species/max(num_species)), fill = source)) +
-  geom_density_ridges(stat = "identity", scale = 5, alpha = 0.8) +
+  geom_density_ridges(stat = "identity", scale = 5, alpha = 0.8,
+                      color = NA) + # removes black border around peaks
   scale_fill_viridis_d(name = "Dataset") +  # Color by dataset
   labs(
     # title = "Occurrence Density Across Collection Periods by Dataset",
@@ -575,7 +579,7 @@ rl_single <- scripts_focal %>%
   ungroup() %>%  
   
   ggplot(aes(x = date, y = source, height = (num_species / max(num_species)), fill = ..x..)) +
-  geom_density_ridges_gradient(stat = "identity", scale = 3, alpha = 0.7) +  # Fix scale
+  geom_density_ridges_gradient(stat = "identity", scale = 3, alpha = 0.7, color = NA) +  # Fix scale
   scale_x_date(limits = c(as.Date("1999-01-01"), as.Date("2020-01-01"))) +
   scale_fill_viridis_c(name = "Time Progression", option = "C") + 
   labs(
@@ -619,7 +623,7 @@ rl_multi <- scripts_focal %>%
   ungroup() %>%  
   
   ggplot(aes(x = date, y = source, height = (num_species / max(num_species)), fill = source)) +
-  geom_density_ridges_gradient(stat = "identity", scale = 3, alpha = 0.7) +  # Fix scale
+  geom_density_ridges_gradient(stat = "identity", scale = 3, alpha = 0.7, color = NA) +  # Fix scale
   scale_x_date(limits = c(as.Date("1860-01-01"), as.Date("2025-01-01"))) +
   scale_fill_viridis_d(name = "Dataset") +  # Color by dataset + 
   labs(
