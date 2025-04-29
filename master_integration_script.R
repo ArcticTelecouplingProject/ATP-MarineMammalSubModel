@@ -106,12 +106,15 @@ set.seed(108)
 # Add gbifID column to tidyother
 tidyother <- tidyother %>% 
   
-  # Generate values to populate gbifID column. Add "custom_id" to identify IDs not associated with GBIF
-  mutate(gbifID = 1:nrow(.),  # create gbifID
-         pad_width = nchar(as.character(nrow(.))),  # Then calculate needed width
-         unique_id = paste0("custom_id", sprintf(paste0("%0", pad_width, "d"), gbifID)) # use gbifID
+  # Generate values to populate unique_id column. Add "custom_id" to identify IDs not associated with GBIF
+  mutate(
+    gbifID = uuid::UUIDgenerate(n = nrow(.)), # create unique and random gbifID, returns a standard 36-character string
+    
+    unique_id = paste0("custom_id_", substr(gbifID, 1, 8))  # first 8 chars
   ) %>% 
-  select(-pad_width, -gbifID) %>% 
+  
+  # Remove gbifID column
+  select(-gbifID) %>% 
   
   # Remove duplicates based on exact matches across ALL columns
   distinct(.keep_all = TRUE) %>% 
@@ -122,9 +125,9 @@ tidyother <- tidyother %>%
     str_detect(source, "GBIF") ~ 2 # GBIF has the lowest priority
   )) %>% 
   
-  # Rearrange columns so gbifID is first
-  select(unique_id,
-         everything())
+  # Rearrange columns so unique_id is first
+  select(unique_id, # starts df with unique_id
+         everything()) # all other rows come after unique_id
 
 # Combine tidygbif and tidyother since they have the same number of columns now. 
 tidyscripts <- rbind(tidyother, tidygbif_dedup) %>%
