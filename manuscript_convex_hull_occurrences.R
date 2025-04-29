@@ -26,4 +26,4 @@ ch <- st_convex_hull(st_union(nc))
 qtm(ch)
 
 # Save data
-st_write(ch, "../Data_Processed/marine_mammal_integration/convex_hull_occurrences.shp")
+st_write(ch, "../Data_Processed/marine_mammal_integration/convex_hull_occurrences.shp", append = FALSE)
