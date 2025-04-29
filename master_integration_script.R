@@ -33,8 +33,8 @@ tidygbif <- list.files("../Data_Processed/TidyScripts/",
   purrr::map_dfr(~ read_csv(.x),
                  .id = "source_file") %>% # populates source_file col with names from set_names()
   
-  # Remove NAs
-  drop_na() %>% 
+  # Remove NAs in date fields and lat/lon
+  drop_na(year, month, day, decimalLat, decimalLon) %>% 
   
   # Convert integrated df to sf object
   st_as_sf(coords = c("decimalLon", "decimalLat"),
@@ -64,6 +64,7 @@ tidygbif_dedup <- tidygbif %>%
   # Rename
   select(unique_id = gbifID,
          everything())
+# This takes a while so make sure you save the data to prevent having to wait while rerunning again.
 
 # Save data
 write_csv(tidygbif_dedup, "../Data_Processed/marine_mammal_integration/tidygbif_dedup.csv", append = FALSE)
@@ -87,8 +88,8 @@ tidyother <- list.files("../Data_Processed/TidyScripts/",
   purrr::map_dfr(~ read_csv(.x),
                  .id = "source_file") %>% # populates source_file col with names from set_names()
   
-  # Remove NAs
-  drop_na() %>% 
+  # Remove NAs in date fields and lat/lon
+  drop_na(year, month, day, decimalLat, decimalLon) %>% 
   
   # Convert integrated df to sf object
   st_as_sf(coords = c("decimalLon", "decimalLat"),
@@ -153,7 +154,7 @@ scripts_focal <- tidyscripts %>%
                                "Phoca largha",
                                "Erignathus barbatus")) %>% 
   
-  # Remove NAs
+  # Remove NAs in date fields and lat/lon
   drop_na(year, month, day, decimalLat, decimalLon) %>% 
   
   # Add Date column
@@ -171,7 +172,7 @@ scripts_focal <- tidyscripts %>%
          methodObs,
          source,
          dataOrigin,
-         source_file)
+         sourceFile = source_file) # rename to match camel case naming
 
 # Save this to a csv and rds
 write_csv(scripts_focal, "../Data_Processed/marine_mammal_integration/final_marine_mammal_integration.csv", append = FALSE)
@@ -354,30 +355,30 @@ p4 <- scripts_focal %>%
     # Add column to put data sources in order
     table_num = as.numeric(
       case_when(
-        str_detect(source_file, "queries_walrus") ~ "1",
-        str_detect(source_file, "queries_spotted") ~ "2",
-        str_detect(source_file, "queries_bearded") ~ "3",
-        str_detect(source_file, "tgs_seismic") ~ "4",
-        str_detect(source_file, "norseman_2015") ~ "5",
-        str_detect(source_file, "mmw_2016") ~ "6",
-        str_detect(source_file, "mmw_2017") ~ "7",
-        str_detect(source_file, "laurier_2019") ~ "8",
-        str_detect(source_file, "laurier_2018") ~ "9",
-        str_detect(source_file, "healy_2018") ~ "10",
-        str_detect(source_file, "nmml_aerial") ~ "11",
-        str_detect(source_file, "sex_age") ~ "12",
-        str_detect(source_file, "behavior_uas") ~ "13",
-        str_detect(source_file, "moudry") ~ "14",
-        str_detect(source_file, "asamm") ~ "15",
-        str_detect(source_file, "cetacean_survey") ~ "16",
-        str_detect(source_file, "asti") ~ "17",
-        str_detect(source_file, "arctos") ~ "18",
-        str_detect(source_file, "bering_survey") ~ "19",
-        str_detect(source_file, "beringia_2008") ~ "20",
-        str_detect(source_file, "beringia_2007") ~ "21",
-        str_detect(source_file, "lamont") ~ "22",
-        str_detect(source_file, "acoustic_mams") ~ "23",
-        str_detect(source_file, "norseman_2017") ~ "24",
+        str_detect(sourceFile, "queries_walrus") ~ "1",
+        str_detect(sourceFile, "queries_spotted") ~ "2",
+        str_detect(sourceFile, "queries_bearded") ~ "3",
+        str_detect(sourceFile, "tgs_seismic") ~ "4",
+        str_detect(sourceFile, "norseman_2015") ~ "5",
+        str_detect(sourceFile, "mmw_2016") ~ "6",
+        str_detect(sourceFile, "mmw_2017") ~ "7",
+        str_detect(sourceFile, "laurier_2019") ~ "8",
+        str_detect(sourceFile, "laurier_2018") ~ "9",
+        str_detect(sourceFile, "healy_2018") ~ "10",
+        str_detect(sourceFile, "nmml_aerial") ~ "11",
+        str_detect(sourceFile, "sex_age") ~ "12",
+        str_detect(sourceFile, "behavior_uas") ~ "13",
+        str_detect(sourceFile, "moudry") ~ "14",
+        str_detect(sourceFile, "asamm") ~ "15",
+        str_detect(sourceFile, "cetacean_survey") ~ "16",
+        str_detect(sourceFile, "asti") ~ "17",
+        str_detect(sourceFile, "arctos") ~ "18",
+        str_detect(sourceFile, "bering_survey") ~ "19",
+        str_detect(sourceFile, "beringia_2008") ~ "20",
+        str_detect(sourceFile, "beringia_2007") ~ "21",
+        str_detect(sourceFile, "lamont") ~ "22",
+        str_detect(sourceFile, "acoustic_mams") ~ "23",
+        str_detect(sourceFile, "norseman_2017") ~ "24",
         TRUE ~ NA_character_)
     )
   ) %>% 
@@ -673,7 +674,7 @@ ggsave("../Figures/final/occurrence_density_ridgelines_cowplot.png", plot = cowp
 # Create bar plot of number of observations per data source -----
 p5 <- scripts_focal %>%
   st_drop_geometry() %>%
-  group_by(source, source_file, scientificName, dataOrigin) %>% 
+  group_by(source, sourceFile, scientificName, dataOrigin) %>% 
   summarize(record_count = n(),
             .groups = "drop") %>% 
   
@@ -681,31 +682,31 @@ p5 <- scripts_focal %>%
     # Add column to put data sources in order
     table_num = as.numeric(
       case_when(
-        str_detect(source_file, "queries_walrus") ~ "1",
-        str_detect(source_file, "queries_spotted") ~ "2",
-        str_detect(source_file, "queries_bearded") ~ "3",
-        str_detect(source_file, "tgs_seismic") ~ "4",
-        str_detect(source_file, "marine_bird") ~ "5",
-        str_detect(source_file, "mmw_2016") ~ "6",
-        str_detect(source_file, "mmw_2017") ~ "7",
-        str_detect(source_file, "laurier_2019") ~ "8",
-        str_detect(source_file, "laurier_2018") ~ "9",
-        str_detect(source_file, "healy_2018") ~ "10",
-        str_detect(source_file, "nmml_aerial") ~ "11",
-        str_detect(source_file, "sex_age") ~ "12",
-        str_detect(source_file, "behavior_uas") ~ "13",
-        str_detect(source_file, "moudry") ~ "14",
-        str_detect(source_file, "asamm") ~ "15",
-        str_detect(source_file, "cetacean_survey") ~ "16",
-        str_detect(source_file, "asti") ~ "17",
-        str_detect(source_file, "arctos") ~ "18",
-        str_detect(source_file, "bering_survey") ~ "19",
-        str_detect(source_file, "beringia_2008") ~ "20",
-        str_detect(source_file, "beringia_2007") ~ "21",
-        str_detect(source_file, "lamont") ~ "22",
-        str_detect(source_file, "acoustic_mams") ~ "23",
-        str_detect(source_file, "pinniped_norseman") ~ "24",
-        str_detect(source_file, "norseman_2017") ~ "25",
+        str_detect(sourceFile, "queries_walrus") ~ "1",
+        str_detect(sourceFile, "queries_spotted") ~ "2",
+        str_detect(sourceFile, "queries_bearded") ~ "3",
+        str_detect(sourceFile, "tgs_seismic") ~ "4",
+        str_detect(sourceFile, "marine_bird") ~ "5",
+        str_detect(sourceFile, "mmw_2016") ~ "6",
+        str_detect(sourceFile, "mmw_2017") ~ "7",
+        str_detect(sourceFile, "laurier_2019") ~ "8",
+        str_detect(sourceFile, "laurier_2018") ~ "9",
+        str_detect(sourceFile, "healy_2018") ~ "10",
+        str_detect(sourceFile, "nmml_aerial") ~ "11",
+        str_detect(sourceFile, "sex_age") ~ "12",
+        str_detect(sourceFile, "behavior_uas") ~ "13",
+        str_detect(sourceFile, "moudry") ~ "14",
+        str_detect(sourceFile, "asamm") ~ "15",
+        str_detect(sourceFile, "cetacean_survey") ~ "16",
+        str_detect(sourceFile, "asti") ~ "17",
+        str_detect(sourceFile, "arctos") ~ "18",
+        str_detect(sourceFile, "bering_survey") ~ "19",
+        str_detect(sourceFile, "beringia_2008") ~ "20",
+        str_detect(sourceFile, "beringia_2007") ~ "21",
+        str_detect(sourceFile, "lamont") ~ "22",
+        str_detect(sourceFile, "acoustic_mams") ~ "23",
+        str_detect(sourceFile, "pinniped_norseman") ~ "24",
+        str_detect(sourceFile, "norseman_2017") ~ "25",
         TRUE ~ NA_character_)
     )
   ) %>% 
@@ -765,11 +766,11 @@ ggsave("../Figures/final/marine_mams_species_facet_poster.png", plot = poster, w
 # Plot total occurrences for each method of data collection -----
 method_plot <- scripts_focal %>% 
   st_drop_geometry() %>% 
+  drop_na(methodObs) %>% 
   group_by(methodObs) %>% 
   summarize(n = n()) %>% 
-  arrange(n) %>% 
   
-  ggplot(aes(x = n, y = methodObs, fill = methodObs)) +
+  ggplot(aes(x = n, y = fct_rev(methodObs), fill = methodObs)) +
   geom_bar(stat = "identity") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   labs(x = "Number of Occurrences",
@@ -825,30 +826,30 @@ dataset <- scripts_focal %>%
     # Add column to put data sources in order
     table_num = as.numeric(
       case_when(
-        str_detect(source_file, "queries_walrus") ~ "1",
-        str_detect(source_file, "queries_spotted") ~ "2",
-        str_detect(source_file, "queries_bearded") ~ "3",
-        str_detect(source_file, "tgs_seismic") ~ "4",
-        str_detect(source_file, "norseman_2015") ~ "5",
-        str_detect(source_file, "mmw_2016") ~ "6",
-        str_detect(source_file, "mmw_2017") ~ "7",
-        str_detect(source_file, "laurier_2019") ~ "8",
-        str_detect(source_file, "laurier_2018") ~ "9",
-        str_detect(source_file, "healy_2018") ~ "10",
-        str_detect(source_file, "nmml_aerial") ~ "11",
-        str_detect(source_file, "sex_age") ~ "12",
-        str_detect(source_file, "behavior_uas") ~ "13",
-        str_detect(source_file, "moudry") ~ "14",
-        str_detect(source_file, "asamm") ~ "15",
-        str_detect(source_file, "cetacean_survey") ~ "16",
-        str_detect(source_file, "asti") ~ "17",
-        str_detect(source_file, "arctos") ~ "18",
-        str_detect(source_file, "bering_survey") ~ "19",
-        str_detect(source_file, "beringia_2008") ~ "20",
-        str_detect(source_file, "beringia_2007") ~ "21",
-        str_detect(source_file, "lamont") ~ "22",
-        str_detect(source_file, "acoustic_mams") ~ "23",
-        str_detect(source_file, "norseman_2017") ~ "24",
+        str_detect(sourceFile, "queries_walrus") ~ "1",
+        str_detect(sourceFile, "queries_spotted") ~ "2",
+        str_detect(sourceFile, "queries_bearded") ~ "3",
+        str_detect(sourceFile, "tgs_seismic") ~ "4",
+        str_detect(sourceFile, "norseman_2015") ~ "5",
+        str_detect(sourceFile, "mmw_2016") ~ "6",
+        str_detect(sourceFile, "mmw_2017") ~ "7",
+        str_detect(sourceFile, "laurier_2019") ~ "8",
+        str_detect(sourceFile, "laurier_2018") ~ "9",
+        str_detect(sourceFile, "healy_2018") ~ "10",
+        str_detect(sourceFile, "nmml_aerial") ~ "11",
+        str_detect(sourceFile, "sex_age") ~ "12",
+        str_detect(sourceFile, "behavior_uas") ~ "13",
+        str_detect(sourceFile, "moudry") ~ "14",
+        str_detect(sourceFile, "asamm") ~ "15",
+        str_detect(sourceFile, "cetacean_survey") ~ "16",
+        str_detect(sourceFile, "asti") ~ "17",
+        str_detect(sourceFile, "arctos") ~ "18",
+        str_detect(sourceFile, "bering_survey") ~ "19",
+        str_detect(sourceFile, "beringia_2008") ~ "20",
+        str_detect(sourceFile, "beringia_2007") ~ "21",
+        str_detect(sourceFile, "lamont") ~ "22",
+        str_detect(sourceFile, "acoustic_mams") ~ "23",
+        str_detect(sourceFile, "norseman_2017") ~ "24",
         TRUE ~ NA_character_)
     )
   ) %>% 
