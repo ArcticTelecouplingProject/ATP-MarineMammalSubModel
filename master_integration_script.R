@@ -55,11 +55,15 @@ tidygbif_dedup <- tidygbif %>%
   )) %>% 
   
   # Rearrange by priority to keep rows of highest priority
-  arrange(scientificName, year, month, day, decimalLat, decimalLon, priority) %>%
+  arrange(priority) %>%
   
   # Remove duplicates based on gbifID column
   distinct(gbifID,
-           .keep_all = TRUE)
+           .keep_all = TRUE) %>% 
+  
+  # Rename
+  select(unique_id = gbifID,
+         everything())
 
 # Save data
 write_csv(tidygbif_dedup, "../Data_Processed/marine_mammal_integration/tidygbif_dedup.csv", append = FALSE)
@@ -103,8 +107,11 @@ set.seed(108)
 tidyother <- tidyother %>% 
   
   # Generate values to populate gbifID column. Add "custom_id" to identify IDs not associated with GBIF
-  mutate(gbifID = paste0("custom_id_", 1:nrow(.))
+  mutate(gbifID = 1:nrow(.),  # create gbifID
+         pad_width = nchar(as.character(nrow(.))),  # Then calculate needed width
+         unique_id = paste0("custom_id", sprintf(paste0("%0", pad_width, "d"), gbifID)) # use gbifID
   ) %>% 
+  select(-pad_width, -gbifID) %>% 
   
   # Remove duplicates based on exact matches across ALL columns
   distinct(.keep_all = TRUE) %>% 
@@ -116,12 +123,13 @@ tidyother <- tidyother %>%
   )) %>% 
   
   # Rearrange columns so gbifID is first
-  select(gbifID,
+  select(unique_id,
          everything())
 
 # Combine tidygbif and tidyother since they have the same number of columns now. 
 tidyscripts <- rbind(tidyother, tidygbif_dedup) %>%
-  select(unique_id = gbifID,
+  select(unique_id,
+         source_file,
          everything()) %>%
   # Eliminate repeat occurrences with duplicate data that may be included from two sources (e.g., a study and a GBIF query)
   distinct(.keep_all = TRUE)
@@ -533,8 +541,8 @@ rl2 <- scripts_focal %>%
   
   # Convert source to a factor to ensure proper factor ordering
   mutate(source = factor(source, levels = unique(source))) %>% 
-
-ggplot(aes(x = date, y = source, height = (num_species/max(num_species)), fill = source)) +
+  
+  ggplot(aes(x = date, y = source, height = (num_species/max(num_species)), fill = source)) +
   geom_density_ridges(stat = "identity", scale = 5, alpha = 0.8,
                       color = NA) + # removes black border around peaks
   scale_fill_viridis_d(name = "Dataset") +  # Color by dataset
