@@ -571,6 +571,26 @@ ggsave("../Figures/final/occurrence_density_ridgeline.png", plot = rl2, width = 
 
 # Ridgeline plot for single year datasets ---------------------------------
 
+my_palette <- c(
+  "#E41A1C",  # Red
+  "#377EB8",  # Blue
+  "#4DAF4A",  # Green
+  "#A65628",  # Brown
+  "#FF7F00",  # Orange
+  "#8DA0CB",  # Light Blue
+  "#F781BF",  # Pink
+  "#999999",  # Gray
+  "#66C2A5",  # Teal
+  "#FC8D62",  # Salmon
+  "#984EA3",  # Purple
+  "#E78AC3",  # Light Pink
+  "#A6D854",  # Lime Green
+  "#FFD92F",  # Yellow
+  "#E5C494",  # Tan
+  "#B3B3B3",  # Light Gray
+  "#1B9E77"   # Dark Teal
+)
+
 rl_single <- scripts_focal %>% 
   st_drop_geometry() %>% 
   group_by(source, date) %>% 
@@ -590,10 +610,18 @@ rl_single <- scripts_focal %>%
   filter(as.numeric(difftime(max(date), min(date), units = "days")) <= 365) %>%
   ungroup() %>%  
   
-  ggplot(aes(x = date, y = source, height = (num_species / max(num_species)), fill = ..x..)) +
-  geom_density_ridges_gradient(stat = "identity", scale = 3, alpha = 0.7, color = NA) +  # Fix scale
-  scale_x_date(limits = c(as.Date("1999-01-01"), as.Date("2020-01-01"))) +
-  scale_fill_viridis_c(name = "Time Progression", option = "C") + 
+  # Plot
+  ggplot(aes(x = date, 
+             y = source, 
+             height = (num_species / max(num_species)), 
+             fill = source)) +
+  geom_density_ridges_gradient(stat = "identity", 
+                               scale = 3, 
+                               alpha = 0.7, 
+                               color = NA) +  # fix scale
+  scale_x_date(limits = c(as.Date("1999-01-01"), as.Date("2020-01-01")),
+               breaks = scales::pretty_breaks(n = 10)) + # add more x-axis ticks
+  scale_fill_manual(values = my_palette) +  # Color by dataset 
   labs(
     # title = "Occurrence Density Across Collection Periods by Dataset",
     x = "Year",
@@ -634,10 +662,15 @@ rl_multi <- scripts_focal %>%
   filter(as.numeric(difftime(max(date), min(date), units = "days")) >= 365) %>%
   ungroup() %>%  
   
-  ggplot(aes(x = date, y = source, height = (num_species / max(num_species)), fill = source)) +
+  # Plot
+  ggplot(aes(x = date, 
+             y = source,
+             height = (num_species / max(num_species)), 
+             fill = source)) +
   geom_density_ridges_gradient(stat = "identity", scale = 3, alpha = 0.7, color = NA) +  # Fix scale
-  scale_x_date(limits = c(as.Date("1860-01-01"), as.Date("2025-01-01"))) +
-  scale_fill_viridis_d(name = "Dataset") +  # Color by dataset + 
+  scale_x_date(limits = c(as.Date("1860-01-01"), as.Date("2025-01-01")),
+               breaks = scales::pretty_breaks(n = 20)) + # add more x-axis ticks
+  scale_fill_brewer(palette = "Set2") +  # Color by dataset 
   labs(
     # title = "Occurrence Density Across Collection Periods by Dataset",
     x = "Year",
