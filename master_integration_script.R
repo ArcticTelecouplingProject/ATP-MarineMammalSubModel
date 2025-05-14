@@ -606,7 +606,7 @@ rl_single <- scripts_focal %>%
     axis.text.x = element_text(size = 16),
     axis.text.y = element_text(size = 10),
     axis.title.x = element_text(face = "bold", size = 17),
-    axis.title.y = element_text(face = "bold", size = 17)
+    axis.title.y = element_blank() # hides y-axis title
   )
 
 # Save plot
@@ -650,7 +650,7 @@ rl_multi <- scripts_focal %>%
     axis.text.x = element_text(size = 16),
     axis.text.y = element_text(size = 10),
     axis.title.x = element_text(face = "bold", size = 17),
-    axis.title.y = element_text(face = "bold", size = 17)
+    axis.title.y = element_blank()
   )
 
 # Save plot
