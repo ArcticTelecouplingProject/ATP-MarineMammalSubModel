@@ -951,4 +951,4 @@ obs_n <- ggplot() +
         strip.text = element_text(face = "bold", size = 14))
 
 # Save plot
-ggsave("../Figures/final/occ_season_facet_obs_color.png", plot = obs_n, width = 10, height = 8)
+ggsave("../Figures/final/occ_season_facet_obs_color_n.png", plot = obs_n, width = 10, height = 8)
