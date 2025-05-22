@@ -928,3 +928,27 @@ obs <- ggplot() +
 # Save plot
 ggsave("../Figures/final/occ_season_facet_obs_color.png", plot = obs, width = 10, height = 8)
 
+# # Add n-value for each season
+
+season_counts <- mams_tmap %>%
+  st_drop_geometry() %>%  # Drop geometry for counting
+  count(season)
+
+season_labels <- setNames(
+  paste0(season_counts$season, " (n = ", season_counts$n, ")"),
+  season_counts$season
+)
+
+obs_n <- ggplot() +
+  geom_sf(data = base_map) +
+  geom_sf(data = mams_tmap, 
+          mapping = aes(color = factor(methodObs))) +
+  facet_wrap(~ season,
+             labeller = labeller(season = season_labels)) +
+  theme_bw() +
+  labs(color = "Method of Observation") +
+  theme(plot.title = element_text(face = "bold", size = 18),
+        strip.text = element_text(face = "bold", size = 14))
+
+# Save plot
+ggsave("../Figures/final/occ_season_facet_obs_color.png", plot = obs_n, width = 10, height = 8)
