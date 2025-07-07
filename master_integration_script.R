@@ -163,7 +163,7 @@ scripts_focal <- tidyscripts %>%
   ) %>% 
   
   # Reorder columns
-  select(unique_id,
+  select(uniqueID = unique_id,
          scientificName,
          date,
          decimalLat,
@@ -329,6 +329,41 @@ poster_p2 <- ggplot() +
 # Save plot
 ggsave("../Figures/final/marine_mams_month_facet_species_poster.png", plot = poster_p2, width = 16, height = 14)
 
+# # Add n-value for each season - Figure 5 for data paper
+
+# Convert numeric month to month name and append n-value
+month_counts <- mams_tmap %>%
+  st_drop_geometry() %>%  # Drop geometry for counting
+  count(month) %>% 
+  mutate(month_name = month.name[as.integer(month)],
+         label = paste0(month_name, " (n = ", n, ")"))
+
+# Create vector for facet labels
+month_labels <- setNames(month_counts$label, month_counts$month)
+
+# Plot
+fig_5 <- ggplot() + 
+  geom_sf(data = base_map) + 
+  geom_sf(data = mams_tmap, mapping = aes(color = factor(scientificName),
+                                          alpha = 0.7)) +
+  facet_wrap(~ month,
+             # Rename the facet labels to their month names instead of the number
+             labeller = labeller(month = month_labels)) +
+  scale_color_manual(values = c("Erignathus barbatus" = "slategray4",
+                                "Odobenus rosmarus" = "burlywood4",
+                                "Phoca largha" = "lightblue2")) +
+  guides(alpha = "none") + # hides the alpha value from showing in the legend
+  labs(
+    # title = "Marine mammal occurrences from 1860-2024",
+    # subtitle = "Bering Strait Region and North Slope, Alaska",
+    color = "Species") +
+  theme_bw() +
+  theme(plot.title = element_text(face = "bold", size = 15), # adjust title
+        strip.text = element_text(face = "bold", size = 14), # adjust facet headers
+        legend.position = "right")
+
+# Save plot
+ggsave("../Figures/final/marine_mams_facet_month_nvalue.png", plot = fig_5, width = 16, height = 14)
 
 # Plot occurrences by species -----
 p3 <- ggplot() + 
@@ -428,8 +463,7 @@ p4 <- scripts_focal %>%
 # Save plot
 ggsave("../Figures/final/collection_periods_ordered.png", plot = p4, width = 18, height = 8)
 
-
-# Create time of collection periods ---------------------------------------
+# Create timeline of collection periods -----------------------------------
 
 # Ordered by length of collection years instead of by tidy order
 
@@ -779,6 +813,7 @@ ggsave("../Figures/final/occurrences_by_source.png", plot = p5, width = 12, heig
 
 # amss --------------------------------------------------------------------
 
+# Facet by species and color code by season - vertical plot
 poster <- ggplot() + 
   geom_sf(data = base_map) + 
   geom_sf(data = mams_tmap, mapping = aes(color = factor(season),
@@ -928,7 +963,7 @@ obs <- ggplot() +
 # Save plot
 ggsave("../Figures/final/occ_season_facet_obs_color.png", plot = obs, width = 10, height = 8)
 
-# # Add n-value for each season
+# # Add n-value for each season - Figure 3 for data paper
 
 season_counts <- mams_tmap %>%
   st_drop_geometry() %>%  # Drop geometry for counting
