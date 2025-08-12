@@ -951,9 +951,23 @@ dataset <- scripts_focal %>%
 
 # Plot occurrences by season and methodObs --------------------------------
 
+# Okabe-Ito colorblind-friendly palette
+okabe_ito <- c(
+  "#E69F00", # orange
+  "#56B4E9", # sky blue
+  "#009E73", # bluish green
+  "#F0E442", # yellow
+  "#0072B2", # blue
+  "#D55E00", # vermillion
+  "#CC79A7",  # reddish purple
+  "#999999"  # gray
+)
+
+# Figure 3 
 obs <- ggplot() +
   geom_sf(data = base_map) +
   geom_sf(data = mams_tmap, mapping = aes(color = factor(methodObs))) +
+  scale_color_manual(values = okabe_ito) +
   facet_wrap(~ season) +
   theme_bw() +
   labs(color = "Method of Observation") + # legend title
@@ -978,6 +992,7 @@ obs_n <- ggplot() +
   geom_sf(data = base_map) +
   geom_sf(data = mams_tmap, 
           mapping = aes(color = factor(methodObs))) +
+  scale_color_manual(values = okabe_ito) +
   facet_wrap(~ season,
              labeller = labeller(season = season_labels)) +
   theme_bw() +
