@@ -329,7 +329,7 @@ poster_p2 <- ggplot() +
 # Save plot
 ggsave("../Figures/final/marine_mams_month_facet_species_poster.png", plot = poster_p2, width = 16, height = 14)
 
-# # Add n-value for each season - Figure 5 for data paper
+# # Add n-value for each season - Figure 5 for data paper -----
 
 # Convert numeric month to month name and append n-value
 month_counts <- mams_tmap %>%
@@ -364,6 +364,45 @@ fig_5 <- ggplot() +
 
 # Save plot
 ggsave("../Figures/final/marine_mams_facet_month_nvalue.png", plot = fig_5, width = 16, height = 14)
+
+# # Figure 5 by season -----
+# Updated based on reviewer comments
+
+# Count occurrences per season
+season_counts <- mams_tmap %>%
+  st_drop_geometry() %>%  # Drop geometry for counting
+  group_by(season) %>% 
+  summarize(n = n(),
+            .groups = "drop")
+
+# Create vector for facet labels
+season_labs <- setNames(
+  paste0(season_counts$season, " (n =", season_counts$n, ")"),
+  season_counts$season
+)
+
+# Plot
+dib_rev <- ggplot() + 
+  geom_sf(data = base_map) + 
+  geom_sf(data = mams_tmap, mapping = aes(color = factor(scientificName),
+                                          alpha = 0.7)) +
+  facet_wrap(~ season,
+             labeller = labeller(season = season_labels)) + # label counts by season
+  scale_color_manual(values = c("Erignathus barbatus" = "slategray4",
+                                "Odobenus rosmarus" = "burlywood4",
+                                "Phoca largha" = "lightblue2")) +
+  guides(alpha = "none") + # hides the alpha value from showing in the legend
+  labs(
+    # title = "Marine mammal occurrences from 1860-2024",
+    # subtitle = "Bering Strait Region and North Slope, Alaska",
+    color = "Species") +
+  theme_bw() +
+  theme(plot.title = element_text(face = "bold", size = 18), # adjust title
+        strip.text = element_text(face = "bold", size = 14), # adjust facet headers
+        legend.position = "right")
+
+# Save plot
+ggsave("../Figures/final/marine_mams_fig5_season_nvalue.png", plot = dib_rev, width = 10, height = 8)
 
 # Plot occurrences by species -----
 p3 <- ggplot() + 
